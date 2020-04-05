@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  decorator-nginx:
+    image: decorator-nginx-image:0.0.1
+    networks:
+      - telepanorama-network
+  decorator-php:
+    image: decorator-php-image:0.0.1
+    networks:
+      - telepanorama-network
+  showcase-nginx:
+    image: showcase-nginx-image:0.0.1
+    networks:
+      - telepanorama-network
+networks:
+  telepanorama-network:

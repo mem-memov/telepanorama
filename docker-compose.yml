@@ -19,12 +19,18 @@ services:
         target: /etc/nginx/nginx.conf
       - source: showcase-nginx-default-conf
         target: /etc/nginx/conf.d/default.conf
+    volumes:
+      - source: showcase-image-volume
+        target: /usr/share/nginx/html/textures
+        type: volume
     ports:
       - 80:80
     networks:
       - telepanorama-network
 networks:
   telepanorama-network:
+volumes:
+  showcase-image-volume:
 configs:
   showcase-nginx-nginx-conf:
     file: ./deployment/telepanorama/showcase/nginx/nginx.conf

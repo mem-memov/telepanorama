@@ -6,6 +6,8 @@ services:
       - telepanorama-network
   decorator-nginx:
     image: decorator-nginx-image:0.0.1
+    ports:
+      - 8080:80
     networks:
       - telepanorama-network
   decorator-php:

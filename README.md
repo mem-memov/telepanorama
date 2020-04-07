@@ -11,3 +11,21 @@
     docker stack ls
     docker stack services telepanorama-stack
     docker stack rm telepanorama-stack
+    
+### Настройка PHPSTORM
+
+    добавить SSH в образ PHP
+    
+        RUN apt-get update && \
+            apt-get install -y ssh && \
+            chsh -s /bin/bash www-data && \
+            echo 'www-data:ssh-password' | chpasswd
+            
+        CMD service ssh start && php-fpm
+        
+    пробросить в контнейнере порт 22 в docker-compose.yml
+    
+        ports:
+          - 2201:22
+          
+    добавить сервер SFTP через File | Settings | Build, Execution, Deployment | Deployment

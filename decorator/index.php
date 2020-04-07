@@ -1,15 +1,14 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
 
-require __DIR__ . '/vendor/autoload.php';
+use Telepanorama\MailController;
+use DI\Bridge\Slim\Bridge;
+use DI\Container;
 
-$app = AppFactory::create();
+require_once __DIR__ . '/vendor/autoload.php';
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
+$container = new Container();
+$app = Bridge::create($container);
+
+$app->get('/', [MailController::class, 'get']);
 
 $app->run();

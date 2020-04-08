@@ -1,14 +1,17 @@
 <?php
 
-use Telepanorama\MailController;
-use DI\Bridge\Slim\Bridge;
-use DI\Container;
-
 require_once __DIR__ . '/vendor/autoload.php';
 
-$container = new Container();
-$app = Bridge::create($container);
+$siteFactory = new \Telepanorama\Site\Factory();
+$telepanorama = $siteFactory->createSite(__DIR__ . '/routing.php');
 
-$app->get('/', [MailController::class, 'get']);
+$telepanorama->enableErrorReporting();
 
-$app->run();
+try {
+
+    $telepanorama->processRequest();
+
+} catch(\Throwable $throwable) {
+
+    $telepanorama->reportUncaughtException($throwable);
+}

@@ -17,6 +17,8 @@ services:
       - telepanorama-network
   decorator-php:
     image: decorator-php-image:0.0.1
+    environment:
+      SITE_MODE: dev
     ports:
       - 2201:22
     networks:

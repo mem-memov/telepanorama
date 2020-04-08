@@ -7,6 +7,7 @@
   "require": {
     "slim/slim": "4.*",
     "slim/psr7": "^1.0",
-    "php-di/slim-bridge": "^3.0"
+    "php-di/slim-bridge": "^3.0",
+    "php-imap/php-imap": "~3.0.33"
   }
 }

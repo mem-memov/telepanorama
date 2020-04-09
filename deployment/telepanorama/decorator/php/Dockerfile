@@ -22,7 +22,7 @@ RUN composer install
 
 RUN chown www-data:www-data /var/www/html/*
 
-# SSH for DEV SFTP on PORT 22
+# SSH for SFTP on PORT 22
 RUN apt-get update && \
     apt-get install -y ssh && \
     chsh -s /bin/bash www-data && \

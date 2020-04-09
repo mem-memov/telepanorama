@@ -53,5 +53,6 @@
     docker swarm init
     docker stack deploy --compose-file="docker-compose.yml" telepanorama-stack
     docker stack ls
+    systemctl stop ufw
     
     

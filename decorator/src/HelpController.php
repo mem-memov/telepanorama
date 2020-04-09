@@ -9,7 +9,7 @@ class HelpController
 {
     public function get(Request $request, Response $response): Response
     {
-        $response->getBody()->write('Help');
+        $response->getBody()->write('Help!');
         return $response;
     }
 }

@@ -10,7 +10,7 @@ class Routing
 {
     public function createRoutes(RouteCollectorProxyInterface $app): void
     {
-        $app->get('/', [HelpController::class, 'get']);
+        $app->get('/', [MailController::class, 'get']);
         $app->get('/mail', [MailController::class, 'get']);
     }
 }

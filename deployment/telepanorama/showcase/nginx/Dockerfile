@@ -1,11 +1,16 @@
 FROM nginx:1.17
 
-COPY . /usr/share/nginx/html
+RUN mkdir /var/www && \
+    chown -R www-data:www-data /var/www
 
-RUN chown www-data:www-data /usr/share/nginx/html/*
+COPY . /var/www
+
+RUN chown www-data:www-data /var/www/*
 
 # SSH for SFTP on PORT 22
 RUN apt-get update && \
     apt-get install -y ssh && \
     chsh -s /bin/bash www-data && \
     echo 'www-data:ssh-password' | chpasswd
+
+CMD service ssh start && nginx -g "daemon off;"

@@ -18,6 +18,6 @@ class Image
 
         $ok = \ssh2_auth_password($connection, 'www-data', 'ssh-password');
 
-        \ssh2_scp_send($connection, $this->path, '/usr/share/nginx/html/textures/2.jpg', 0644);
+        \ssh2_scp_send($connection, $this->path, '/var/www/textures/2.jpg', 0644);
     }
 }

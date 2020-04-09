@@ -8,6 +8,13 @@ RUN apt-get update && \
 RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
     docker-php-ext-install -j$(nproc) imap
 
+# SSH2
+RUN apt-get update && \
+    apt-get install -y \
+        libssh2-1-dev libssh2-1 && \
+    pecl install ssh2-1.2 && \
+    docker-php-ext-enable ssh2
+
 COPY . /var/www/html
 
 # COMPOSER

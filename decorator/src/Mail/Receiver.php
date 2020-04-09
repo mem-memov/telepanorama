@@ -19,5 +19,7 @@ class Receiver
         If (null === $image) {
             return;
         }
+
+        $image->getPublished();
     }
 }

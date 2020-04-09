@@ -6,11 +6,14 @@ use PhpImap\IncomingMail;
 
 class Package
 {
+    private int $mailId;
     private IncomingMail $incomingMail;
 
     public function __construct(
+        int $mailId,
         IncomingMail $incomingMail
     ) {
+        $this->mailId = $mailId;
         $this->incomingMail = $incomingMail;
     }
 
@@ -22,5 +25,12 @@ class Package
     public function hasAttachment(): bool
     {
         return $this->incomingMail->hasAttachments();
+    }
+
+    public function getAttachmentPath(): string
+    {
+        $files = glob('/tmp/' . $this->mailId . '_*');
+
+        return $files[0];
     }
 }

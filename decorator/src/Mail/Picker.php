@@ -24,6 +24,8 @@ class Picker
             return null;
         }
 
-        return new Image();
+        $path = $package->getAttachmentPath();
+
+        return new Image($path);
     }
 }

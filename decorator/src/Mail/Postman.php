@@ -30,8 +30,10 @@ class Postman
             return null;
         }
 
-        $mail = $mailbox->getMail($mailsIds[0]);
+        $mailId = $mailsIds[0];
 
-        return new Package($mail);
+        $mail = $mailbox->getMail($mailId);
+
+        return new Package($mailId, $mail);
     }
 }

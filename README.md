@@ -15,7 +15,7 @@
     
 ### Запуск тестов
 
-    # для просмотра отчёта о покрытии тестами открыть с диска /tmp/coverage/index.html в браузере
+    # для просмотра отчёта о покрытии тестами открыть с диска ./decorator/coverage/index.html в браузере
     docker exec -ti $(docker ps -q --filter NAME=decorator-php) ./vendor/bin/phpunit tests 
     docker exec -ti $(docker ps -q --filter NAME=decorator-php) ./vendor/bin/phpunit tests --no-coverage
     

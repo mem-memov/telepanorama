@@ -19,6 +19,8 @@ services:
     image: decorator-php-image:0.0.1
     environment:
       SITE_MODE: dev
+    volumes:
+      - ./decorator/coverage:/var/www/html/coverage # для разработки
     ports:
       - 2201:22
     networks:
@@ -42,6 +44,7 @@ networks:
   telepanorama-network:
 volumes:
   showcase-image-volume:
+  decorator-coverage-volume:
 configs:
   showcase-nginx-nginx-conf:
     file: ./deployment/telepanorama/showcase/nginx/nginx.conf

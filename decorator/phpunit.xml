@@ -4,6 +4,9 @@
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="./coverage" lowUpperBound="35" highLowerBound="70"/>
+    </logging>
     <testsuites>
         <testsuite name="decorator">
             <directory>tests</directory>

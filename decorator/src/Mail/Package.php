@@ -17,6 +17,11 @@ class Package
         $this->incomingMail = $incomingMail;
     }
 
+    public function getMailId(): int
+    {
+        return $this->mailId;
+    }
+
     public function hasSubject(string $subject): bool
     {
         return $subject === $this->incomingMail->subject;

@@ -21,10 +21,13 @@ class Picker
         }
 
         if (!$package->hasSubject('foto') || !$package->hasAttachment()) {
+            $this->postman->throwAwayPackage($package);
             return null;
         }
 
         $path = $package->getAttachmentPath();
+
+        $this->postman->throwAwayPackage($package);
 
         return new Image($path);
     }

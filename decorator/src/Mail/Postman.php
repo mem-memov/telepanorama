@@ -36,4 +36,12 @@ class Postman
 
         return new Package($mailId, $mail);
     }
+
+    public function throwAwayPackage(Package $package): void
+    {
+        $mailbox = $this->postOffice->openMailBox();
+
+        $mailbox->deleteMail($package->getMailId());
+        $mailbox->expungeDeletedMails();
+    }
 }

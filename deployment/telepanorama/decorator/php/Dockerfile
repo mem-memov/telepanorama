@@ -1,5 +1,8 @@
 FROM php:7.4.4-fpm-buster
 
+# prod|dev
+ARG SITE_MODE
+
 # IMAP
 RUN apt-get update && \
     apt-get install -y \
@@ -15,6 +18,13 @@ RUN apt-get update && \
     pecl install ssh2-1.2 && \
     docker-php-ext-enable ssh2
 
+# XDEBUG
+RUN pecl install xdebug && \
+    docker-php-ext-enable xdebug
+RUN if [[ "$SITE_MODE" == "dev" ]]; \
+    then echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini; \
+    fi
+
 COPY . /var/www/html
 
 # COMPOSER
@@ -25,9 +35,13 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php composer-setup.php && \
     php -r "unlink('composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
-RUN composer install
+RUN rm -rf vendor && \
+    if [[ "$SITE_MODE" == "prod" ]]; \
+    then composer install --prefer-dist --no-scripts -n; \
+    else composer install; \
+    fi
 
-RUN chown www-data:www-data /var/www/html/*
+RUN chown -R www-data:www-data /var/www/html/*
 
 # SSH for SFTP on PORT 22
 RUN apt-get update && \

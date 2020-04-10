@@ -4,9 +4,17 @@ namespace Telepanorama\Showcase;
 
 class Exhibition
 {
+    private InventoryRegistry $inventoryRegistry;
+
+    public function __construct (
+        InventoryRegistry $inventoryRegistry
+    ) {
+        $this->inventoryRegistry = $inventoryRegistry;
+    }
+
     public function createShowcase(): Showcase
     {
-        $id = '';
+        $id = $this->inventoryRegistry->createInventoryNumber();
 
         return new Showcase($id);
     }

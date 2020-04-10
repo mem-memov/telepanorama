@@ -10,9 +10,9 @@ class InventoryTest extends TestCase
 {
     public function testItCreatesInventoryNumber(): void
     {
-        $inventory = new Inventory();
+        $inventoryRegistry = new InventoryRegistry();
 
-        $result = $inventory->createInventoryNumber();
+        $result = $inventoryRegistry->createInventoryNumber();
 
         $this->assertEquals(10, strlen($result));
     }

@@ -2,7 +2,7 @@
 
 namespace Telepanorama\Showcase;
 
-class Inventory
+class InventoryRegistry
 {
     public function createInventoryNumber(): string
     {

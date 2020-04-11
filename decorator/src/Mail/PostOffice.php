@@ -4,55 +4,47 @@ declare(strict_types=1);
 
 namespace Telepanorama\Mail;
 
-use PhpImap\Exceptions\ConnectionException;
-use Telepanorama\Partner\PostOffice as PostOfficePartner;
+use Telepanorama\Partner\PostOffice\ServerUnavailable;
+use Telepanorama\Partner\PostOffice\Server as Partner;
 
 class PostOffice
 {
-    private PostOfficePartner $partner;
+    private Partner $partner;
 
     public function __construct(
-        PostOfficePartner $partner
+        Partner $partner
     ) {
         $this->partner = $partner;
     }
 
     /**
      * @return array|int[]
+     * @throws ServerUnavailable
      */
     public function searchMailbox(): array
     {
-        $mailbox = $this->partner->openMailBox();
+        $mailbox = $this->partner->connect();
 
-        try {
-            // Get all emails (messages)
-            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            $mailsIds = $mailbox->searchMailbox('ALL');
-        } catch(ConnectionException $exception) {
-            throw new PostOfficeClosed('IMAP connection failed', 0 , $exception);
-        }
-
-        return $mailsIds;
+        return $mailbox->searchMailbox();
     }
 
-    public function handOutPackage($mailId): Package
+    public function handOutPackage(int $mailId): Package
     {
-        $mailbox = $this->partner->openMailBox();
+        $mailbox = $this->partner->connect();
 
         $mail = $mailbox->getMail($mailId);
 
         return new Package(
             $mailId,
-            $mail->subject,
+            $mail->getSubject(),
             $mail->hasAttachments()
         );
     }
 
     public function destroyPackage(Package $package): void
     {
-        $mailbox = $this->partner->openMailBox();
+        $mailbox = $this->partner->connect();
 
         $mailbox->deleteMail($package->getMailId());
-        $mailbox->expungeDeletedMails();
     }
 }

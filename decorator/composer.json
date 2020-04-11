@@ -7,6 +7,9 @@
   "require": {
     "php": "~7.4.4",
     "ext-ssh2": "~1.2",
+    "ext-imap": "*",
+    "ext-mbstring": "*",
+    "ext-iconv": "*",
     "slim/slim": "4.*",
     "slim/psr7": "^1.0",
     "php-di/slim-bridge": "^3.0",

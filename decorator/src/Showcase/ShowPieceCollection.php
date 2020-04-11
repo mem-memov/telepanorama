@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Showcase;
 
-class ShowPieceCollection
+class ShowPieceCollection implements WithDescription
 {
     private array $showPieces = [];
 
@@ -23,5 +23,15 @@ class ShowPieceCollection
         foreach ($this->showPieces as $showPiece) {
             $use($showPiece);
         }
+    }
+
+    public function getDescription(): array
+    {
+        return array_map(
+            function (ShowPiece $showPiece) {
+                return $showPiece->getDescription();
+            },
+            $this->showPieces
+        );
     }
 }

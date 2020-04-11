@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Showcase;
 
-class Showpiece
+class Showpiece implements WithDescription
 {
     private string $file;
 
@@ -12,5 +12,12 @@ class Showpiece
         string $file
     ) {
         $this->file = $file;
+    }
+
+    public function getDescription(): array
+    {
+        return [
+            'file' => $this->file
+        ];
     }
 }

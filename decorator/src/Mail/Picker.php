@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Mail;
 
-use Telepanorama\Partner\Exhibition\Connection as Exhibition;
+use Telepanorama\Partner\Exhibition\Server as Exhibition;
 
 class Picker
 {
@@ -51,7 +51,7 @@ class Picker
 
         return new Image(
             $path,
-            $this->exhibition
+            $this->exhibition->connect()
         );
     }
 }

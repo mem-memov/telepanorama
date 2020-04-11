@@ -23,37 +23,26 @@ class Exhibition
     /**
      * @throws ServerUnavailable
      */
-    public function createShowcase(): Showcase
+    public function createShowcase(Showcase $showcase): void
     {
-        $id = $this->inventoryRegistry->createInventoryNumber();
-
-        $exhibitor = $this->partner->connect();
-
-        $showcase = new Showcase(
-            $id,
-            new ShowpieceCollection()
-        );
-
         $description = json_encode($showcase->getDescription());
 
-        $localFile = $id . '_showcase.json';
-        $remoteFile = 'case/' . $id . '/showcase.json';
+        $localFile = $showcase->getInventoryNumber() . '_showcase.json';
+        $remoteFile = 'case/' . $showcase->getInventoryNumber() . '/showcase.json';
 
         $exhibitor = $this->partner->connect();
         $exhibitor->createOnLocalServer($description, $localFile);
         $exhibitor->sendToRemoteServer($localFile, $remoteFile);
         $exhibitor->deleteOnLocalServer($localFile);
-
-        return $showcase;
     }
 
     /**
      * @throws ServerUnavailable
      */
-    public function findShowcase(string $id): Showcase
+    public function findShowcase(string $inventoryNumber): Showcase
     {
-        $localFile = $id . '_showcase.json';
-        $remoteFile = 'case/' . $id . '/showcase.json';
+        $localFile = $inventoryNumber . '_showcase.json';
+        $remoteFile = 'case/' . $inventoryNumber . '/showcase.json';
 
         $exhibitor = $this->partner->connect();
         $exhibitor->receiveFromRemoteServer($remoteFile, $localFile);
@@ -69,7 +58,7 @@ class Exhibition
         }
 
         return new Showcase(
-            $showcaseData['id'],
+            $showcaseData['inventoryNumber'],
             $showpieceCollection
         );
     }

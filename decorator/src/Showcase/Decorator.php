@@ -6,8 +6,21 @@ namespace Telepanorama\Showcase;
 
 class Decorator
 {
-    public function decorate(): void
+    private Exhibition $exhibition;
+
+    public function __construct(
+        Exhibition $exhibition
+    ) {
+        $this->exhibition = $exhibition;
+    }
+
+    public function setUpEmptyShowcase(string $inventoryNumber): void
     {
-        
+        $showcase = new Showcase(
+            $inventoryNumber,
+            new ShowpieceCollection()
+        );
+
+        $this->exhibition->createShowcase($showcase);
     }
 }

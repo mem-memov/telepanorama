@@ -19,6 +19,19 @@ class Picker
         $this->exhibition = $exhibition;
     }
 
+    public function assignPackage(Departments $departments): void
+    {
+        $package = $this->postman->bringNextPackage();
+
+        if (null === $package) {
+            return;
+        }
+
+        $departments->handlePackage($package);
+
+        $this->postman->throwAwayPackage($package);
+    }
+
     public function pickImage(): ?Image
     {
         $package = $this->postman->bringNextPackage();

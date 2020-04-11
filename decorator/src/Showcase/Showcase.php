@@ -6,21 +6,26 @@ namespace Telepanorama\Showcase;
 
 class Showcase implements WithDescription
 {
-    private string $id;
+    private string $inventoryNumber;
     private ShowpieceCollection $showPieceCollection;
 
     public function __construct(
-        string $id,
+        string $inventoryNumber,
         ShowpieceCollection $showPieceCollection
     ) {
-        $this->id = $id;
+        $this->inventoryNumber = $inventoryNumber;
         $this->showPieceCollection = $showPieceCollection;
+    }
+
+    public function getInventoryNumber(): string
+    {
+        return $this->inventoryNumber;
     }
 
     public function getDescription(): array
     {
         return [
-            'id' => $this->id,
+            'inventoryNumber' => $this->inventoryNumber,
             'showpieces' => $this->showPieceCollection->getDescription()
         ];
     }

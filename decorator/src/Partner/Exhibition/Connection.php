@@ -6,29 +6,44 @@ namespace Telepanorama\Partner\Exhibition;
 
 class Connection
 {
-    private $ssh;
-    private $sftp;
+    private RemoteDirectory $remoteDirectory;
+    private LocalDirectory $localDirectory;
 
     public function __construct(
-        $ssh,
-        $sftp
+        RemoteDirectory $remoteDirectory,
+        LocalDirectory $localDirectory
     ) {
-        $this->ssh = $ssh;
-        $this->sftp = $sftp;
+        $this->remoteDirectory = $remoteDirectory;
+        $this->localDirectory = $localDirectory;
     }
 
     public function deleteOnRemoteServer(string $remotePath): void
     {
-        ssh2_sftp_unlink($this->sftp, $remotePath);
-    }
-
-    public function deleteOnLocalServer(string $localPath): void
-    {
-        unlink($localPath);
+        $this->remoteDirectory->delete($remotePath);
     }
 
     public function sendToRemoteServer(string $localPath, string $remotePath): void
     {
-        ssh2_scp_send($this->ssh, $localPath, $remotePath, 0644);
+        $this->remoteDirectory->send($localPath, $remotePath);
+    }
+
+    public function receiveFromRemoteServer(string $remotePath, string $localPath): void
+    {
+        $this->remoteDirectory->receive($remotePath, $localPath);
+    }
+
+    public function createOnLocalServer(string $content, string $localPath): void
+    {
+        $this->localDirectory->createFile($localPath, $content);
+    }
+
+    public function readOnLocalServer(string $localPath): void
+    {
+        $this->localDirectory->readFile($localPath);
+    }
+
+    public function deleteOnLocalServer(string $localPath): void
+    {
+        $this->localDirectory->deleteFile($localPath);
     }
 }

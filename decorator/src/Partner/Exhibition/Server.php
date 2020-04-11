@@ -23,7 +23,10 @@ class Server
 
             $sftp = ssh2_sftp($ssh);
 
-            $this->connection = new Connection($ssh, $sftp);
+            $this->connection = new Connection(
+                new RemoteDirectory($ssh, $sftp),
+                new LocalDirectory()
+            );
         }
 
         return $this->connection;

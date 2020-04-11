@@ -57,6 +57,7 @@ class Application
             'errors' => [
                 [
                     'type' => 'UNCAUGHT_EXCEPTION',
+                    'class' => get_class($throwable),
                     'message' => $throwable->getMessage(),
                     'file' => $throwable->getFile(),
                     'line' => $throwable->getLine(),

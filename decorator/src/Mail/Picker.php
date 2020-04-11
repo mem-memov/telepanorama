@@ -8,7 +8,7 @@ use Telepanorama\Partner\Exhibition\Connection as Exhibition;
 
 class Picker
 {
-    private $postman;
+    private Postman $postman;
     private Exhibition $exhibition;
 
     public function __construct(

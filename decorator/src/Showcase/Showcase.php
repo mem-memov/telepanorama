@@ -29,4 +29,9 @@ class Showcase implements WithDescription
             'showpieces' => $this->showPieceCollection->getDescription()
         ];
     }
+
+    public function addShowpiece(Showpiece $showpiece): void
+    {
+        $this->showPieceCollection->add($showpiece);
+    }
 }

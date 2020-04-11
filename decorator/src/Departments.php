@@ -29,5 +29,11 @@ class Departments implements MailDepartments
             $this->decorator->setUpEmptyShowcase($inventoryNumber);
             return;
         }
+
+        $inventoryNumber = $package->getSubject();
+        if ($package->hasAttachment() && $this->decorator->recallShowcase($inventoryNumber)) {
+            $this->decorator->addShowpieceToShowcase($inventoryNumber, $package->getAttachmentPath());
+            return;
+        }
     }
 }

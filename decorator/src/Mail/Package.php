@@ -30,6 +30,11 @@ class Package
         return $subject === $this->subject;
     }
 
+    public function getSubject(): string
+    {
+        return $this->subject;
+    }
+
     public function hasAttachment(): bool
     {
         return $this->hasAttachments;

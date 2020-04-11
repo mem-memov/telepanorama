@@ -62,4 +62,21 @@ class Exhibition
             $showpieceCollection
         );
     }
+
+    /**
+     * @throws ServerUnavailable
+     */
+    public function replaceShowcase(Showcase $showcase): void
+    {
+        $description = json_encode($showcase->getDescription());
+
+        $localFile = $showcase->getInventoryNumber() . '_showcase.json';
+        $remoteFile = 'case/' . $showcase->getInventoryNumber() . '/showcase.json';
+
+        $exhibitor = $this->partner->connect();
+        $exhibitor->createOnLocalServer($description, $localFile);
+        $exhibitor->deleteOnRemoteServer($remoteFile);
+        $exhibitor->sendToRemoteServer($localFile, $remoteFile);
+        $exhibitor->deleteOnLocalServer($localFile);
+    }
 }

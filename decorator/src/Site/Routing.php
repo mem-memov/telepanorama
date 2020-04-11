@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Telepanorama\Site;
 
 use Slim\Interfaces\RouteCollectorProxyInterface;

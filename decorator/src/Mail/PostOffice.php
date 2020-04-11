@@ -6,7 +6,6 @@ namespace Telepanorama\Mail;
 
 use PhpImap\Exceptions\ConnectionException;
 use Telepanorama\Partner\PostOffice as PostOfficePartner;
-use PhpImap\Mailbox;
 
 class PostOffice
 {
@@ -42,7 +41,11 @@ class PostOffice
 
         $mail = $mailbox->getMail($mailId);
 
-        return new Package($mailId, $mail);
+        return new Package(
+            $mailId,
+            $mail->subject,
+            $mail->hasAttachments()
+        );
     }
 
     public function destroyPackage(Package $package): void

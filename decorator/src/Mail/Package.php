@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace Telepanorama\Mail;
 
-use PhpImap\IncomingMail;
-
 class Package
 {
     private int $mailId;
-    private IncomingMail $incomingMail;
+    private string $subject;
+    private bool $hasAttachments;
 
     public function __construct(
         int $mailId,
-        IncomingMail $incomingMail
+        string $subject,
+        bool $hasAttachments
     ) {
         $this->mailId = $mailId;
-        $this->incomingMail = $incomingMail;
+        $this->subject = $subject;
+        $this->hasAttachments = $hasAttachments;
     }
 
     public function getMailId(): int
@@ -26,12 +27,12 @@ class Package
 
     public function hasSubject(string $subject): bool
     {
-        return $subject === $this->incomingMail->subject;
+        return $subject === $this->subject;
     }
 
     public function hasAttachment(): bool
     {
-        return $this->incomingMail->hasAttachments();
+        return $this->hasAttachments;
     }
 
     public function getAttachmentPath(): string

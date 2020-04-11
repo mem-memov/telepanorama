@@ -31,13 +31,18 @@ class Exhibition
 
         $showcase = new Showcase(
             $id,
-            new ShowPieceCollection()
+            new ShowpieceCollection()
         );
 
         $description = json_encode($showcase->getDescription());
-        $localFile = $id . '_showcase.json';
 
+        $localFile = $id . '_showcase.json';
+        $remoteFile = 'case/' . $id . '/showcase.json';
+
+        $exhibitor = $this->partner->connect();
         $exhibitor->createOnLocalServer($description, $localFile);
+        $exhibitor->sendToRemoteServer($localFile, $remoteFile);
+        $exhibitor->deleteOnLocalServer($localFile);
 
         return $showcase;
     }
@@ -47,11 +52,25 @@ class Exhibition
      */
     public function findShowcase(string $id): Showcase
     {
+        $localFile = $id . '_showcase.json';
+        $remoteFile = 'case/' . $id . '/showcase.json';
+
         $exhibitor = $this->partner->connect();
+        $exhibitor->receiveFromRemoteServer($remoteFile, $localFile);
+        $showcaseJson = $exhibitor->readOnLocalServer($localFile);
+        $exhibitor->deleteOnLocalServer($localFile);
+
+        $showcaseData = json_decode($showcaseJson, true);
+
+        $showpieceCollection = new ShowpieceCollection();
+        foreach ($showcaseData['showpieces'] as $showpiece) {
+            $showpiece = new Showpiece($showpiece['file']);
+            $showpieceCollection->add($showpiece);
+        }
 
         return new Showcase(
-            $id,
-            new ShowPieceCollection()
+            $showcaseData['id'],
+            $showpieceCollection
         );
     }
 }

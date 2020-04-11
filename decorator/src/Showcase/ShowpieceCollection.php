@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Showcase;
 
-class ShowPieceCollection implements WithDescription
+class ShowpieceCollection implements WithDescription
 {
     private array $showPieces = [];
 

@@ -37,9 +37,9 @@ class Connection
         $this->localDirectory->createFile($localPath, $content);
     }
 
-    public function readOnLocalServer(string $localPath): void
+    public function readOnLocalServer(string $localPath): string
     {
-        $this->localDirectory->readFile($localPath);
+        return $this->localDirectory->readFile($localPath);
     }
 
     public function deleteOnLocalServer(string $localPath): void

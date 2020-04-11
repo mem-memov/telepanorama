@@ -23,7 +23,7 @@ class MailController
 
     public function get(Request $request, Response $response): Response
     {
-//        $this->mailPicker->assignPackage($this->departments);
+        $this->mailPicker->assignPackage($this->departments);
 
         return $response;
     }

@@ -18,15 +18,7 @@ class Postman
 
     public function bringNextPackage(): ?Package
     {
-        $mailbox = $this->postOffice->openMailBox();
-
-        try {
-            // Get all emails (messages)
-            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            $mailsIds = $mailbox->searchMailbox('ALL');
-        } catch(ConnectionException $exception) {
-            throw new PostOfficeClosed('IMAP connection failed', 0 , $exception);
-        }
+        $mailsIds = $this->postOffice->searchMailbox();
 
         if (empty($mailsIds)) {
             return null;
@@ -34,16 +26,11 @@ class Postman
 
         $mailId = $mailsIds[0];
 
-        $mail = $mailbox->getMail($mailId);
-
-        return new Package($mailId, $mail);
+        return $this->postOffice->handOutPackage($mailId);
     }
 
     public function throwAwayPackage(Package $package): void
     {
-        $mailbox = $this->postOffice->openMailBox();
-
-        $mailbox->deleteMail($package->getMailId());
-        $mailbox->expungeDeletedMails();
+        $this->postOffice->destroyPackage($package);
     }
 }

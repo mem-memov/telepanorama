@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Telepanorama\Mail;
 
+use Telepanorama\Partner\Exhibition\Connection as Exhibition;
+
 class Picker
 {
     private $postman;
+    private Exhibition $exhibition;
 
     public function __construct(
-        Postman $postman
+        Postman $postman,
+        Exhibition $exhibition
     ) {
         $this->postman = $postman;
+        $this->exhibition = $exhibition;
     }
 
     public function pickImage(): ?Image
@@ -31,6 +36,9 @@ class Picker
 
         $this->postman->throwAwayPackage($package);
 
-        return new Image($path);
+        return new Image(
+            $path,
+            $this->exhibition
+        );
     }
 }

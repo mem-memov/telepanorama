@@ -6,13 +6,26 @@ namespace Telepanorama\Partner\Exhibition;
 
 class Server
 {
+    private ?Connection $connection = null;
+
+    /**
+     * @throws ServerUnavailable
+     */
     public function connect(): Connection
     {
-        $ssh = ssh2_connect('showcase-nginx', 22);
-        $ok = ssh2_auth_password($ssh, 'www-data', 'ssh-password');
+        if (null === $this->connection) {
+            $ssh = ssh2_connect('showcase-nginx', 22);
+            $isConnected = ssh2_auth_password($ssh, 'www-data', 'ssh-password');
 
-        $sftp = ssh2_sftp($ssh);
+            if (!$isConnected) {
+                throw new ServerUnavailable('SSH connection failed');
+            }
 
-        return new Connection($ssh, $sftp);
+            $sftp = ssh2_sftp($ssh);
+
+            $this->connection = new Connection($ssh, $sftp);
+        }
+
+        return $this->connection;
     }
 }

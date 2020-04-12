@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Telepanorama\Partner\PostOffice\Smtp;
 
-class SmtpServer
+class Server
 {
     public function connect(): Connection
     {
-        return new Connection;
+        return new Connection();
     }
 }

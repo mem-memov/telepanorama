@@ -39,4 +39,9 @@ class Connection
     {
         $this->imapConnection->deleteMail($mailId);
     }
+
+    public function sendMessage(string $receiverAddress, string $subject): void
+    {
+        $this->smtpConnection->sendMessage($receiverAddress,  $subject);
+    }
 }

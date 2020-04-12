@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Telepanorama\Mail;
 
-use Telepanorama\Partner\PostOffice\ServerUnavailable;
-use Telepanorama\Partner\PostOffice\Server as Partner;
+use Telepanorama\Partner\PostOffice\Imap\ServerUnavailable as ImapServerUnavailable;
+use Telepanorama\Partner\PostOffice\Servers as Partner;
 
 class PostOffice
 {
@@ -19,7 +19,7 @@ class PostOffice
 
     /**
      * @return array|int[]
-     * @throws ServerUnavailable
+     * @throws ImapServerUnavailable
      */
     public function searchMailbox(): array
     {
@@ -49,8 +49,10 @@ class PostOffice
         $mailbox->deleteMail($package->getMailId());
     }
 
-    public function sendMessage($receiverAddress, $subject): void
+    public function sendMessage(string $receiverAddress, string $subject): void
     {
+        $mailbox = $this->partner->connect();
 
+        $mailbox->sendMessage($receiverAddress, $subject);
     }
 }

@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Telepanorama\Partner\PostOffice\Smtp;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use Exception;
 
 class Connection
 {
+    /**
+     * @throws SendFailed
+     */
     public function sendMessage(): void
     {
         //Create a new PHPMailer instance
@@ -43,29 +48,33 @@ class Connection
         //Password to use for SMTP authentication
         $mail->Password = 'yourpassword';
 
-        //Set who the message is to be sent from
-        $mail->setFrom('from@example.com', 'First Last');
+        try {
+            //Set who the message is to be sent from
+            $mail->setFrom('from@example.com', 'First Last');
 
-        //Set an alternative reply-to address
-        $mail->addReplyTo('replyto@example.com', 'First Last');
+            //Set an alternative reply-to address
+            $mail->addReplyTo('replyto@example.com', 'First Last');
 
-        //Set who the message is to be sent to
-        $mail->addAddress('whoto@example.com', 'John Doe');
+            //Set who the message is to be sent to
+            $mail->addAddress('whoto@example.com', 'John Doe');
 
-        //Set the subject line
-        $mail->Subject = 'PHPMailer GMail SMTP test';
+            //Set the subject line
+            $mail->Subject = 'PHPMailer GMail SMTP test';
 
-        //Read an HTML message body from an external file, convert referenced images to embedded,
-        //convert HTML into a basic plain-text alternative body
-        $mail->msgHTML(file_get_contents('contents.html'), __DIR__);
+            //Read an HTML message body from an external file, convert referenced images to embedded,
+            //convert HTML into a basic plain-text alternative body
+            $mail->msgHTML(file_get_contents('contents.html'), __DIR__);
 
-        //Replace the plain text body with one created manually
-        $mail->AltBody = 'This is a plain-text message body';
+            //Replace the plain text body with one created manually
+            $mail->AltBody = 'This is a plain-text message body';
 
-        //Attach an image file
-        $mail->addAttachment('images/phpmailer_mini.png');
+            //Attach an image file
+            $mail->addAttachment('images/phpmailer_mini.png');
 
-        $isSent = $mail->send();
+            $isSent = $mail->send();
+        } catch (Exception $exception) {
+            throw new SendFailed('Mailer Error: '. $exception->getMessage());
+        }
 
         if (false === $isSent) {
             throw new SendFailed('Mailer Error: '. $mail->ErrorInfo);

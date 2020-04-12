@@ -25,7 +25,7 @@ class Connection
         // SMTP::DEBUG_OFF = off (for production use)
         // SMTP::DEBUG_CLIENT = client messages
         // SMTP::DEBUG_SERVER = client and server messages
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = SMTP::DEBUG_OFF;
 
         //Set the hostname of the mail server
         $mail->Host = 'smtp.gmail.com';
@@ -52,6 +52,7 @@ class Connection
             $mail->setFrom('telepanorama.org@gmail.com', 'Telepanorama Organization');
             $mail->addAddress($receiverAddress);
             $mail->Subject = $subject;
+            $mail->msgHTML('New order has been created');
             $isSent = $mail->send();
         } catch (Exception $exception) {
             throw new SendFailed('Mailer Error: '. $exception->getMessage());

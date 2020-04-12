@@ -6,6 +6,7 @@ namespace Telepanorama;
 
 use Telepanorama\Mail\Departments as MailDepartments;
 use Telepanorama\Mail\Package;
+use Telepanorama\Mail\Postman;
 use Telepanorama\Showcase\Decorator;
 use Telepanorama\Order\Accountant;
 
@@ -13,13 +14,16 @@ class Departments implements MailDepartments
 {
     private Decorator $decorator;
     private Accountant $accountant;
+    private Postman $postman;
 
     public function __construct(
         Decorator $decorator,
-        Accountant $accountant
+        Accountant $accountant,
+        Postman $postman
     ) {
         $this->decorator = $decorator;
         $this->accountant = $accountant;
+        $this->postman = $postman;
     }
 
     public function handlePackage(Package $package): void
@@ -27,6 +31,7 @@ class Departments implements MailDepartments
         if ($package->hasSubject('order')) {
             $inventoryNumber = $this->accountant->provideNextInventoryNumber();
             $this->decorator->setUpEmptyShowcase($inventoryNumber);
+            $this->postman->sendReplyToPackage($package, $inventoryNumber);
             return;
         }
 

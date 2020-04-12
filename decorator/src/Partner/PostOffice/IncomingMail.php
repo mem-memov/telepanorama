@@ -16,6 +16,11 @@ class IncomingMail
         $this->mail = $mail;
     }
 
+    public function getSenderAddress(): string
+    {
+        return $this->mail->fromAddress;
+    }
+
     public function getSubject(): string
     {
         return $this->mail->subject;

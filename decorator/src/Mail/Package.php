@@ -7,15 +7,18 @@ namespace Telepanorama\Mail;
 class Package
 {
     private int $mailId;
+    private string $senderAddress;
     private string $subject;
     private bool $hasAttachments;
 
     public function __construct(
         int $mailId,
+        string $senderAddress,
         string $subject,
         bool $hasAttachments
     ) {
         $this->mailId = $mailId;
+        $this->senderAddress = $senderAddress;
         $this->subject = $subject;
         $this->hasAttachments = $hasAttachments;
     }
@@ -23,6 +26,11 @@ class Package
     public function getMailId(): int
     {
         return $this->mailId;
+    }
+
+    public function getSenderAddress(): string
+    {
+        return $this->senderAddress;
     }
 
     public function hasSubject(string $subject): bool

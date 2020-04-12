@@ -36,6 +36,7 @@ class PostOffice
 
         return new Package(
             $mailId,
+            $mail->getSenderAddress(),
             $mail->getSubject(),
             $mail->hasAttachments()
         );
@@ -46,5 +47,10 @@ class PostOffice
         $mailbox = $this->partner->connect();
 
         $mailbox->deleteMail($package->getMailId());
+    }
+
+    public function sendMessage($receiverAddress, $subject): void
+    {
+
     }
 }

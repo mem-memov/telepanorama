@@ -4,44 +4,39 @@ declare(strict_types=1);
 
 namespace Telepanorama\Partner\PostOffice;
 
-use PhpImap\Mailbox;
-use Exception;
+use Telepanorama\Partner\PostOffice\Imap\Connection as ImapConnection;
+use Telepanorama\Partner\PostOffice\Imap\IncomingMail as ImapIncomingMail;
+use Telepanorama\Partner\PostOffice\Imap\ServerUnavailable as ImapServerUnavailable;
+use Telepanorama\Partner\PostOffice\Smtp\Connection as SmtpConnection;
 
 class Connection
 {
-    private Mailbox $mailbox;
+    private ImapConnection $imapConnection;
+    private SmtpConnection $smtpConnection;
 
     public function __construct(
-        Mailbox $mailbox
+        ImapConnection $imapConnection,
+        SmtpConnection $smtpConnection
     ) {
-        $this->mailbox = $mailbox;
+        $this->imapConnection = $imapConnection;
+        $this->smtpConnection = $smtpConnection;
     }
 
     /**
-     * @return array|int[]
-     * @throws ServerUnavailable
+     * @throws ImapServerUnavailable
      */
     public function searchMailbox(): array
     {
-        try {
-            // Get all emails (messages)
-            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            return $this->mailbox->searchMailbox('ALL');
-        } catch(Exception $exception) {
-            throw new ServerUnavailable('IMAP connection failed', 0 , $exception);
-        }
+        return $this->imapConnection->searchMailbox();
     }
 
-    public function getMail(int $mailId): IncomingMail
+    public function getMail(int $mailId): ImapIncomingMail
     {
-        return new IncomingMail(
-            $this->mailbox->getMail($mailId)
-        );
+        return $this->imapConnection->getMail($mailId);
     }
 
     public function deleteMail(int $mailId): void
     {
-        $this->mailbox->deleteMail($mailId);
-        $this->mailbox->expungeDeletedMails();
+        $this->imapConnection->deleteMail($mailId);
     }
 }

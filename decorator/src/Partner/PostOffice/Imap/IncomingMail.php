@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Telepanorama\Partner\PostOffice;
+namespace Telepanorama\Partner\PostOffice\Imap;
 
 use PhpImap\IncomingMail as Mail;
 

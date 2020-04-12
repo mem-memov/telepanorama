@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Telepanorama\Partner\PostOffice;
+namespace Telepanorama\Partner\PostOffice\Imap;
 
-use Exception;
-
-class ServerUnavailable extends Exception
+class ServerUnavailable extends Problem
 {
 
 }

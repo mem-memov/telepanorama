@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Telepanorama\Mail;
 
 use Telepanorama\Partner\PostOffice\ServerUnavailable;
-use Telepanorama\Partner\PostOffice\ImapServer as Partner;
+use Telepanorama\Partner\PostOffice\Server as Partner;
 
 class PostOffice
 {

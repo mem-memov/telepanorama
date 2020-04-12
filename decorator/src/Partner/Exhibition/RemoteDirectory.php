@@ -10,13 +10,16 @@ class RemoteDirectory
 {
     private $ssh;
     private $sftp;
+    private Paths $paths;
 
     public function __construct(
         $ssh,
-        $sftp
+        $sftp,
+        Paths $paths
     ) {
         $this->ssh = $ssh;
         $this->sftp = $sftp;
+        $this->paths = $paths;
     }
 
     /**
@@ -24,10 +27,12 @@ class RemoteDirectory
      */
     public function delete(string $remotePath): void
     {
-        $isDeleted = @ssh2_sftp_unlink($this->sftp, $remotePath);
+        $fullRemotePath = $this->paths->createRemotePath($remotePath);
+
+        $isDeleted = @ssh2_sftp_unlink($this->sftp, $fullRemotePath);
 
         if (false === $isDeleted) {
-            throw new RemoteDeleteFailed($remotePath);
+            throw new RemoteDeleteFailed($fullRemotePath);
         }
     }
 
@@ -36,10 +41,13 @@ class RemoteDirectory
      */
     public function send(string $localPath, string $remotePath): void
     {
-        $isSent = @ssh2_scp_send($this->ssh, $localPath, $remotePath, 0644);
+        $fullRemotePath = $this->paths->createRemotePath($remotePath);
+        $fullLocalPath = $this->paths->createLocalPath($localPath);
+
+        $isSent = @ssh2_scp_send($this->ssh, $fullLocalPath, $fullRemotePath, 0644);
 
         if (false === $isSent) {
-            throw new RemoteSendFailed($localPath . ' -> ' . $remotePath);
+            throw new RemoteSendFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
     }
 
@@ -48,10 +56,13 @@ class RemoteDirectory
      */
     public function receive(string $remotePath, string $localPath): void
     {
-        $isReceived = @ssh2_scp_recv($this->ssh, $remotePath, $localPath);
+        $fullRemotePath = $this->paths->createRemotePath($remotePath);
+        $fullLocalPath = $this->paths->createLocalPath($localPath);
+
+        $isReceived = @ssh2_scp_recv($this->ssh, $fullRemotePath, $fullLocalPath);
 
         if (false === $isReceived) {
-            throw new RemoteReceiveFailed($localPath . ' -> ' . $remotePath);
+            throw new RemoteReceiveFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
     }
 }

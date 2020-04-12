@@ -23,9 +23,10 @@ class Server
 
             $sftp = ssh2_sftp($ssh);
 
+            $paths = new Paths('/tmp', '/var/www');
             $this->connection = new Connection(
-                new RemoteDirectory($ssh, $sftp),
-                new LocalDirectory()
+                new RemoteDirectory($ssh, $sftp, $paths),
+                new LocalDirectory($paths)
             );
         }
 

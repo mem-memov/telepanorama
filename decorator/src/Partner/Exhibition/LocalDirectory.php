@@ -6,24 +6,36 @@ namespace Telepanorama\Partner\Exhibition;
 
 class LocalDirectory
 {
+    private Paths $paths;
+
+    public function __construct(
+        Paths $paths
+    ) {
+        $this->paths = $paths;
+    }
+
     /**
      * @throws LocalCreateFailed
      */
     public function createFile(string $content, string $path): void
     {
-        $isCreated = @file_put_contents($path, $content);
+        $fullPath = $this->paths->createLocalPath($path);
+
+        $isCreated = @file_put_contents($fullPath, $content);
 
         if (false === $isCreated) {
-            throw new LocalCreateFailed($path);
+            throw new LocalCreateFailed($fullPath);
         }
     }
 
     public function readFile(string $path): string
     {
-        $contents = @file_get_contents($path);
+        $fullPath = $this->paths->createLocalPath($path);
+
+        $contents = @file_get_contents($fullPath);
 
         if (false === $contents) {
-            throw new LocalReadFailed($path);
+            throw new LocalReadFailed($fullPath);
         }
 
         return $contents;
@@ -34,10 +46,12 @@ class LocalDirectory
      */
     public function deleteFile(string $path): void
     {
-        $isDeleted = @unlink($path);
+        $fullPath = $this->paths->createLocalPath($path);
+
+        $isDeleted = @unlink($fullPath);
 
         if (false === $isDeleted) {
-            throw new LocalDeleteFailed($path);
+            throw new LocalDeleteFailed($fullPath);
         }
     }
 }

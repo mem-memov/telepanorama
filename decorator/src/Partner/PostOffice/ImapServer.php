@@ -6,7 +6,7 @@ namespace Telepanorama\Partner\PostOffice;
 
 use PhpImap\Mailbox;
 
-class Server
+class ImapServer
 {
     private ?Connection $connection = null;
 

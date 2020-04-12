@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Telepanorama\Partner\Exhibition;
+namespace Telepanorama\Partner\Exhibition\Remote;
 
-use Throwable;
+use Telepanorama\Partner\Exhibition\Paths;
+use Telepanorama\Partner\Exhibition\RelativePath;
 
-class RemoteDirectory
+class Directory
 {
     private $ssh;
     private $sftp;
@@ -23,7 +24,7 @@ class RemoteDirectory
     }
 
     /**
-     * @throws RemoteDeleteFailed
+     * @throws DeleteFailed
      */
     public function delete(RelativePath $remotePath): void
     {
@@ -32,12 +33,12 @@ class RemoteDirectory
         $isDeleted = @ssh2_sftp_unlink($this->sftp, $fullRemotePath);
 
         if (false === $isDeleted) {
-            throw new RemoteDeleteFailed($fullRemotePath);
+            throw new DeleteFailed($fullRemotePath);
         }
     }
 
     /**
-     * @throws RemoteSendFailed
+     * @throws SendFailed
      */
     public function send(RelativePath $localPath, RelativePath $remotePath): void
     {
@@ -47,18 +48,18 @@ class RemoteDirectory
         $isDirectoryCreated = @ssh2_sftp_mkdir($this->sftp, dirname($fullRemotePath), 0777, true);
 
         if (false === $isDirectoryCreated) {
-            throw new RemoteDirectoryCreateFailed($fullRemotePath);
+            throw new DirectoryCreateFailed($fullRemotePath);
         }
 
         $isSent = @ssh2_scp_send($this->ssh, $fullLocalPath, $fullRemotePath, 0644);
 
         if (false === $isSent) {
-            throw new RemoteSendFailed($fullLocalPath . ' -> ' . $fullRemotePath);
+            throw new SendFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
     }
 
     /**
-     * @throws RemoteReceiveFailed
+     * @throws ReceiveFailed
      */
     public function receive(RelativePath $remotePath, RelativePath $localPath): void
     {
@@ -68,7 +69,7 @@ class RemoteDirectory
         $isReceived = @ssh2_scp_recv($this->ssh, $fullRemotePath, $fullLocalPath);
 
         if (false === $isReceived) {
-            throw new RemoteReceiveFailed($fullLocalPath . ' -> ' . $fullRemotePath);
+            throw new ReceiveFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
     }
 }

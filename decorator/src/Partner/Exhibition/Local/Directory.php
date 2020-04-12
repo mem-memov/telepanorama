@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Telepanorama\Partner\Exhibition;
+namespace Telepanorama\Partner\Exhibition\Local;
 
-class LocalDirectory
+use Telepanorama\Partner\Exhibition\Paths;
+use Telepanorama\Partner\Exhibition\RelativePath;
+
+class Directory
 {
     private Paths $paths;
 
@@ -15,7 +18,7 @@ class LocalDirectory
     }
 
     /**
-     * @throws LocalCreateFailed
+     * @throws CreateFailed
      */
     public function createFile(string $content, RelativePath $path): void
     {
@@ -24,12 +27,12 @@ class LocalDirectory
         $isCreated = @file_put_contents($fullPath, $content);
 
         if (false === $isCreated) {
-            throw new LocalCreateFailed($fullPath);
+            throw new CreateFailed($fullPath);
         }
     }
 
     /**
-     * @throws LocalReadFailed
+     * @throws ReadFailed
      */
     public function readFile(RelativePath $path): string
     {
@@ -38,14 +41,14 @@ class LocalDirectory
         $contents = @file_get_contents($fullPath);
 
         if (false === $contents) {
-            throw new LocalReadFailed($fullPath);
+            throw new ReadFailed($fullPath);
         }
 
         return $contents;
     }
 
     /**
-     * @throws LocalDeleteFailed
+     * @throws DeleteFailed
      */
     public function deleteFile(RelativePath $path): void
     {
@@ -54,7 +57,7 @@ class LocalDirectory
         $isDeleted = @unlink($fullPath);
 
         if (false === $isDeleted) {
-            throw new LocalDeleteFailed($fullPath);
+            throw new DeleteFailed($fullPath);
         }
     }
 }

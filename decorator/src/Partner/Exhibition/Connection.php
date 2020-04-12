@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Telepanorama\Partner\Exhibition;
 
+use Telepanorama\Partner\Exhibition\Local\Directory as LocalDirectory;
+use Telepanorama\Partner\Exhibition\Remote\Directory as RemoteDirectory;
+
 class Connection
 {
     private RemoteDirectory $remoteDirectory;

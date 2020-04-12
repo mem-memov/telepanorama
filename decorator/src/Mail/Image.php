@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Telepanorama\Mail;
 
 use Telepanorama\Partner\Exhibition\Connection as Exhibition;
+use Telepanorama\Partner\Exhibition\RelativePath;
 
 class Image
 {
@@ -22,10 +23,11 @@ class Image
     public function getPublished(): void
     {
         if (null !== $this->path) {
-            $remotePath = '/var/www/textures/2.jpg';
+            $remotePath = new RelativePath('/var/www/textures/2.jpg');
+            $localPath = new RelativePath($this->path);
             $this->exhibition->deleteOnRemoteServer($remotePath);
-            $this->exhibition->sendToRemoteServer($this->path, $remotePath);
-            $this->exhibition->deleteOnLocalServer($this->path);
+            $this->exhibition->sendToRemoteServer($localPath, $remotePath);
+            $this->exhibition->deleteOnLocalServer($localPath);
 
             $this->path = null;
         }

@@ -17,9 +17,9 @@ class LocalDirectory
     /**
      * @throws LocalCreateFailed
      */
-    public function createFile(string $content, string $path): void
+    public function createFile(string $content, RelativePath $path): void
     {
-        $fullPath = $this->paths->createLocalPath($path);
+        $fullPath = $this->paths->createLocalPath($path->getPath());
 
         $isCreated = @file_put_contents($fullPath, $content);
 
@@ -28,9 +28,12 @@ class LocalDirectory
         }
     }
 
-    public function readFile(string $path): string
+    /**
+     * @throws LocalReadFailed
+     */
+    public function readFile(RelativePath $path): string
     {
-        $fullPath = $this->paths->createLocalPath($path);
+        $fullPath = $this->paths->createLocalPath($path->getPath());
 
         $contents = @file_get_contents($fullPath);
 
@@ -44,9 +47,9 @@ class LocalDirectory
     /**
      * @throws LocalDeleteFailed
      */
-    public function deleteFile(string $path): void
+    public function deleteFile(RelativePath $path): void
     {
-        $fullPath = $this->paths->createLocalPath($path);
+        $fullPath = $this->paths->createLocalPath($path->getPath());
 
         $isDeleted = @unlink($fullPath);
 

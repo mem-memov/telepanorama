@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Showcase;
 
+use Telepanorama\Partner\Exhibition\RelativePath;
 use Telepanorama\Partner\Exhibition\Server as Partner;
 use Telepanorama\Partner\Exhibition\ServerUnavailable;
 
@@ -27,8 +28,8 @@ class Exhibition
     {
         $description = json_encode($showcase->getDescription());
 
-        $localFile = $showcase->getInventoryNumber() . '_showcase.json';
-        $remoteFile = 'case/' . $showcase->getInventoryNumber() . '/showcase.json';
+        $localFile = new RelativePath($showcase->getInventoryNumber() . '_showcase.json');
+        $remoteFile = new RelativePath('case/' . $showcase->getInventoryNumber() . '/showcase.json');
 
         $exhibitor = $this->partner->connect();
         $exhibitor->createOnLocalServer($description, $localFile);
@@ -41,8 +42,8 @@ class Exhibition
      */
     public function findShowcase(string $inventoryNumber): Showcase
     {
-        $localFile = $inventoryNumber . '_showcase.json';
-        $remoteFile = 'case/' . $inventoryNumber . '/showcase.json';
+        $localFile = new RelativePath($inventoryNumber . '_showcase.json');
+        $remoteFile = new RelativePath('case/' . $inventoryNumber . '/showcase.json');
 
         $exhibitor = $this->partner->connect();
         $exhibitor->receiveFromRemoteServer($remoteFile, $localFile);
@@ -70,8 +71,8 @@ class Exhibition
     {
         $description = json_encode($showcase->getDescription());
 
-        $localFile = $showcase->getInventoryNumber() . '_showcase.json';
-        $remoteFile = 'case/' . $showcase->getInventoryNumber() . '/showcase.json';
+        $localFile = new RelativePath($showcase->getInventoryNumber() . '_showcase.json');
+        $remoteFile = new RelativePath('case/' . $showcase->getInventoryNumber() . '/showcase.json');
 
         $exhibitor = $this->partner->connect();
         $exhibitor->createOnLocalServer($description, $localFile);

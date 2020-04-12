@@ -17,32 +17,32 @@ class Connection
         $this->localDirectory = $localDirectory;
     }
 
-    public function deleteOnRemoteServer(string $remotePath): void
+    public function deleteOnRemoteServer(RelativePath $remotePath): void
     {
         $this->remoteDirectory->delete($remotePath);
     }
 
-    public function sendToRemoteServer(string $localPath, string $remotePath): void
+    public function sendToRemoteServer(RelativePath $localPath, RelativePath $remotePath): void
     {
         $this->remoteDirectory->send($localPath, $remotePath);
     }
 
-    public function receiveFromRemoteServer(string $remotePath, string $localPath): void
+    public function receiveFromRemoteServer(RelativePath $remotePath, RelativePath $localPath): void
     {
         $this->remoteDirectory->receive($remotePath, $localPath);
     }
 
-    public function createOnLocalServer(string $content, string $localPath): void
+    public function createOnLocalServer(string $content, RelativePath $localPath): void
     {
-        $this->localDirectory->createFile($localPath, $content);
+        $this->localDirectory->createFile($content, $localPath);
     }
 
-    public function readOnLocalServer(string $localPath): string
+    public function readOnLocalServer(RelativePath $localPath): string
     {
         return $this->localDirectory->readFile($localPath);
     }
 
-    public function deleteOnLocalServer(string $localPath): void
+    public function deleteOnLocalServer(RelativePath $localPath): void
     {
         $this->localDirectory->deleteFile($localPath);
     }

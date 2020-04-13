@@ -45,6 +45,11 @@ class Connection
         return $this->localDirectory->readFile($localPath);
     }
 
+    public function moveOnLocalServer(string $absolutePath, RelativePath $localPath): void
+    {
+        $this->localDirectory->moveFile($absolutePath, $localPath);
+    }
+
     public function deleteOnLocalServer(RelativePath $localPath): void
     {
         $this->localDirectory->deleteFile($localPath);

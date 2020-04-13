@@ -13,7 +13,7 @@ class Connection
     /**
      * @throws SendFailed
      */
-    public function sendMessage(string $receiverAddress, string $subject): void
+    public function sendMessage(string $receiverAddress, string $subject, string $message = ''): void
     {
         //Create a new PHPMailer instance
         $mail = new PHPMailer;
@@ -52,7 +52,7 @@ class Connection
             $mail->setFrom('telepanorama.org@gmail.com', 'Telepanorama Organization');
             $mail->addAddress($receiverAddress);
             $mail->Subject = $subject;
-            $mail->msgHTML('New order has been created');
+            $mail->msgHTML($message);
             $isSent = $mail->send();
         } catch (Exception $exception) {
             throw new SendFailed('Mailer Error: '. $exception->getMessage());

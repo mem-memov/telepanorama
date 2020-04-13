@@ -28,16 +28,22 @@ class Departments implements MailDepartments
 
     public function handlePackage(Package $package): void
     {
-        if ($package->hasSubject('order')) {
+        if ($package->hasSubjectCaseInsensitive('order')) {
             $inventoryNumber = $this->accountant->provideNextInventoryNumber();
             $this->decorator->setUpEmptyShowcase($inventoryNumber);
-            $this->postman->sendReplyToPackage($package, $inventoryNumber);
+            $this->postman->sendReplyToPackage($package, 'order(' . $inventoryNumber . ')', 'New order has been created');
             return;
         }
 
-        $inventoryNumber = $package->getSubject();
+        $pattern = '/^.*order\((.+)\).*$/';
+        $countOrders = preg_match($pattern, $package->getSubject());
+        if (1 !== $countOrders) {
+            return;
+        }
+        $inventoryNumber = preg_replace($pattern, '$1', $package->getSubject());
         if ($package->hasAttachment() && $this->decorator->recallShowcase($inventoryNumber)) {
             $this->decorator->addShowpieceToShowcase($inventoryNumber, $package->getAttachmentPath());
+            $this->postman->sendReplyToPackage($package, 'image', 'http://telepanorama.org/image/' . $inventoryNumber . '/' . basename($package->getAttachmentPath()));
             return;
         }
     }

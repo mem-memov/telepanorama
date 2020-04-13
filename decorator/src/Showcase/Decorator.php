@@ -45,7 +45,9 @@ class Decorator
     {
         $showcase = $this->exhibition->findShowcase($inventoryNumber);
 
-        $showPiece = new Showpiece();
+        $this->exhibition->takeShowpiece($inventoryNumber, $panoramaPath);
+
+        $showPiece = new Showpiece($panoramaPath);
 
         $showcase->addShowpiece($showPiece);
 

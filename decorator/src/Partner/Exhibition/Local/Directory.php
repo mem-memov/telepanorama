@@ -48,6 +48,20 @@ class Directory
     }
 
     /**
+     * @throws MoveFailed
+     */
+    public function moveFile(string $absoluteOriginPath, RelativePath $destinationPath): void
+    {
+        $fullPath = $this->paths->createLocalPath($destinationPath->getPath());
+
+        $isMoved = rename($absoluteOriginPath, $fullPath);
+
+        if (false === $isMoved) {
+            throw new MoveFailed($absoluteOriginPath . ' -> ' . $fullPath);
+        }
+    }
+
+    /**
      * @throws DeleteFailed
      */
     public function deleteFile(RelativePath $path): void

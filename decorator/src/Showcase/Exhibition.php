@@ -80,4 +80,16 @@ class Exhibition
         $exhibitor->sendToRemoteServer($localFile, $remoteFile);
         $exhibitor->deleteOnLocalServer($localFile);
     }
+
+    public function takeShowpiece(string $inventoryNumber, string $localPanoramaAbsolutePath): void
+    {
+        $exhibitor = $this->partner->connect();
+
+        $panoramaFile = basename($localPanoramaAbsolutePath);
+        $localPanorama = new RelativePath($panoramaFile);
+        $remotePanorama = new RelativePath('image/' . $inventoryNumber . '/' . $panoramaFile);;
+
+        $exhibitor->moveOnLocalServer($localPanoramaAbsolutePath, $localPanorama);
+        $exhibitor->sendToRemoteServer($localPanorama, $remotePanorama);
+    }
 }

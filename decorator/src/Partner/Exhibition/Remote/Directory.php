@@ -45,10 +45,16 @@ class Directory
         $fullRemotePath = $this->paths->createRemotePath($remotePath->getPath());
         $fullLocalPath = $this->paths->createLocalPath($localPath->getPath());
 
-        $isDirectoryCreated = @ssh2_sftp_mkdir($this->sftp, dirname($fullRemotePath), 0777, true);
+        $remoteDirectory = dirname($fullRemotePath);
 
-        if (false === $isDirectoryCreated) {
-            throw new DirectoryCreateFailed($fullRemotePath);
+        $isDirectoryPresent = @ssh2_sftp_stat($this->sftp, $remoteDirectory);
+
+        if (false === $isDirectoryPresent) {
+            $isDirectoryCreated = @ssh2_sftp_mkdir($this->sftp, $remoteDirectory, 0777, true);
+
+            if (false === $isDirectoryCreated) {
+                throw new DirectoryCreateFailed($remoteDirectory);
+            }
         }
 
         $isSent = @ssh2_scp_send($this->ssh, $fullLocalPath, $fullRemotePath, 0644);

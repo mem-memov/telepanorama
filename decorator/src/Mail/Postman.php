@@ -34,8 +34,8 @@ class Postman
         $this->postOffice->destroyPackage($package);
     }
 
-    public function sendReplyToPackage(Package $package, string $subject): void
+    public function sendReplyToPackage(Package $package, string $subject, string $message = ''): void
     {
-        $this->postOffice->sendMessage($package->getSenderAddress(), $subject);
+        $this->postOffice->sendMessage($package->getSenderAddress(), $subject, $message);
     }
 }

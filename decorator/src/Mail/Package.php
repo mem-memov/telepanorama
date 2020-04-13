@@ -33,9 +33,9 @@ class Package
         return $this->senderAddress;
     }
 
-    public function hasSubject(string $subject): bool
+    public function hasSubjectCaseInsensitive(string $subject): bool
     {
-        return $subject === $this->subject;
+        return strtolower($subject) === strtolower($this->subject);
     }
 
     public function getSubject(): string

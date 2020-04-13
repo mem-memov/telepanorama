@@ -49,10 +49,10 @@ class PostOffice
         $mailbox->deleteMail($package->getMailId());
     }
 
-    public function sendMessage(string $receiverAddress, string $subject): void
+    public function sendMessage(string $receiverAddress, string $subject, string $message = ''): void
     {
         $mailbox = $this->partner->connect();
 
-        $mailbox->sendMessage($receiverAddress, $subject);
+        $mailbox->sendMessage($receiverAddress, $subject, $message);
     }
 }

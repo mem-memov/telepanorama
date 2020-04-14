@@ -8,14 +8,20 @@
     docker build --file="./deployment/telepanorama/decorator/nginx/Dockerfile" --tag="decorator-nginx-image:0.0.1" "./deployment/empty"
     docker build --file="./deployment/telepanorama/decorator/cron/Dockerfile" --tag="decorator-cron-image:0.0.1" "./deployment/empty"
     docker build --file="./deployment/telepanorama/showcase/nginx/Dockerfile" --tag="showcase-nginx-image:0.0.1" "./showcase"
+    
     docker swarm init
     docker stack deploy --compose-file="docker-compose.yml" telepanorama-stack
     docker stack ls
     docker stack services telepanorama-stack
     docker stack rm telepanorama-stack
+    
     docker exec -ti $(docker ps -q --filter NAME=showcase-nginx) bash
     docker exec -ti $(docker ps -q --filter NAME=decorator-php) bash
     docker exec -ti $(docker ps -q --filter NAME=decorator-cron) bash
+    
+    docker service logs telepanorama-stack_decorator-cron
+    docker service logs telepanorama-stack_decorator-nginx
+    docker service logs telepanorama-stack_decorator-php
     
 ### Запуск тестов
 

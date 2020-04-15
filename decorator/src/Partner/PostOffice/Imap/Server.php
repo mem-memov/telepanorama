@@ -5,12 +5,20 @@ declare(strict_types=1);
 namespace Telepanorama\Partner\PostOffice\Imap;
 
 use PhpImap\Mailbox;
+use Telepanorama\Site\Reporter;
 
 class Server
 {
-    private ?Connection $connection = null;
+    private Reporter $reporter;
+    private ?ReportingConnection $connection = null;
 
-    public function connect(): Connection
+    public function __construct(
+        Reporter $reporter
+    ) {
+        $this->reporter = $reporter;
+    }
+
+    public function connect(): ReportingConnection
     {
         if (null === $this->connection) {
             $mailbox = new Mailbox(
@@ -20,7 +28,10 @@ class Server
                 '/tmp', // Directory, where attachments will be saved (optional)
                 'UTF-8' // Server encoding (optional)
             );
-            $this->connection = new Connection($mailbox);
+            $this->connection = new ReportingConnection(
+                new Connection($mailbox),
+                $this->reporter
+            );
         }
 
         return $this->connection;

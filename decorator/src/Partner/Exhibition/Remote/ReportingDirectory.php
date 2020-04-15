@@ -27,8 +27,8 @@ class ReportingDirectory
     {
         try {
             $this->directory->delete($remotePath);
-        } catch (DeleteSucceeded $deleteSucceeded) {
-            $this->reporter->witness($deleteSucceeded);
+        } catch (DeleteSucceeded $event) {
+            $this->reporter->witness($event);
         }
     }
 
@@ -40,8 +40,8 @@ class ReportingDirectory
     {
         try {
             $this->directory->send($localPath, $remotePath);
-        } catch (SendSucceeded $sendSucceeded) {
-            $this->reporter->witness($sendSucceeded);
+        } catch (SendSucceeded $event) {
+            $this->reporter->witness($event);
         }
     }
 
@@ -52,8 +52,8 @@ class ReportingDirectory
     {
         try {
             $this->directory->receive($remotePath, $localPath);
-        } catch (ReceiveSucceeded $receiveSucceeded) {
-            $this->reporter->witness($receiveSucceeded);
+        } catch (ReceiveSucceeded $event) {
+            $this->reporter->witness($event);
         }
     }
 }

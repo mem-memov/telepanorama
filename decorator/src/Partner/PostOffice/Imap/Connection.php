@@ -18,30 +18,42 @@ class Connection
     }
 
     /**
-     * @return array|int[]
+     * @throws SearchMailboxSucceeded
      * @throws ServerUnavailable
      */
-    public function searchMailbox(): array
+    public function searchMailbox(): void
     {
         try {
             // Get all emails (messages)
             // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            return $this->mailbox->searchMailbox('ALL');
+            $mailIds = $this->mailbox->searchMailbox('ALL');
         } catch(Exception $exception) {
             throw new ServerUnavailable('IMAP connection failed', 0 , $exception);
         }
+
+        throw new SearchMailboxSucceeded($mailIds);
     }
 
+    /**
+     * @throws GetMailSucceeded
+     */
     public function getMail(int $mailId): IncomingMail
     {
-        return new IncomingMail(
+        $incomingMail = new IncomingMail(
             $this->mailbox->getMail($mailId)
         );
+
+        throw new GetMailSucceeded($incomingMail);
     }
 
+    /**
+     * @throws DeleteMailSucceeded
+     */
     public function deleteMail(int $mailId): void
     {
         $this->mailbox->deleteMail($mailId);
         $this->mailbox->expungeDeletedMails();
+
+        throw new DeleteMailSucceeded($mailId);
     }
 }

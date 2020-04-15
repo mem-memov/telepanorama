@@ -15,6 +15,12 @@ class Reporter
 
     public function write(): string
     {
-        return json_encode($this->events);
+        $data = array_map(
+            function (Event $event) {
+                return $event->toArray();
+            },
+            $this->events
+        );
+        return json_encode($data);
     }
 }

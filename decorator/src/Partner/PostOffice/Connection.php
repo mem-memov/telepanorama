@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Partner\PostOffice;
 
-use Telepanorama\Partner\PostOffice\Imap\Connection as ImapConnection;
+use Telepanorama\Partner\PostOffice\Imap\ReportingConnection as ImapConnection;
 use Telepanorama\Partner\PostOffice\Imap\IncomingMail as ImapIncomingMail;
 use Telepanorama\Partner\PostOffice\Imap\ServerUnavailable as ImapServerUnavailable;
 use Telepanorama\Partner\PostOffice\Smtp\Connection as SmtpConnection;

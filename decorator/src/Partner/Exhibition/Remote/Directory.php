@@ -25,6 +25,7 @@ class Directory
 
     /**
      * @throws DeleteFailed
+     * @throws DeleteSucceeded
      */
     public function delete(RelativePath $remotePath): void
     {
@@ -35,10 +36,14 @@ class Directory
         if (false === $isDeleted) {
             throw new DeleteFailed($fullRemotePath);
         }
+
+        throw new DeleteSucceeded($remotePath);
     }
 
     /**
+     * @throws DirectoryCreateFailed
      * @throws SendFailed
+     * @throws SendSucceeded
      */
     public function send(RelativePath $localPath, RelativePath $remotePath): void
     {
@@ -62,10 +67,13 @@ class Directory
         if (false === $isSent) {
             throw new SendFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
+
+        throw new SendSucceeded($localPath, $remotePath);
     }
 
     /**
      * @throws ReceiveFailed
+     * @throws ReceiveSucceeded
      */
     public function receive(RelativePath $remotePath, RelativePath $localPath): void
     {
@@ -77,5 +85,7 @@ class Directory
         if (false === $isReceived) {
             throw new ReceiveFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
+
+        throw new ReceiveSucceeded($remotePath, $localPath);
     }
 }

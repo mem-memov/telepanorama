@@ -2,9 +2,11 @@ version: 1.4
 
 jobs:
     ProcessDecoratorMail:
+        time: '1,30 * * * * *'
         cmd: wget -O - decorator-nginx
         notifyOnSuccess:
             - type: stdout
               data:
                 - stdout
+
 

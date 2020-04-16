@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Telepanorama\Site;
 
+use DateTimeImmutable;
 use Exception;
 
 abstract class Event extends Exception
@@ -12,6 +13,12 @@ abstract class Event extends Exception
 
     public function toArray(): array
     {
-        return $this->data;
+        return [
+            'meta' => [
+                'class' => get_class($this),
+                'time' => (new DateTimeImmutable())->format(DATE_ATOM)
+            ],
+            'data' => $this->data
+        ];
     }
 }

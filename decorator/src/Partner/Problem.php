@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Telepanorama\Partner;
 
-use Exception;
+use Telepanorama\Site\Problem as SiteProblem;
 
-class Problem extends Exception
+class Problem extends SiteProblem
 {
 
 }

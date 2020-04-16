@@ -15,10 +15,8 @@ class GetMailSucceeded extends Event
     ) {
         $this->incomingMail = $incomingMail;
 
-        $this->data['incomingMail'] = [
-            'subject' => $incomingMail->getSubject(),
-            'senderAddress' => $incomingMail->getSenderAddress()
-        ];
+        $this->data['subject'] = $incomingMail->getSubject();
+        $this->data['senderAddress'] = $incomingMail->getSenderAddress();
     }
 
     public function getIncomingMail(): IncomingMail

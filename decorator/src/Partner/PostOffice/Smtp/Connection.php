@@ -12,6 +12,7 @@ class Connection
 {
     /**
      * @throws SendFailed
+     * @throws SendSucceeded
      */
     public function sendMessage(string $receiverAddress, string $subject, string $message = ''): void
     {
@@ -61,5 +62,7 @@ class Connection
         if (false === $isSent) {
             throw new SendFailed('Mailer Error: '. $mail->ErrorInfo);
         }
+
+        throw new SendSucceeded($receiverAddress, $subject, $message);
     }
 }

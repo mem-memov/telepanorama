@@ -17,7 +17,7 @@ class ReadSucceeded extends Event
     ) {
         $this->contents = $contents;
 
-        $this->data['content'] = $content;
+        $this->data['content'] = $contents;
         $this->data['path'] = $path->getPath();
     }
 

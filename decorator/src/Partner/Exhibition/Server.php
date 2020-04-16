@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Telepanorama\Partner\Exhibition;
 
 use Telepanorama\Partner\Exhibition\Local\Directory as LocalDirectory;
+use Telepanorama\Partner\Exhibition\Local\ReportingDirectory as LocalReportingDirectory;
 use Telepanorama\Partner\Exhibition\Remote\Directory as RemoteDirectory;
 use Telepanorama\Partner\Exhibition\Remote\ReportingDirectory as RemoteReportingDirectory;
 use Telepanorama\Site\Reporter;
@@ -41,7 +42,10 @@ class Server
                     new RemoteDirectory($ssh, $sftp, $paths),
                     $this->reporter
                 ),
-                new LocalDirectory($paths)
+                new LocalReportingDirectory(
+                    new LocalDirectory($paths),
+                    $this->reporter
+                )
             );
         }
 

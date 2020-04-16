@@ -19,6 +19,7 @@ class Directory
 
     /**
      * @throws CreateFailed
+     * @throws CreateSucceeded
      */
     public function createFile(string $content, RelativePath $path): void
     {
@@ -29,12 +30,15 @@ class Directory
         if (false === $isCreated) {
             throw new CreateFailed($fullPath);
         }
+
+        throw new CreateSucceeded($content, $path);
     }
 
     /**
      * @throws ReadFailed
+     * @throws ReadSucceeded
      */
-    public function readFile(RelativePath $path): string
+    public function readFile(RelativePath $path): void
     {
         $fullPath = $this->paths->createLocalPath($path->getPath());
 
@@ -44,11 +48,12 @@ class Directory
             throw new ReadFailed($fullPath);
         }
 
-        return $contents;
+        throw new ReadSucceeded($path, $contents);
     }
 
     /**
      * @throws MoveFailed
+     * @throws MoveSucceeded
      */
     public function moveFile(string $absoluteOriginPath, RelativePath $destinationPath): void
     {
@@ -59,10 +64,13 @@ class Directory
         if (false === $isMoved) {
             throw new MoveFailed($absoluteOriginPath . ' -> ' . $fullPath);
         }
+
+        throw new MoveSucceeded($absoluteOriginPath, $destinationPath);
     }
 
     /**
      * @throws DeleteFailed
+     * @throws DeleteSucceeded
      */
     public function deleteFile(RelativePath $path): void
     {
@@ -73,5 +81,7 @@ class Directory
         if (false === $isDeleted) {
             throw new DeleteFailed($fullPath);
         }
+
+        throw new DeleteSucceeded($path);
     }
 }

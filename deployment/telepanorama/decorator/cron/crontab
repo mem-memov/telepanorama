@@ -1,3 +1,0 @@
-
-* * * * * root /usr/bin/wget -O /var/log/decorator.log decorator-nginx
-

@@ -1,0 +1,10 @@
+version: 1.4
+
+jobs:
+    ProcessDecoratorMail:
+        cmd: wget -O - decorator-nginx
+        notifyOnSuccess:
+            - type: stdout
+              data:
+                - stdout
+

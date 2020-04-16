@@ -4,11 +4,8 @@ services:
     image: telepanorama-nginx-image:0.0.1
     networks:
       - telepanorama-network
-  decorator-cron:
-    image: decorator-cron-image:0.0.1
-    configs:
-      - source: decorator-cron-crontab-config
-        target: /etc/crontab
+  decorator-jobber:
+    image: decorator-jobber-image:0.0.1
     networks:
       - telepanorama-network
   decorator-nginx:
@@ -61,5 +58,3 @@ configs:
     file: ./deployment/telepanorama/decorator/nginx/nginx.conf
   decorator-nginx-default-conf:
     file: ./deployment/telepanorama/decorator/nginx/default.conf
-  decorator-cron-crontab-config:
-    file: ./deployment/telepanorama/decorator/cron/crontab

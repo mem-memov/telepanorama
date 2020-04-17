@@ -14,6 +14,11 @@ class Showpiece implements WithDescription
         $this->file = $file;
     }
 
+    public function isEqual(self $showpiece): bool
+    {
+        return $this->file === $showpiece->file;
+    }
+
     public function getDescription(): array
     {
         return [

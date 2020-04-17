@@ -46,8 +46,8 @@ class Departments implements MailDepartments
         }
         $inventoryNumber = preg_replace($pattern, '$1', $package->getSubject());
         if ($package->hasAttachment() && $this->decorator->recallShowcase($inventoryNumber)) {
-            $this->decorator->addShowpieceToShowcase($inventoryNumber, $package->getAttachmentPath());
-            $this->postman->sendReplyToPackage($package, 'image', 'http://telepanorama.org/image/' . $inventoryNumber . '/' . basename($package->getAttachmentPath()));
+            $showpieceInShowcase = $this->decorator->addShowpieceToShowcase($inventoryNumber, $package->getAttachmentPath());
+            $this->postman->sendReplyToPackage($package, 'image', $showpieceInShowcase->getUrl());
             return;
         }
     }

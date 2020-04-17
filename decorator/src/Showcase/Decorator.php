@@ -41,12 +41,14 @@ class Decorator
     /**
      * @throws ServerUnavailable
      */
-    public function addShowpieceToShowcase(string $inventoryNumber, string $panoramaPath): void
+    public function addShowpieceToShowcase(string $inventoryNumber, string $panoramaPath): ShowpieceInShowcase
     {
         $showPiece = $this->exhibition->takeShowpiece($inventoryNumber, $panoramaPath);
 
         $showcase = $this->exhibition->findShowcase($inventoryNumber);
-        $showcase->addShowpiece($showPiece);
+        $showpieceInShowcase = $showcase->addShowpiece($showPiece);
         $this->exhibition->replaceShowcase($showcase);
+
+        return $showpieceInShowcase;
     }
 }

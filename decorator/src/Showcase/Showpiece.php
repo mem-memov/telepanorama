@@ -25,4 +25,9 @@ class Showpiece implements WithDescription
             'file' => $this->file
         ];
     }
+
+    public function getUrl(string $inventoryNumber): string
+    {
+        return 'http://telepanorama.org/image/' . $inventoryNumber . '/' . $this->file;
+    }
 }

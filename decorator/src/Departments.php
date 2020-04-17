@@ -9,6 +9,7 @@ use Telepanorama\Mail\Package;
 use Telepanorama\Mail\Postman;
 use Telepanorama\Showcase\Decorator;
 use Telepanorama\Order\Accountant;
+use Telepanorama\Partner\Exhibition\ServerUnavailable;
 
 class Departments implements MailDepartments
 {
@@ -26,6 +27,9 @@ class Departments implements MailDepartments
         $this->postman = $postman;
     }
 
+    /**
+     * @throws ServerUnavailable
+     */
     public function handlePackage(Package $package): void
     {
         if ($package->hasSubjectCaseInsensitive('order')) {

@@ -1,3 +1,4 @@
 .idea
 decorator/vendor
-decorator/coverage
+decorator/coverage/*
+!decorator/coverage

@@ -16,12 +16,13 @@
     docker stack rm telepanorama-stack
     
     docker exec -ti $(docker ps -q --filter NAME=showcase-nginx) bash
+    docker exec -ti $(docker ps -q --filter NAME=decorator-nginx) bash
     docker exec -ti $(docker ps -q --filter NAME=decorator-php) bash
     docker exec -ti $(docker ps -q --filter NAME=decorator-jobber) sh
     
-    docker service logs telepanorama-stack_decorator-jobber
-    docker service logs telepanorama-stack_decorator-nginx
-    docker service logs telepanorama-stack_decorator-php
+    docker service logs -f telepanorama-stack_decorator-jobber
+    docker service logs -f telepanorama-stack_decorator-nginx
+    docker service logs -f telepanorama-stack_decorator-php
     
 ### Запуск тестов
 

@@ -24,7 +24,7 @@ services:
     environment:
       SITE_MODE: dev
     volumes:
-      - ./decorator/coverage:/var/www/html/coverage # для разработки
+      - ./decorator/coverage:/var/www/html/coverage
     ports:
       - 2201:22
     networks:

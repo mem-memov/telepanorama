@@ -7,6 +7,7 @@ namespace Telepanorama\Showcase;
 use Telepanorama\Partner\Exhibition\RelativePath;
 use Telepanorama\Partner\Exhibition\Server as Partner;
 use Telepanorama\Partner\Exhibition\ServerUnavailable;
+use SplFileInfo;
 
 class Exhibition
 {
@@ -81,15 +82,20 @@ class Exhibition
         $exhibitor->deleteOnLocalServer($localFile);
     }
 
-    public function takeShowpiece(string $inventoryNumber, string $localPanoramaAbsolutePath): void
+    public function takeShowpiece(string $inventoryNumber, string $localPanoramaAbsolutePath): Showpiece
     {
         $exhibitor = $this->partner->connect();
 
-        $panoramaFile = basename($localPanoramaAbsolutePath);
-        $localPanorama = new RelativePath($panoramaFile);
-        $remotePanorama = new RelativePath('image/' . $inventoryNumber . '/' . $panoramaFile);;
+        $localInfo = new SplFileInfo($localPanoramaAbsolutePath);
+        $localMd5 = md5_file($localPanoramaAbsolutePath);
+        $panoramaFile = $localMd5 . '.' . $localInfo->getExtension();
 
+        $localPanorama = new RelativePath($panoramaFile);
         $exhibitor->moveOnLocalServer($localPanoramaAbsolutePath, $localPanorama);
+
+        $remotePanorama = new RelativePath('image/' . $inventoryNumber . '/' . $panoramaFile);;
         $exhibitor->sendToRemoteServer($localPanorama, $remotePanorama);
+
+        return new Showpiece($panoramaFile);
     }
 }

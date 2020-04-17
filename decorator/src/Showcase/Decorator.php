@@ -43,14 +43,10 @@ class Decorator
      */
     public function addShowpieceToShowcase(string $inventoryNumber, string $panoramaPath): void
     {
+        $showPiece = $this->exhibition->takeShowpiece($inventoryNumber, $panoramaPath);
+
         $showcase = $this->exhibition->findShowcase($inventoryNumber);
-
-        $this->exhibition->takeShowpiece($inventoryNumber, $panoramaPath);
-
-        $showPiece = new Showpiece($panoramaPath);
-
         $showcase->addShowpiece($showPiece);
-
         $this->exhibition->replaceShowcase($showcase);
     }
 }

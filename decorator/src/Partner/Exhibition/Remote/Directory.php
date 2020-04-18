@@ -96,7 +96,7 @@ class Directory
     public function copy(RelativePath $remoteFilePath, RelativePath $remoteLinkPath): void
     {
         $fullRemoteFilePath = $this->paths->createRemotePath($remoteFilePath->getPath());
-        $fullRemoteLinkPath = $this->paths->createLocalPath($remoteLinkPath->getPath());
+        $fullRemoteLinkPath = $this->paths->createRemotePath($remoteLinkPath->getPath());
 
         $isCopied = ssh2_sftp_symlink($this->sftp, $fullRemoteFilePath, $fullRemoteLinkPath);
 

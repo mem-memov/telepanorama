@@ -13,13 +13,16 @@ class Exhibition
 {
     private InventoryRegistry $inventoryRegistry;
     private Partner $partner;
+    private ShowcaseBuilder $showcaseBuilder;
 
     public function __construct (
         InventoryRegistry $inventoryRegistry,
-        Partner $partner
+        Partner $partner,
+        ShowcaseBuilder $showcaseBuilder
     ) {
         $this->inventoryRegistry = $inventoryRegistry;
         $this->partner = $partner;
+        $this->showcaseBuilder = $showcaseBuilder;
     }
 
     /**
@@ -27,15 +30,8 @@ class Exhibition
      */
     public function createShowcase(Showcase $showcase): void
     {
-        $description = json_encode($showcase->getDescription());
-
-        $localFile = new RelativePath($showcase->getInventoryNumber() . '_showcase.json');
-        $remoteFile = new RelativePath('case/' . $showcase->getInventoryNumber() . '/showcase.json');
-
-        $exhibitor = $this->partner->connect();
-        $exhibitor->createOnLocalServer($description, $localFile);
-        $exhibitor->sendToRemoteServer($localFile, $remoteFile);
-        $exhibitor->deleteOnLocalServer($localFile);
+        $this->showcaseBuilder->makeShelves($showcase);
+        $this->showcaseBuilder->installGlass($showcase);
     }
 
     /**

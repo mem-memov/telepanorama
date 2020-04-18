@@ -6,8 +6,6 @@ namespace Telepanorama\Showcase;
 
 use Telepanorama\Partner\Exhibition\RelativePath;
 use Telepanorama\Partner\Exhibition\Server as Partner;
-use Telepanorama\Partner\Exhibition\ServerUnavailable;
-use SplFileInfo;
 
 class Exhibition
 {
@@ -26,7 +24,7 @@ class Exhibition
     }
 
     /**
-     * @throws ServerUnavailable
+     * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
      */
     public function createShowcase(Showcase $showcase): void
     {
@@ -35,7 +33,10 @@ class Exhibition
     }
 
     /**
-     * @throws ServerUnavailable
+     * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
+     * @throws \Telepanorama\Partner\Exhibition\Local\DeleteFailed
+     * @throws \Telepanorama\Partner\Exhibition\Local\ReadFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\ReceiveFailed
      */
     public function findShowcase(string $inventoryNumber): Showcase
     {
@@ -62,7 +63,12 @@ class Exhibition
     }
 
     /**
-     * @throws ServerUnavailable
+     * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
+     * @throws \Telepanorama\Partner\Exhibition\Local\CreateFailed
+     * @throws \Telepanorama\Partner\Exhibition\Local\DeleteFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\DeleteFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\DirectoryCreateFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\SendFailed
      */
     public function replaceShowcase(Showcase $showcase): void
     {
@@ -78,20 +84,24 @@ class Exhibition
         $exhibitor->deleteOnLocalServer($localFile);
     }
 
-    public function takeShowpiece(string $inventoryNumber, string $localPanoramaAbsolutePath): Showpiece
+    /**
+     * @throws \Telepanorama\Partner\Exhibition\Local\MoveFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\DirectoryCreateFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\SendFailed
+     * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
+     */
+    public function takeShowpiece(Panorama $panorama): Showpiece
     {
+        $showpiece = new Showpiece($panorama->nameFile());
+
         $exhibitor = $this->partner->connect();
 
-        $localInfo = new SplFileInfo($localPanoramaAbsolutePath);
-        $localMd5 = md5_file($localPanoramaAbsolutePath);
-        $panoramaFile = $localMd5 . '.' . $localInfo->getExtension();
+        $localPanorama = new RelativePath($showpiece->getFile());
+        $exhibitor->moveOnLocalServer($panorama->getAbsolutePath(), $localPanorama);
 
-        $localPanorama = new RelativePath($panoramaFile);
-        $exhibitor->moveOnLocalServer($localPanoramaAbsolutePath, $localPanorama);
-
-        $remotePanorama = new RelativePath('image/' . $inventoryNumber . '/' . $panoramaFile);;
+        $remotePanorama = new RelativePath('image/' . $showpiece->getFile());;
         $exhibitor->sendToRemoteServer($localPanorama, $remotePanorama);
 
-        return new Showpiece($panoramaFile);
+        return $showpiece;
     }
 }

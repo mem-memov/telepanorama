@@ -30,10 +30,8 @@ class Showcase implements WithDescription
         ];
     }
 
-    public function addShowpiece(Showpiece $showpiece): ShowpieceInShowcase
+    public function addShowpiece(Showpiece $showpiece): void
     {
         $this->showPieceCollection->add($showpiece);
-
-        return new ShowpieceInShowcase($showpiece, $this);
     }
 }

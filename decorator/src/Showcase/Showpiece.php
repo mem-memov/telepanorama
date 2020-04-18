@@ -14,9 +14,14 @@ class Showpiece implements WithDescription
         $this->file = $file;
     }
 
-    public function isEqual(self $showpiece): bool
+    public function isEqual(self $another): bool
     {
-        return $this->file === $showpiece->file;
+        return $this->file === $another->file;
+    }
+
+    public function getFile(): string
+    {
+        return $this->file;
     }
 
     public function getDescription(): array
@@ -24,10 +29,5 @@ class Showpiece implements WithDescription
         return [
             'file' => $this->file
         ];
-    }
-
-    public function getUrl(string $inventoryNumber): string
-    {
-        return 'http://telepanorama.org/image/' . $inventoryNumber . '/' . $this->file;
     }
 }

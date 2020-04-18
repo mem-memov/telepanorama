@@ -17,7 +17,7 @@
 			getUsefulContents(
 					'./showcase.json',
 					showcase => {
-						PANORAMA.init('/image/'  + showcase.showpieces[0].file);
+						PANORAMA.init('/image/'  + location.hash.substring(1));
 						PANORAMA.animate();
 					}
 			);

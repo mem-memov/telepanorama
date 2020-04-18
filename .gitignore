@@ -1,4 +1,12 @@
 .idea
+
 decorator/vendor
+
 decorator/coverage/*
 !decorator/coverage/.gitkeep
+
+showcase/case/*
+!showcase/case/.gitkeep
+
+showcase/image/*
+!showcase/image/.gitkeep

@@ -88,4 +88,22 @@ class Directory
 
         throw new ReceiveSucceeded($remotePath, $localPath);
     }
+
+    /**
+     * @throws CopyFailed
+     * @throws CopySucceeded
+     */
+    public function copy(RelativePath $remoteFilePath, RelativePath $remoteLinkPath): void
+    {
+        $fullRemoteFilePath = $this->paths->createRemotePath($remoteFilePath->getPath());
+        $fullRemoteLinkPath = $this->paths->createLocalPath($remoteLinkPath->getPath());
+
+        $isCopied = ssh2_sftp_symlink($this->sftp, $fullRemoteFilePath, $fullRemoteLinkPath);
+
+        if (false === $isCopied) {
+            throw new CopyFailed($fullRemoteFilePath . ' -> ' . $fullRemoteLinkPath);
+        }
+
+        throw new CopySucceeded($remoteFilePath, $remoteLinkPath);
+    }
 }

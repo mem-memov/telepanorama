@@ -56,4 +56,16 @@ class ReportingDirectory
             $this->reporter->witness($event);
         }
     }
+
+    /**
+     * @throws CopyFailed
+     */
+    public function copy(RelativePath $remoteFilePath, RelativePath $remoteLinkPath): void
+    {
+        try {
+            $this->directory->copy($remoteFilePath, $remoteLinkPath);
+        } catch (CopySucceeded $event) {
+            $this->reporter->witness($event);
+        }
+    }
 }

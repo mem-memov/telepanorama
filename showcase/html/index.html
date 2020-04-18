@@ -11,8 +11,16 @@
 	<body>
         <div id="canvas-container"></div>
 		<script type="module">
-            import * as THREE from './js/threejs/r116/build/three.module.js';
-            import {OrbitControls} from './js/threejs/r116/examples/jsm/controls/OrbitControls.js';
+            import * as THREE from '/js/threejs/r116/build/three.module.js';
+            import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
+			import { getUsefulContents } from './js/modules/file.js';
+
+			getUsefulContents(
+					'./showcase.json',
+					data => {
+						console.log(data);
+					}
+			);
 
 			var camera, scene, renderer, controls;
 

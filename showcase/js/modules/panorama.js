@@ -10,7 +10,7 @@ export function init(panorama) {
     container = document.getElementById( 'canvas-container' );
 
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 250, 600 );
-    camera.position.set( 0, 0, 50 );
+    camera.position.set( 0, 0, -50 );
 
 
     scene = new THREE.Scene();
@@ -32,11 +32,13 @@ export function init(panorama) {
     container.appendChild( renderer.domElement );
 
     controls = new OrbitControls( camera, renderer.domElement );
-    //controls.enablePan = false;
+    controls.enablePan = false;
+    controls.enableZoom = false;
     //controls.enableRotate = false;
     controls.update();
 
     window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'wheel', onMouseWheel, false );
 
 }
 
@@ -47,6 +49,19 @@ function onWindowResize() {
 
     renderer.setSize( window.innerWidth, window.innerHeight );
 
+}
+
+function onMouseWheel(event) {
+
+    const newFOV = camera.fov + event.deltaY;
+
+    if (newFOV < 3 || newFOV > 75) {
+        return;
+    }
+
+    camera.fov += event.deltaY;
+    camera.updateProjectionMatrix();
+    controls.update();
 }
 
 export function launchAnimation(onAnimate) {
@@ -63,11 +78,3 @@ export function launchAnimation(onAnimate) {
 
     makeAnimation(onAnimate)();
 }
-
-// export function animate(onAnimate) {
-//     requestAnimationFrame( animate );
-//     controls.update();
-//     renderer.render( scene, camera );
-//
-//     onAnimate( scene, camera );
-// }

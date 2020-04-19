@@ -37,7 +37,7 @@ services:
       - source: showcase-nginx-default-conf
         target: /etc/nginx/conf.d/default.conf
       - source: showcase-nginx-sshd-config
-        target: /etc/nginx/conf.d/default.conf
+        target: /etc/ssh/sshd_config
     volumes:
       - source: showcase-case-volume
         target: /var/www/case

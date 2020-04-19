@@ -33,14 +33,15 @@
 				let hashParams = splitUrlHash();
 
 				if (
-						cameraX !== undefined
-						&& cameraY !== undefined
-						&& cameraZ !== undefined
+						cameraX === undefined
+						&& cameraY === undefined
+						&& cameraZ === undefined
 						&& hashParams.length === 4
 				) {
 					const x = hashParams[1].substring(1);
 					const y = hashParams[2].substring(1);
 					const z = hashParams[3].substring(1);
+
 					camera.position.set(x, y, z);
 				}
 

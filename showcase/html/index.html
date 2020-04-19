@@ -14,17 +14,18 @@
             import * as PANORAMA from '/js/modules/panorama.js';
 			import { getUsefulContents } from '/js/modules/file.js';
 
+			function onAnimate( scene, camera ) {
+				console.log(camera.position.x, camera.position.y, camera.position.z);
+			}
+
 			getUsefulContents(
 					'./showcase.json',
 					showcase => {
 						PANORAMA.init('/image/'  + location.hash.substring(1));
-						PANORAMA.animate(onAnimate);
+						PANORAMA.launchAnimation(onAnimate);
 					}
 			);
 
-			function onAnimate( scene, camera ) {
-				console.log(camera.position.x, camera.position.y, camera.position.z);
-			}
 		</script>
 	</body>
 </html>

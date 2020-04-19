@@ -49,10 +49,25 @@ function onWindowResize() {
 
 }
 
-export function animate(onAnimate) {
-    requestAnimationFrame( animate );
-    controls.update();
-    renderer.render( scene, camera );
+export function launchAnimation(onAnimate) {
 
-    onAnimate( scene, camera );
+    function makeAnimation(onAnimate) {
+        return function animate () {
+            requestAnimationFrame( animate );
+            controls.update();
+            renderer.render( scene, camera );
+
+            onAnimate( scene, camera );
+        }
+    }
+
+    makeAnimation(onAnimate)();
 }
+
+// export function animate(onAnimate) {
+//     requestAnimationFrame( animate );
+//     controls.update();
+//     renderer.render( scene, camera );
+//
+//     onAnimate( scene, camera );
+// }

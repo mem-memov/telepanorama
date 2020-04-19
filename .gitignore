@@ -1,6 +1,7 @@
 .idea
 
-decorator/vendor
+decorator/vendor/*
+!decorator/vendor/.gitkeep
 
 decorator/coverage/*
 !decorator/coverage/.gitkeep

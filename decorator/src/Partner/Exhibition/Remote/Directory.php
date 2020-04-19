@@ -62,11 +62,12 @@ class Directory
             }
         }
 
-        $isSent = @ssh2_scp_send($this->ssh, $fullLocalPath, $fullRemotePath, 0644);
+        $isSent = @ssh2_scp_send($this->ssh, $fullLocalPath, $fullRemotePath, 0777);
 
         if (false === $isSent) {
             throw new SendFailed($fullLocalPath . ' -> ' . $fullRemotePath);
         }
+
 
         throw new SendSucceeded($localPath, $remotePath);
     }

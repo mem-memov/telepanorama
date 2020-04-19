@@ -49,8 +49,10 @@ function onWindowResize() {
 
 }
 
-export function animate() {
+export function animate(onAnimate) {
     requestAnimationFrame( animate );
     controls.update();
     renderer.render( scene, camera );
+
+    onAnimate( scene, camera );
 }

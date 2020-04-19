@@ -18,9 +18,13 @@
 					'./showcase.json',
 					showcase => {
 						PANORAMA.init('/image/'  + location.hash.substring(1));
-						PANORAMA.animate();
+						PANORAMA.animate(onAnimate);
 					}
 			);
+
+			function onAnimate( scene, camera ) {
+				console.log(camera.position.x, camera.position.y, camera.position.z);
+			}
 		</script>
 	</body>
 </html>

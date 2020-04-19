@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 services:
   telepanorama-nginx:
     image: telepanorama-nginx-image:0.0.1
@@ -38,11 +38,15 @@ services:
         target: /etc/nginx/conf.d/default.conf
     volumes:
       - source: showcase-case-volume
-        target: /usr/share/nginx/html/case
+        target: /var/www/case
         type: volume
+        volume:
+          nocopy: true
       - source: showcase-image-volume
-        target: /usr/share/nginx/html/image
+        target: /var/www/image
         type: volume
+        volume:
+          nocopy: true
     ports:
       - 80:80
     networks:

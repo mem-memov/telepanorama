@@ -36,6 +36,8 @@ services:
         target: /etc/nginx/nginx.conf
       - source: showcase-nginx-default-conf
         target: /etc/nginx/conf.d/default.conf
+      - source: showcase-nginx-sshd-config
+        target: /etc/nginx/conf.d/default.conf
     volumes:
       - source: showcase-case-volume
         target: /var/www/case
@@ -62,6 +64,8 @@ configs:
     file: ./deployment/telepanorama/showcase/nginx/nginx.conf
   showcase-nginx-default-conf:
     file: ./deployment/telepanorama/showcase/nginx/default.conf
+  showcase-nginx-sshd-config:
+    file: ./deployment/telepanorama/showcase/nginx/sshd_config
   decorator-nginx-nginx-conf:
     file: ./deployment/telepanorama/decorator/nginx/nginx.conf
   decorator-nginx-default-conf:

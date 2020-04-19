@@ -28,7 +28,7 @@ class Server
     {
         if (null === $this->connection) {
             $ssh = ssh2_connect('showcase-nginx', 22);
-            $isConnected = ssh2_auth_password($ssh, 'www-data', 'ssh-password');
+            $isConnected = ssh2_auth_password($ssh, 'root', 'root-password');
 
             if (!$isConnected) {
                 throw new ServerUnavailable('SSH connection failed');

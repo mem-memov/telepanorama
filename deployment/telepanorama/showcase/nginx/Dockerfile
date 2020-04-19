@@ -1,5 +1,7 @@
 FROM nginx:1.17
 
+RUN echo "root-password\nroot-password" | passwd root
+
 RUN mkdir /var/www && \
     chown -R www-data:www-data /var/www
 

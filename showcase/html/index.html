@@ -14,8 +14,32 @@
             import * as PANORAMA from '/js/modules/panorama.js';
 			import { getUsefulContents } from '/js/modules/file.js';
 
+			var cameraX, cameraY, cameraZ;
+
+			function setUrlHash(hash) {
+				if(history.pushState) {
+					history.pushState(null, null, "#" + hash);
+				}
+				else {
+					location.hash = "#" + hash;
+				}
+			}
+
 			function onAnimate( scene, camera ) {
-				console.log(camera.position.x, camera.position.y, camera.position.z);
+				if (
+						cameraX !== camera.position.x
+						|| cameraY !== camera.position.y
+						|| cameraZ !== camera.position.z
+				) {
+					cameraX = camera.position.x;
+					cameraY = camera.position.y;
+					cameraZ = camera.position.z;
+
+					let hash = 'x' + Math.floor(cameraX) + '|' + 'y' + Math.floor(cameraY) + '|' + 'z' + Math.floor(cameraZ);
+					setUrlHash(hash);
+					console.log(camera.position.x, camera.position.y, camera.position.z);
+				}
+
 			}
 
 			getUsefulContents(

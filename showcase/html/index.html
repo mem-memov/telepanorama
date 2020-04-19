@@ -25,8 +25,24 @@
 				}
 			}
 
+			function splitUrlHash() {
+				return location.hash.substring(1).split('|');
+			}
+
 			function onAnimate( scene, camera ) {
-				let hashParams = location.hash.substring(1).split('|');
+				let hashParams = splitUrlHash();
+
+				if (
+						cameraX !== undefined
+						&& cameraY !== undefined
+						&& cameraZ !== undefined
+						&& hashParams.length === 4
+				) {
+					const x = hashParams[1].substring(1);
+					const y = hashParams[2].substring(1);
+					const z = hashParams[3].substring(1);
+					camera.position.set(x, y, z);
+				}
 
 				if (
 						cameraX !== camera.position.x
@@ -43,11 +59,12 @@
 			}
 
 			getUsefulContents(
-					'./showcase.json',
-					showcase => {
-						PANORAMA.init('/image/'  + location.hash.substring(1));
-						PANORAMA.launchAnimation(onAnimate);
-					}
+				'./showcase.json',
+				showcase => {
+					let hashParams = splitUrlHash();
+					PANORAMA.init('/image/'  + hashParams[0]);
+					PANORAMA.launchAnimation(onAnimate);
+				}
 			);
 
 		</script>

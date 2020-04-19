@@ -72,7 +72,7 @@ export function launchAnimation(onAnimate) {
             controls.update();
             renderer.render( scene, camera );
 
-            onAnimate( scene, camera );
+            onAnimate( camera );
         }
     }
 

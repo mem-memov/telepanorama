@@ -9,47 +9,26 @@ var isMouseMoving = false;
 
 export function init(panorama) {
 
-    var container, mesh;
+    var container;
 
     container = document.getElementById( 'canvas-container' );
-
 
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 10, 600 );
     camera.position.set( 0, 0, -50 );
 
-
-
-
     scene = new THREE.Scene();
 
-    var backgroundSphereGeometry = new THREE.SphereBufferGeometry( 500, 30, 30 );
-    // invert the geometry on the x-axis so that all of the faces point inward
-    backgroundSphereGeometry.scale( - 1, 1, 1 );
     var texture = new THREE.TextureLoader().load( panorama );
-    var material = new THREE.MeshBasicMaterial( { map: texture } );
-    backgroundSphereMesh = new THREE.Mesh( backgroundSphereGeometry, material );
-    scene.add( backgroundSphereMesh );
-
-
-    var menuSphereGeometry = new THREE.SphereBufferGeometry( 100, 30, 30 );
-    var menuSphereMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
-    var menuSphereMesh = new THREE.Mesh( menuSphereGeometry, menuSphereMaterial );
-    scene.add( menuSphereMesh );
-    menuSphereMesh.position.set(550, 0, 0);
-    menuSphereMesh.visible = false;
-    menuSphereMeshes.push(menuSphereMesh);
-
+    creatBackground(texture, scene);
+    createMenuItem(texture, scene);
 
     var light = new THREE.PointLight( 0xffffff, 2, 1000 );
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
-
     selectionLight = new THREE.SpotLight( 0xffffff );
     selectionLight.position.set( 0, 0, 0 );
     scene.add( selectionLight );
-
-
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -68,6 +47,27 @@ export function init(panorama) {
     window.addEventListener( 'mousedown', onMouseDown, false );
     window.addEventListener( 'mouseup', onMouseUp, false );
 
+}
+
+function creatBackground(texture, scene) {
+
+    var backgroundSphereGeometry = new THREE.SphereBufferGeometry( 500, 30, 30 );
+    // invert the geometry on the x-axis so that all of the faces point inward
+    backgroundSphereGeometry.scale( - 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( { map: texture } );
+    backgroundSphereMesh = new THREE.Mesh( backgroundSphereGeometry, material );
+    scene.add( backgroundSphereMesh );
+}
+
+function createMenuItem(texture, scene) {
+
+    var menuSphereGeometry = new THREE.SphereBufferGeometry( 100, 30, 30 );
+    var menuSphereMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
+    var menuSphereMesh = new THREE.Mesh( menuSphereGeometry, menuSphereMaterial );
+    scene.add( menuSphereMesh );
+    menuSphereMesh.position.set(550, 0, 0);
+    menuSphereMesh.visible = false;
+    menuSphereMeshes.push(menuSphereMesh);
 }
 
 function onWindowResize() {

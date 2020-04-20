@@ -91,7 +91,7 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
 }
 
 function placeInCircle(index, menuSphereMesh) {
-    var radius = 400;
+    var radius = 700;
     var deltaAngle = .8;
     var x = - radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
     var z = - radius * (Math.sin(deltaAngle * index) - Math.sin(deltaAngle * (index+1)));
@@ -130,34 +130,6 @@ function onMouseClick() {
         isMenuOn = !isMenuOn;
     }
 
-
-    // var backgroundSphereMesh = backgroundSphereMeshes[selectedMenuIndex];
-    //
-    // if (backgroundSphereMesh.visible && !isMouseMoving) {
-    //     menuSphereMeshes.map(function (menuSphereMesh) {
-    //         menuSphereMesh.visible = true;
-    //     });
-    // } else {
-    //     var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
-    //
-    //     if (selectedItems.length > 0) {
-    //         var selectedItem = selectedItems[0].object;
-    //         selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
-    //             return menuSphereMesh.id === selectedItem.id;
-    //         });
-    //
-    //         backgroundSphereMeshes.map(function (backgroundSphereMesh) {
-    //             backgroundSphereMesh.visible = false;
-    //         });
-    //         backgroundSphereMeshes[selectedMenuIndex].visible = true;
-    //         backgroundSphereMeshes[selectedMenuIndex].rotation.y = - menuSphereMeshes[selectedMenuIndex].rotation.y;
-    //
-    //         menuSphereMeshes.map(function (menuSphereMesh) {
-    //             menuSphereMesh.visible = false;
-    //         });
-    //     }
-    // }
-
     isMouseMoving = false;
 }
 
@@ -181,20 +153,13 @@ export function launchAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
 
-            raycaster.setFromCamera( mouse, camera );
-
-            selectionLight.target = selectionLight;
-            var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
-            if (selectedItems.length > 0) {
-                selectionLight.target = selectedItems[0].object;
-            }
-
             menuSphereMeshes.map(function (menuSphereMesh) {
                 if (menuSphereMesh.visible) {
                     menuSphereMesh.rotation.y += 0.001;
                 }
             });
 
+            raycaster.setFromCamera( mouse, camera );
             controls.update();
             renderer.render( scene, camera );
 

@@ -123,11 +123,31 @@ function onMouseWheel(event) {
 function onMouseClick() {
 
     if (!isMouseMoving) {
-        menuSphereMeshes.map(function (menuSphereMesh) {
-            menuSphereMesh.visible = isMenuOn;
-        });
 
-        isMenuOn = !isMenuOn;
+        if (null === INTERSECTED) {
+            menuSphereMeshes.map(function (menuSphereMesh) {
+                menuSphereMesh.visible = isMenuOn;
+            });
+
+            isMenuOn = !isMenuOn;
+        } else {
+            selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
+                return menuSphereMesh.id === INTERSECTED.id;
+            });
+
+            backgroundSphereMeshes.map(function (backgroundSphereMesh) {
+                backgroundSphereMesh.visible = false;
+            });
+            backgroundSphereMeshes[selectedMenuIndex].visible = true;
+            backgroundSphereMeshes[selectedMenuIndex].rotation.y = - menuSphereMeshes[selectedMenuIndex].rotation.y;
+
+            menuSphereMeshes.map(function (menuSphereMesh) {
+                menuSphereMesh.visible = false;
+            });
+
+            isMenuOn = false;
+            INTERSECTED = null;
+        }
     }
 
     isMouseMoving = false;

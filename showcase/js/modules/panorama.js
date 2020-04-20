@@ -3,6 +3,7 @@ import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControl
 
 var camera, scene, renderer, controls;
 var backgroundSphereMesh, menuSphereMeshes = [];
+var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), intersects = [];
 
 export function init(panorama) {
 
@@ -82,10 +83,30 @@ function onMouseWheel(event) {
 
 function onMouseClick() {
 
-    backgroundSphereMesh.visible = !backgroundSphereMesh.visible;
-    menuSphereMeshes.map(function (menuSphereMesh) {
-        menuSphereMesh.visible = !backgroundSphereMesh.visible;
-    });
+    if (backgroundSphereMesh.visible) {
+        backgroundSphereMesh.visible = false;
+        menuSphereMeshes.map(function (menuSphereMesh) {
+            menuSphereMesh.visible = true;
+        });
+    } else {
+        console.log(raycaster.intersectObjects(menuSphereMeshes));
+        if (raycaster.intersectObjects(menuSphereMeshes).length > 0) {
+            backgroundSphereMesh.visible = true;
+            menuSphereMeshes.map(function (menuSphereMesh) {
+                menuSphereMesh.visible = false;
+            });
+        }
+    }
+}
+
+function onMouseMove( event ) {
+
+    // calculate mouse position in normalized device coordinates
+    // (-1 to +1) for both components
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
 }
 
 export function launchAnimation(onAnimate) {
@@ -93,6 +114,8 @@ export function launchAnimation(onAnimate) {
     function makeAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
+
+            raycaster.setFromCamera( mouse, camera );
             controls.update();
             renderer.render( scene, camera );
 

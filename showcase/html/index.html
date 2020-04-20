@@ -70,7 +70,11 @@
 				'./showcase.json',
 				showcase => {
 					let hashParams = splitUrlHash();
-					PANORAMA.init('/image/'  + hashParams[0]);
+					let selectedPanorama = '/image/' + hashParams[0];
+					let panoramas = showcase.showpieces.map(function (showpiece) {
+						return '/image/' + showpiece.file;
+					});
+					PANORAMA.init(panoramas, selectedPanorama);
 					PANORAMA.launchAnimation(onAnimate);
 				}
 			);

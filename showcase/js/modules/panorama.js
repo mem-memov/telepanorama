@@ -2,27 +2,30 @@ import * as THREE from '/js/threejs/r116/build/three.module.js';
 import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
 
 var camera, scene, renderer, controls;
-var backgroundSphereMesh, menuSphereMeshes = [];
+var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
 var selectionLight;
 var isMouseMoving = false;
 
-export function init(panorama) {
+export function init(panoramas, selectedPanorama) {
 
     var container;
 
     container = document.getElementById( 'canvas-container' );
 
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 10, 600 );
+    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 10, 2000 );
     camera.position.set( 0, 0, -50 );
 
     scene = new THREE.Scene();
 
-    var texture = new THREE.TextureLoader().load( panorama );
-    creatBackground(texture, scene);
-    createMenuItem(texture, scene);
+    selectedMenuIndex = panoramas.findIndex(function(panorama) {
+        return panorama === selectedPanorama;
+    });
+    panoramas.map(function(panorama, index) {
+        createPanorama(panorama, scene, selectedMenuIndex);
+    });
 
-    var light = new THREE.PointLight( 0xffffff, 2, 1000 );
+    var light = new THREE.PointLight( 0xffffff, 2, 2000 );
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
@@ -49,25 +52,37 @@ export function init(panorama) {
 
 }
 
-function creatBackground(texture, scene) {
+function createPanorama(panorama, scene, selectedMenuIndex) {
+
+    var texture = new THREE.TextureLoader().load( panorama );
+    createBackground(texture, scene, selectedMenuIndex);
+    createMenuItem(texture, scene, selectedMenuIndex);
+}
+
+function createBackground(texture, scene, selectedMenuIndex) {
 
     var backgroundSphereGeometry = new THREE.SphereBufferGeometry( 500, 30, 30 );
     // invert the geometry on the x-axis so that all of the faces point inward
     backgroundSphereGeometry.scale( - 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { map: texture } );
-    backgroundSphereMesh = new THREE.Mesh( backgroundSphereGeometry, material );
+    var backgroundSphereMesh = new THREE.Mesh( backgroundSphereGeometry, material );
     scene.add( backgroundSphereMesh );
+    backgroundSphereMeshes.push(backgroundSphereMesh);
+    var index = backgroundSphereMeshes.length - 1;
+    backgroundSphereMesh.visible = index === selectedMenuIndex;
 }
 
-function createMenuItem(texture, scene) {
+function createMenuItem(texture, scene, selectedMenuIndex) {
 
     var menuSphereGeometry = new THREE.SphereBufferGeometry( 100, 30, 30 );
     var menuSphereMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
     var menuSphereMesh = new THREE.Mesh( menuSphereGeometry, menuSphereMaterial );
     scene.add( menuSphereMesh );
-    menuSphereMesh.position.set(550, 0, 0);
+
     menuSphereMesh.visible = false;
     menuSphereMeshes.push(menuSphereMesh);
+    var index = menuSphereMeshes.length - 1;
+    menuSphereMesh.position.set(400, 0, 400 * index);
 }
 
 function onWindowResize() {
@@ -94,6 +109,8 @@ function onMouseWheel(event) {
 
 function onMouseClick() {
 
+    var backgroundSphereMesh = backgroundSphereMeshes[selectedMenuIndex];
+
     if (backgroundSphereMesh.visible && !isMouseMoving) {
         backgroundSphereMesh.visible = false;
         menuSphereMeshes.map(function (menuSphereMesh) {
@@ -105,7 +122,16 @@ function onMouseClick() {
 
         if (selectedItems.length > 0) {
             controls.saveState();
-            backgroundSphereMesh.visible = true;
+            var selectedItem = selectedItems[0].object;
+            selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
+                return menuSphereMesh.id === selectedItem.id;
+            });
+
+            backgroundSphereMeshes.map(function (backgroundSphereMesh) {
+                backgroundSphereMesh.visible = false;
+            });
+            backgroundSphereMeshes[selectedMenuIndex].visible = true;
+
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.visible = false;
             });
@@ -139,9 +165,9 @@ export function launchAnimation(onAnimate) {
 
             selectionLight.target = selectionLight;
             var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
-            selectedItems.map(function(selectedItem) {
-                selectionLight.target = selectedItem.object;
-            });
+            if (selectedItems.length > 0) {
+                selectionLight.target = selectedItems[0].object;
+            }
 
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.rotation.y += 0.01;

@@ -3,7 +3,7 @@ import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControl
 
 var camera, scene, renderer, controls;
 var backgroundSphereMesh, menuSphereMeshes = [];
-var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), intersects = [];
+var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
 var selectionLight;
 var isMouseMoving = false;
 
@@ -59,7 +59,6 @@ export function init(panorama) {
     controls = new OrbitControls( camera, renderer.domElement );
     controls.enablePan = false;
     controls.enableZoom = false;
-    //controls.enableRotate = false;
     controls.update();
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -100,10 +99,12 @@ function onMouseClick() {
         menuSphereMeshes.map(function (menuSphereMesh) {
             menuSphereMesh.visible = true;
         });
+        controls.reset();
     } else {
         var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
 
         if (selectedItems.length > 0) {
+            controls.saveState();
             backgroundSphereMesh.visible = true;
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.visible = false;
@@ -126,13 +127,6 @@ function onMouseUp() {
 function onMouseMove( event ) {
 
     isMouseMoving = true;
-
-    // calculate mouse position in normalized device coordinates
-    // (-1 to +1) for both components
-
-    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
 }
 
 export function launchAnimation(onAnimate) {

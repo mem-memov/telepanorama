@@ -13,10 +13,11 @@ export function init(panoramas, selectedPanorama) {
 
     container = document.getElementById( 'canvas-container' );
 
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 10, 2000 );
+    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 10, 2000 );
     camera.position.set( 0, 0, -50 );
 
     scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x111111 );
 
     selectedMenuIndex = panoramas.findIndex(function(panorama) {
         return panorama === selectedPanorama;
@@ -25,15 +26,19 @@ export function init(panoramas, selectedPanorama) {
         createPanorama(panorama, scene, selectedMenuIndex);
     });
 
-    var light = new THREE.PointLight( 0xffffff, 2, 2000 );
+    var light = new THREE.PointLight( 0xffffff, .5, 2000 );
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
-    selectionLight = new THREE.SpotLight( 0xff0000, 1, 2000, 0.09 );
+    var topLight = new THREE.PointLight( 0xffffff, 2, 2000 );
+    topLight.position.set( 100, 500, 0 );
+    scene.add( topLight );
+
+    selectionLight = new THREE.SpotLight( 0xffffff, 2, 2000, 0.4 );
     selectionLight.position.set( 0, 0, 0 );
     scene.add( selectionLight );
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
@@ -87,12 +92,11 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
 
 function placeInCircle(index, menuSphereMesh) {
     var radius = 400;
-    var deltaAngle = 1;
-    var y = radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
+    var deltaAngle = .8;
+    var x = - radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
     var z = - radius * (Math.sin(deltaAngle * index) - Math.sin(deltaAngle * (index+1)));
-    menuSphereMesh.position.set(400, 0, z);
+    menuSphereMesh.position.set(x, 0, z);
 }
-
 
 function onWindowResize() {
 

@@ -5,7 +5,7 @@ var camera, scene, renderer, controls;
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
 var selectionLight;
-var isMouseMoving = false;
+var isMouseMoving = false, isMenuOn = false;
 
 export function init(panoramas, selectedPanorama) {
 
@@ -17,7 +17,7 @@ export function init(panoramas, selectedPanorama) {
     camera.position.set( 0, 0, -50 );
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x111111 );
+    scene.background = new THREE.Color( 0xffff00 );
 
     selectedMenuIndex = panoramas.findIndex(function(panorama) {
         return panorama === selectedPanorama;
@@ -122,34 +122,41 @@ function onMouseWheel(event) {
 
 function onMouseClick() {
 
-    var backgroundSphereMesh = backgroundSphereMeshes[selectedMenuIndex];
-
-    if (backgroundSphereMesh.visible && !isMouseMoving) {
-        backgroundSphereMesh.visible = false;
+    if (!isMouseMoving) {
         menuSphereMeshes.map(function (menuSphereMesh) {
-            menuSphereMesh.visible = true;
+            menuSphereMesh.visible = isMenuOn;
         });
-        controls.reset();
-    } else {
-        var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
 
-        if (selectedItems.length > 0) {
-            controls.saveState();
-            var selectedItem = selectedItems[0].object;
-            selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
-                return menuSphereMesh.id === selectedItem.id;
-            });
-
-            backgroundSphereMeshes.map(function (backgroundSphereMesh) {
-                backgroundSphereMesh.visible = false;
-            });
-            backgroundSphereMeshes[selectedMenuIndex].visible = true;
-
-            menuSphereMeshes.map(function (menuSphereMesh) {
-                menuSphereMesh.visible = false;
-            });
-        }
+        isMenuOn = !isMenuOn;
     }
+
+
+    // var backgroundSphereMesh = backgroundSphereMeshes[selectedMenuIndex];
+    //
+    // if (backgroundSphereMesh.visible && !isMouseMoving) {
+    //     menuSphereMeshes.map(function (menuSphereMesh) {
+    //         menuSphereMesh.visible = true;
+    //     });
+    // } else {
+    //     var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
+    //
+    //     if (selectedItems.length > 0) {
+    //         var selectedItem = selectedItems[0].object;
+    //         selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
+    //             return menuSphereMesh.id === selectedItem.id;
+    //         });
+    //
+    //         backgroundSphereMeshes.map(function (backgroundSphereMesh) {
+    //             backgroundSphereMesh.visible = false;
+    //         });
+    //         backgroundSphereMeshes[selectedMenuIndex].visible = true;
+    //         backgroundSphereMeshes[selectedMenuIndex].rotation.y = - menuSphereMeshes[selectedMenuIndex].rotation.y;
+    //
+    //         menuSphereMeshes.map(function (menuSphereMesh) {
+    //             menuSphereMesh.visible = false;
+    //         });
+    //     }
+    // }
 
     isMouseMoving = false;
 }
@@ -183,7 +190,9 @@ export function launchAnimation(onAnimate) {
             }
 
             menuSphereMeshes.map(function (menuSphereMesh) {
-                menuSphereMesh.rotation.y += 0.01;
+                if (menuSphereMesh.visible) {
+                    menuSphereMesh.rotation.y += 0.001;
+                }
             });
 
             controls.update();

@@ -66,6 +66,8 @@ export function init(panorama) {
     window.addEventListener( 'wheel', onMouseWheel, false );
     window.addEventListener( 'click', onMouseClick, false );
     window.addEventListener( 'mousemove', onMouseMove, false );
+    window.addEventListener( 'mousedown', onMouseDown, false );
+    window.addEventListener( 'mouseup', onMouseUp, false );
 
 }
 
@@ -110,6 +112,15 @@ function onMouseClick() {
     }
 
     isMouseMoving = false;
+}
+
+function onMouseDown()
+{
+    isMouseMoving = false;
+}
+
+function onMouseUp() {
+
 }
 
 function onMouseMove( event ) {

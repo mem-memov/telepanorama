@@ -29,7 +29,7 @@ export function init(panoramas, selectedPanorama) {
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
-    selectionLight = new THREE.SpotLight( 0xffffff );
+    selectionLight = new THREE.SpotLight( 0xff0000, 1, 2000, 0.09 );
     selectionLight.position.set( 0, 0, 0 );
     scene.add( selectionLight );
 

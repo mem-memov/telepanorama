@@ -125,11 +125,10 @@ function onMouseClick() {
     if (!isMouseMoving) {
 
         if (null === INTERSECTED) {
+            isMenuOn = !isMenuOn;
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.visible = isMenuOn;
             });
-
-            isMenuOn = !isMenuOn;
         } else {
             selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
                 return menuSphereMesh.id === INTERSECTED.id;

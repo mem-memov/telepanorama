@@ -82,8 +82,17 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
     menuSphereMesh.visible = false;
     menuSphereMeshes.push(menuSphereMesh);
     var index = menuSphereMeshes.length - 1;
-    menuSphereMesh.position.set(400, 0, 400 * index);
+    placeInCircle(index, menuSphereMesh);
 }
+
+function placeInCircle(index, menuSphereMesh) {
+    var radius = 400;
+    var deltaAngle = 1;
+    var y = radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
+    var z = - radius * (Math.sin(deltaAngle * index) - Math.sin(deltaAngle * (index+1)));
+    menuSphereMesh.position.set(400, 0, z);
+}
+
 
 function onWindowResize() {
 

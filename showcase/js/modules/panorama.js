@@ -3,7 +3,7 @@ import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControl
 
 var camera, scene, renderer, controls;
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
-var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2();
+var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), INTERSECTED = null;
 var selectionLight;
 var isMouseMoving = false, isMenuOn = false;
 
@@ -144,6 +144,11 @@ function onMouseUp() {
 
 function onMouseMove( event ) {
 
+    event.preventDefault();
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
     isMouseMoving = true;
 }
 
@@ -160,6 +165,18 @@ export function launchAnimation(onAnimate) {
             });
 
             raycaster.setFromCamera( mouse, camera );
+            var intersects = raycaster.intersectObjects( menuSphereMeshes );
+            if ( intersects.length > 0 ) {
+                if ( INTERSECTED != intersects[ 0 ].object && intersects[ 0 ].object.visible) {
+                    INTERSECTED = intersects[ 0 ].object;
+                    selectionLight.target = INTERSECTED;
+                }
+            } else {
+                selectionLight.target = selectionLight;
+                INTERSECTED = null;
+            }
+
+
             controls.update();
             renderer.render( scene, camera );
 

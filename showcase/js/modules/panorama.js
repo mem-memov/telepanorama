@@ -4,6 +4,8 @@ import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControl
 var camera, scene, renderer, controls;
 var backgroundSphereMesh, menuSphereMeshes = [];
 var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), intersects = [];
+var selectionLight;
+var isMouseMoving = false;
 
 export function init(panorama) {
 
@@ -14,6 +16,8 @@ export function init(panorama) {
 
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 10, 600 );
     camera.position.set( 0, 0, -50 );
+
+
 
 
     scene = new THREE.Scene();
@@ -41,6 +45,11 @@ export function init(panorama) {
     scene.add( light );
 
 
+    selectionLight = new THREE.SpotLight( 0xffffff );
+    selectionLight.position.set( 0, 0, 0 );
+    scene.add( selectionLight );
+
+
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -56,6 +65,7 @@ export function init(panorama) {
     window.addEventListener( 'resize', onWindowResize, false );
     window.addEventListener( 'wheel', onMouseWheel, false );
     window.addEventListener( 'click', onMouseClick, false );
+    window.addEventListener( 'mousemove', onMouseMove, false );
 
 }
 
@@ -83,29 +93,34 @@ function onMouseWheel(event) {
 
 function onMouseClick() {
 
-    if (backgroundSphereMesh.visible) {
+    if (backgroundSphereMesh.visible && !isMouseMoving) {
         backgroundSphereMesh.visible = false;
         menuSphereMeshes.map(function (menuSphereMesh) {
             menuSphereMesh.visible = true;
         });
     } else {
-        console.log(raycaster.intersectObjects(menuSphereMeshes));
-        if (raycaster.intersectObjects(menuSphereMeshes).length > 0) {
+        var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
+
+        if (selectedItems.length > 0) {
             backgroundSphereMesh.visible = true;
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.visible = false;
             });
         }
     }
+
+    isMouseMoving = false;
 }
 
 function onMouseMove( event ) {
 
+    isMouseMoving = true;
+
     // calculate mouse position in normalized device coordinates
     // (-1 to +1) for both components
 
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
 
@@ -116,6 +131,17 @@ export function launchAnimation(onAnimate) {
             requestAnimationFrame( animate );
 
             raycaster.setFromCamera( mouse, camera );
+
+            selectionLight.target = selectionLight;
+            var selectedItems = raycaster.intersectObjects(menuSphereMeshes);
+            selectedItems.map(function(selectedItem) {
+                selectionLight.target = selectedItem.object;
+            });
+
+            menuSphereMeshes.map(function (menuSphereMesh) {
+                menuSphereMesh.rotation.y += 0.01;
+            });
+
             controls.update();
             renderer.render( scene, camera );
 

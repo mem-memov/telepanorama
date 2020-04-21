@@ -20,7 +20,7 @@ export function init(panoramas, selectedPanorama) {
     camera = new THREE.PerspectiveCamera(
         40, window.innerWidth / window.innerHeight,
         CAMERA_DISPLACEMENT_RADIUS,
-        BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS
+        BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
     );
 
     scene = new THREE.Scene();
@@ -162,9 +162,7 @@ function onMouseClick() {
             isMenuOn = false;
             INTERSECTED = null;
 
-
-
-            // var angle = menuSphereMeshes[selectedMenuIndex].rotation.y;
+            // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
             // var radius = 50;
             // var x = radius * Math.cos(angle);
             // var y = camera.position.y;
@@ -193,6 +191,8 @@ function onMouseMove( event ) {
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
     isMouseMoving = true;
+
+    // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(camera.position.x, camera.position.z);
 }
 
 export function launchAnimation(onAnimate) {
@@ -204,7 +204,7 @@ export function launchAnimation(onAnimate) {
             menuSphereMeshes.map(function (menuSphereMesh) {
                 if (menuSphereMesh.visible) {
                     if (INTERSECTED !== null && menuSphereMesh.id === INTERSECTED.id) {
-                        menuSphereMesh.rotation.y += 0.02;
+                        menuSphereMesh.rotation.y += 0.01;
                     } else {
                         menuSphereMesh.rotation.y += 0.001;
                     }

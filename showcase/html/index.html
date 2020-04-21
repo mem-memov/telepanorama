@@ -26,7 +26,7 @@
 					var panoramas = showcase.showpieces.map(function (showpiece) {
 						return fileToPath(showpiece.file);
 					});
-					PANORAMA.init(panoramas, selectedPanorama);
+					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition);
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}
 			);

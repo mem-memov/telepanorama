@@ -11,7 +11,7 @@ var BACKGROUND_SPHERE_RADIUS = 500;
 var MENU_ITEM_SPHERE_RADIUS = 100;
 var MENU_ANGLE_BETWEEN_ITEMS = .6;
 
-export function init(panoramas, selectedPanorama) {
+export function init(panoramas, selectedPanorama, setCameraPosition) {
 
     var container;
 
@@ -22,6 +22,7 @@ export function init(panoramas, selectedPanorama) {
         CAMERA_DISPLACEMENT_RADIUS,
         BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
     );
+    setCameraPosition(camera);
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111111 );

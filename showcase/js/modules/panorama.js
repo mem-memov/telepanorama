@@ -102,7 +102,7 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
-    var radius = 450;
+    var radius = BACKGROUND_SPHERE_RADIUS - (MENU_ITEM_SPHERE_RADIUS / 2);
     var deltaAngle = .8;
     var frontAngle = Math.PI*1.5 - controls.getAzimuthalAngle();
     var angle = frontAngle + (index-selectedMenuIndex) * deltaAngle;

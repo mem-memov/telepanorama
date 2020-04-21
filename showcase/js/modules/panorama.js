@@ -9,7 +9,7 @@ var isMouseMoving = false, isMenuOn = false;
 var CAMERA_DISPLACEMENT_RADIUS = 50;
 var BACKGROUND_SPHERE_RADIUS = 500;
 var MENU_ITEM_SPHERE_RADIUS = 100;
-var MENU_ANGLE_BETWEEN_ITEMS = .8;
+var MENU_ANGLE_BETWEEN_ITEMS = .6;
 
 export function init(panoramas, selectedPanorama) {
 
@@ -205,7 +205,11 @@ export function launchAnimation(onAnimate) {
 
             menuSphereMeshes.map(function (menuSphereMesh) {
                 if (menuSphereMesh.visible) {
-                    menuSphereMesh.rotation.y += 0.001;
+                    if (INTERSECTED !== null && menuSphereMesh.id === INTERSECTED.id) {
+                        menuSphereMesh.rotation.y += 0.02;
+                    } else {
+                        menuSphereMesh.rotation.y += 0.001;
+                    }
                 }
             });
 

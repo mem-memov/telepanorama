@@ -17,11 +17,14 @@ export function init(panoramas, selectedPanorama) {
 
     container = document.getElementById( 'canvas-container' );
 
-    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, CAMERA_DISPLACEMENT_RADIUS, BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS );
-    camera.position.set( 0, 0, - CAMERA_DISPLACEMENT_RADIUS );
+    camera = new THREE.PerspectiveCamera(
+        40, window.innerWidth / window.innerHeight,
+        CAMERA_DISPLACEMENT_RADIUS,
+        BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS
+    );
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xffffff );
+    scene.background = new THREE.Color( 0x111111 );
 
     createLights(scene, BACKGROUND_SPHERE_RADIUS);
 
@@ -48,11 +51,10 @@ export function init(panoramas, selectedPanorama) {
     window.addEventListener( 'mousemove', onMouseMove, false );
     window.addEventListener( 'mousedown', onMouseDown, false );
     window.addEventListener( 'mouseup', onMouseUp, false );
-
 }
 
 function createLights(scene, backgroundSphereRadius) {
-    var light = new THREE.PointLight( 0xffffff, .5, backgroundSphereRadius );
+    var light = new THREE.PointLight( 0xffffff, 1, backgroundSphereRadius );
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
@@ -107,10 +109,6 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
     var frontAngle = Math.PI*1.5 - controls.getAzimuthalAngle();
     var angle = frontAngle + (index-selectedMenuIndex) * MENU_ANGLE_BETWEEN_ITEMS;
     menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
-}
-
-function adjustMenu() {
-
 }
 
 function onWindowResize() {

@@ -12,69 +12,22 @@
         <div id="canvas-container"></div>
 		<script type="module">
             import * as PANORAMA from '/js/modules/panorama.js';
+            import * as URL from '/js/modules/url.js';
 			import { getUsefulContents } from '/js/modules/file.js';
 
-			var cameraX, cameraY, cameraZ, cameraFOV;
-
-			function setUrlHash(hash) {
-				if(history.pushState) {
-					history.pushState(null, null, '#' + hash);
-				}
-				else {
-					location.hash = '#' + hash;
-				}
-			}
-
-			function splitUrlHash() {
-				return location.hash.substring(1).split('|');
-			}
-
-			function onAnimate( camera ) {
-				let hashParams = splitUrlHash();
-
-				if (
-						cameraX === undefined
-						&& cameraY === undefined
-						&& cameraZ === undefined
-						&& cameraFOV === undefined
-						&& hashParams.length === 5
-				) {
-					const x = parseFloat(hashParams[1].substring(1));
-					const y = parseFloat(hashParams[2].substring(1));
-					const z = parseFloat(hashParams[3].substring(1));
-					const fov = parseInt(hashParams[4].substring(3));
-
-					camera.position.set(x, y, z);
-					camera.fov = fov;
-					camera.updateProjectionMatrix();
-				}
-
-				if (
-						cameraX !== camera.position.x
-						|| cameraY !== camera.position.y
-						|| cameraZ !== camera.position.z
-						|| cameraFOV !== camera.fov
-				) {
-					cameraX = camera.position.x;
-					cameraY = camera.position.y;
-					cameraZ = camera.position.z;
-					cameraFOV = camera.fov;
-
-					let hash = hashParams[0] + '|x' + Math.floor(cameraX*100)/100 + '|' + 'y' + Math.floor(cameraY*100)/100+ '|' + 'z' + Math.floor(cameraZ*100)/100 + '|' + 'fov' + Math.floor(cameraFOV);
-					setUrlHash(hash);
-				}
+			function fileToPath(file) {
+				return '/image/' + file;
 			}
 
 			getUsefulContents(
 				'./showcase.json',
 				showcase => {
-					let hashParams = splitUrlHash();
-					let selectedPanorama = '/image/' + hashParams[0];
-					let panoramas = showcase.showpieces.map(function (showpiece) {
-						return '/image/' + showpiece.file;
+					var selectedPanorama = fileToPath(URL.fileFromUrl());
+					var panoramas = showcase.showpieces.map(function (showpiece) {
+						return fileToPath(showpiece.file);
 					});
 					PANORAMA.init(panoramas, selectedPanorama);
-					PANORAMA.launchAnimation(onAnimate);
+					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}
 			);
 

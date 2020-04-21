@@ -96,6 +96,7 @@ function placeInCircle(index, menuSphereMesh) {
     var x = - radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
     var z = - radius * (Math.sin(deltaAngle * index) - Math.sin(deltaAngle * (index+1)));
     menuSphereMesh.position.set(x, 0, z);
+    menuSphereMesh.rotation.y = 1 - deltaAngle * index;
 }
 
 function onWindowResize() {
@@ -138,7 +139,6 @@ function onMouseClick() {
                 backgroundSphereMesh.visible = false;
             });
             backgroundSphereMeshes[selectedMenuIndex].visible = true;
-            backgroundSphereMeshes[selectedMenuIndex].rotation.y = - menuSphereMeshes[selectedMenuIndex].rotation.y;
 
             menuSphereMeshes.map(function (menuSphereMesh) {
                 menuSphereMesh.visible = false;

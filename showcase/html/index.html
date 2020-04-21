@@ -39,13 +39,12 @@
 						&& cameraFOV === undefined
 						&& hashParams.length === 5
 				) {
-					const x = parseInt(hashParams[1].substring(1));
-					const y = parseInt(hashParams[2].substring(1));
-					const z = parseInt(hashParams[3].substring(1));
+					const x = parseFloat(hashParams[1].substring(1));
+					const y = parseFloat(hashParams[2].substring(1));
+					const z = parseFloat(hashParams[3].substring(1));
 					const fov = parseInt(hashParams[4].substring(3));
 
 					camera.position.set(x, y, z);
-
 					camera.fov = fov;
 					camera.updateProjectionMatrix();
 				}
@@ -61,7 +60,7 @@
 					cameraZ = camera.position.z;
 					cameraFOV = camera.fov;
 
-					let hash = hashParams[0] + '|x' + Math.floor(cameraX) + '|' + 'y' + Math.floor(cameraY) + '|' + 'z' + Math.floor(cameraZ) + '|' + 'fov' + Math.floor(cameraFOV);
+					let hash = hashParams[0] + '|x' + Math.floor(cameraX*100)/100 + '|' + 'y' + Math.floor(cameraY*100)/100+ '|' + 'z' + Math.floor(cameraZ*100)/100 + '|' + 'fov' + Math.floor(cameraFOV);
 					setUrlHash(hash);
 				}
 			}

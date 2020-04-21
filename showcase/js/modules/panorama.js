@@ -9,6 +9,7 @@ var isMouseMoving = false, isMenuOn = false;
 var CAMERA_DISPLACEMENT_RADIUS = 50;
 var BACKGROUND_SPHERE_RADIUS = 500;
 var MENU_ITEM_SPHERE_RADIUS = 100;
+var MENU_ANGLE_BETWEEN_ITEMS = .8;
 
 export function init(panoramas, selectedPanorama) {
 
@@ -103,9 +104,8 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
     var radius = BACKGROUND_SPHERE_RADIUS - (MENU_ITEM_SPHERE_RADIUS / 2);
-    var deltaAngle = .8;
     var frontAngle = Math.PI*1.5 - controls.getAzimuthalAngle();
-    var angle = frontAngle + (index-selectedMenuIndex) * deltaAngle;
+    var angle = frontAngle + (index-selectedMenuIndex) * MENU_ANGLE_BETWEEN_ITEMS;
     menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
 }
 

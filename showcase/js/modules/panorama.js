@@ -22,21 +22,7 @@ export function init(panoramas, selectedPanorama) {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
 
-    var light = new THREE.PointLight( 0xffffff, .5, BACKGROUND_SPHERE_RADIUS );
-    light.position.set( 0, 0, 0 );
-    scene.add( light );
-
-    var topLight = new THREE.PointLight( 0xffffff, 2, 1000 );
-    topLight.position.set( 0, BACKGROUND_SPHERE_RADIUS / 2, 0 );
-    scene.add( topLight );
-
-    var bottomLight = new THREE.PointLight( 0xffffff, .5, 1000 );
-    bottomLight.position.set( 0, - BACKGROUND_SPHERE_RADIUS / 2, 0 );
-    scene.add( bottomLight );
-
-    selectionLight = new THREE.SpotLight( 0xffffff, 2, 505, 0.4 );
-    selectionLight.position.set( 0, 0, 0 );
-    scene.add( selectionLight );
+    createLights(scene, BACKGROUND_SPHERE_RADIUS);
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -62,6 +48,24 @@ export function init(panoramas, selectedPanorama) {
     window.addEventListener( 'mousedown', onMouseDown, false );
     window.addEventListener( 'mouseup', onMouseUp, false );
 
+}
+
+function createLights(scene, backgroundSphereRadius) {
+    var light = new THREE.PointLight( 0xffffff, .5, backgroundSphereRadius );
+    light.position.set( 0, 0, 0 );
+    scene.add( light );
+
+    var topLight = new THREE.PointLight( 0xffffff, 2, 1000 );
+    topLight.position.set( 0, backgroundSphereRadius / 2, 0 );
+    scene.add( topLight );
+
+    var bottomLight = new THREE.PointLight( 0xffffff, .5, 1000 );
+    bottomLight.position.set( 0, - backgroundSphereRadius / 2, 0 );
+    scene.add( bottomLight );
+
+    selectionLight = new THREE.SpotLight( 0xffffff, 2, 505, 0.4 );
+    selectionLight.position.set( 0, 0, 0 );
+    scene.add( selectionLight );
 }
 
 function createPanorama(panorama, scene, selectedMenuIndex) {
@@ -94,7 +98,7 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
     menuSphereMesh.visible = false;
     menuSphereMeshes.push(menuSphereMesh);
     var index = menuSphereMeshes.length - 1;
-    placeInCircle(index, menuSphereMesh);
+    placeInCircle(index, menuSphereMesh, selectedMenuIndex);
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {

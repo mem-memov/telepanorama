@@ -136,42 +136,53 @@ function onMouseWheel(event) {
 function onMouseClick() {
 
     if (!isMouseMoving) {
-
         if (null === INTERSECTED) {
-            isMenuOn = !isMenuOn;
-            menuSphereMeshes.map(function (menuSphereMesh, index) {
-                if (isMenuOn) {
-                    placeInCircle(index, menuSphereMesh, selectedMenuIndex)
-                }
-                menuSphereMesh.visible = isMenuOn;
-            });
+            isMenuOn = hideMenu(isMenuOn);
         } else {
-            selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
-                return menuSphereMesh.id === INTERSECTED.id;
-            });
-
-            backgroundSphereMeshes.map(function (backgroundSphereMesh) {
-                backgroundSphereMesh.visible = false;
-            });
-            backgroundSphereMeshes[selectedMenuIndex].visible = true;
-
-            menuSphereMeshes.map(function (menuSphereMesh) {
-                menuSphereMesh.visible = false;
-            });
-
-            isMenuOn = false;
-            INTERSECTED = null;
-
-            // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
-            // var radius = 50;
-            // var x = radius * Math.cos(angle);
-            // var y = camera.position.y;
-            // var z = radius * Math.sin(angle);
-            // camera.position.set(x, y, z);
+            isMenuOn = showMenu(isMenuOn);
         }
     }
 
     isMouseMoving = false;
+}
+
+function hideMenu(isMenuOn) {
+    isMenuOn = !isMenuOn;
+    menuSphereMeshes.map(function (menuSphereMesh, index) {
+        if (isMenuOn) {
+            placeInCircle(index, menuSphereMesh, selectedMenuIndex)
+        }
+        menuSphereMesh.visible = isMenuOn;
+    });
+
+    return isMenuOn;
+}
+
+function showMenu(isMenuOn) {
+    selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
+        return menuSphereMesh.id === INTERSECTED.id;
+    });
+
+    backgroundSphereMeshes.map(function (backgroundSphereMesh) {
+        backgroundSphereMesh.visible = false;
+    });
+    backgroundSphereMeshes[selectedMenuIndex].visible = true;
+
+    menuSphereMeshes.map(function (menuSphereMesh) {
+        menuSphereMesh.visible = false;
+    });
+
+    isMenuOn = false;
+    INTERSECTED = null;
+
+    // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
+    // var radius = 50;
+    // var x = radius * Math.cos(angle);
+    // var y = camera.position.y;
+    // var z = radius * Math.sin(angle);
+    // camera.position.set(x, y, z);
+
+    return isMenuOn;
 }
 
 function onMouseDown()
@@ -201,28 +212,10 @@ export function launchAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
 
-            menuSphereMeshes.map(function (menuSphereMesh) {
-                if (menuSphereMesh.visible) {
-                    if (INTERSECTED !== null && menuSphereMesh.id === INTERSECTED.id) {
-                        menuSphereMesh.rotation.y += 0.01;
-                    } else {
-                        menuSphereMesh.rotation.y += 0.001;
-                    }
-                }
-            });
+            rotateMenuItems();
 
             raycaster.setFromCamera( mouse, camera );
-            var intersects = raycaster.intersectObjects( menuSphereMeshes );
-            if ( intersects.length > 0 ) {
-                if ( INTERSECTED != intersects[ 0 ].object && intersects[ 0 ].object.visible) {
-                    INTERSECTED = intersects[ 0 ].object;
-                    selectionLight.target = INTERSECTED;
-                }
-            } else {
-                selectionLight.target = selectionLight;
-                INTERSECTED = null;
-            }
-
+            detectSelectedMenuItem(raycaster);
 
             controls.update();
             renderer.render( scene, camera );
@@ -232,4 +225,29 @@ export function launchAnimation(onAnimate) {
     }
 
     makeAnimation(onAnimate)();
+}
+
+function detectSelectedMenuItem(raycaster) {
+    var intersects = raycaster.intersectObjects( menuSphereMeshes );
+    if ( intersects.length > 0 ) {
+        if ( INTERSECTED !== intersects[0].object && intersects[0].object.visible) {
+            INTERSECTED = intersects[0].object;
+            selectionLight.target = INTERSECTED;
+        }
+    } else {
+        selectionLight.target = selectionLight;
+        INTERSECTED = null;
+    }
+}
+
+function rotateMenuItems() {
+    menuSphereMeshes.map(function (menuSphereMesh) {
+        if (menuSphereMesh.visible) {
+            if (INTERSECTED !== null && menuSphereMesh.id === INTERSECTED.id) {
+                menuSphereMesh.rotation.y += 0.01;
+            } else {
+                menuSphereMesh.rotation.y += 0.001;
+            }
+        }
+    });
 }

@@ -6,6 +6,9 @@ var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), INTERSECTED = null;
 var selectionLight;
 var isMouseMoving = false, isMenuOn = false;
+var CAMERA_DISPLACEMENT_RADIUS = 50;
+var BACKGROUND_SPHERE_RADIUS = 500;
+var MENU_ITEM_SPHERE_RADIUS = 100;
 
 export function init(panoramas, selectedPanorama) {
 
@@ -13,28 +16,25 @@ export function init(panoramas, selectedPanorama) {
 
     container = document.getElementById( 'canvas-container' );
 
-    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 10, 2000 );
-    camera.position.set( 0, 0, -50 );
+    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, CAMERA_DISPLACEMENT_RADIUS, BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS );
+    camera.position.set( 0, 0, - CAMERA_DISPLACEMENT_RADIUS );
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xffff00 );
+    scene.background = new THREE.Color( 0xffffff );
 
-    selectedMenuIndex = panoramas.findIndex(function(panorama) {
-        return panorama === selectedPanorama;
-    });
-    panoramas.map(function(panorama, index) {
-        createPanorama(panorama, scene, selectedMenuIndex);
-    });
-
-    var light = new THREE.PointLight( 0xffffff, .5, 2000 );
+    var light = new THREE.PointLight( 0xffffff, .5, BACKGROUND_SPHERE_RADIUS );
     light.position.set( 0, 0, 0 );
     scene.add( light );
 
-    var topLight = new THREE.PointLight( 0xffffff, 2, 2000 );
-    topLight.position.set( 100, 500, 0 );
+    var topLight = new THREE.PointLight( 0xffffff, 2, 1000 );
+    topLight.position.set( 0, BACKGROUND_SPHERE_RADIUS / 2, 0 );
     scene.add( topLight );
 
-    selectionLight = new THREE.SpotLight( 0xffffff, 2, 2000, 0.4 );
+    var bottomLight = new THREE.PointLight( 0xffffff, .5, 1000 );
+    bottomLight.position.set( 0, - BACKGROUND_SPHERE_RADIUS / 2, 0 );
+    scene.add( bottomLight );
+
+    selectionLight = new THREE.SpotLight( 0xffffff, 2, 505, 0.4 );
     selectionLight.position.set( 0, 0, 0 );
     scene.add( selectionLight );
 
@@ -47,6 +47,13 @@ export function init(panoramas, selectedPanorama) {
     controls.enablePan = false;
     controls.enableZoom = false;
     controls.update();
+
+    selectedMenuIndex = panoramas.findIndex(function(panorama) {
+        return panorama === selectedPanorama;
+    });
+    panoramas.map(function(panorama, index) {
+        createPanorama(panorama, scene, selectedMenuIndex);
+    });
 
     window.addEventListener( 'resize', onWindowResize, false );
     window.addEventListener( 'wheel', onMouseWheel, false );
@@ -66,7 +73,7 @@ function createPanorama(panorama, scene, selectedMenuIndex) {
 
 function createBackground(texture, scene, selectedMenuIndex) {
 
-    var backgroundSphereGeometry = new THREE.SphereBufferGeometry( 500, 30, 30 );
+    var backgroundSphereGeometry = new THREE.SphereBufferGeometry( BACKGROUND_SPHERE_RADIUS, 30, 30 );
     // invert the geometry on the x-axis so that all of the faces point inward
     backgroundSphereGeometry.scale( - 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -79,7 +86,7 @@ function createBackground(texture, scene, selectedMenuIndex) {
 
 function createMenuItem(texture, scene, selectedMenuIndex) {
 
-    var menuSphereGeometry = new THREE.SphereBufferGeometry( 100, 30, 30 );
+    var menuSphereGeometry = new THREE.SphereBufferGeometry( MENU_ITEM_SPHERE_RADIUS, 30, 30 );
     var menuSphereMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
     var menuSphereMesh = new THREE.Mesh( menuSphereGeometry, menuSphereMaterial );
     scene.add( menuSphereMesh );
@@ -90,13 +97,16 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
     placeInCircle(index, menuSphereMesh);
 }
 
-function placeInCircle(index, menuSphereMesh) {
-    var radius = 700;
+function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
+    var radius = 450;
     var deltaAngle = .8;
-    var x = - radius * (Math.cos(deltaAngle * index) - Math.cos(deltaAngle * (index+1)));
-    var z = - radius * (Math.sin(deltaAngle * index) - Math.sin(deltaAngle * (index+1)));
-    menuSphereMesh.position.set(x, 0, z);
-    menuSphereMesh.rotation.y = 1 - deltaAngle * index;
+    var frontAngle = Math.PI*1.5 - controls.getAzimuthalAngle();
+    var angle = frontAngle + (index-selectedMenuIndex) * deltaAngle;
+    menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
+}
+
+function adjustMenu() {
+
 }
 
 function onWindowResize() {
@@ -127,7 +137,10 @@ function onMouseClick() {
 
         if (null === INTERSECTED) {
             isMenuOn = !isMenuOn;
-            menuSphereMeshes.map(function (menuSphereMesh) {
+            menuSphereMeshes.map(function (menuSphereMesh, index) {
+                if (isMenuOn) {
+                    placeInCircle(index, menuSphereMesh, selectedMenuIndex)
+                }
                 menuSphereMesh.visible = isMenuOn;
             });
         } else {
@@ -146,6 +159,15 @@ function onMouseClick() {
 
             isMenuOn = false;
             INTERSECTED = null;
+
+
+
+            // var angle = menuSphereMeshes[selectedMenuIndex].rotation.y;
+            // var radius = 50;
+            // var x = radius * Math.cos(angle);
+            // var y = camera.position.y;
+            // var z = radius * Math.sin(angle);
+            // camera.position.set(x, y, z);
         }
     }
 

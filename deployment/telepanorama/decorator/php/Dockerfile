@@ -3,6 +3,15 @@ FROM php:7.4.4-fpm-buster
 # prod|dev
 ARG SITE_MODE
 
+# GD
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        zlib1g-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libjpeg62-turbo-dev && \
+    docker-php-ext-install gd
+
 # IMAP
 RUN apt-get update && \
     apt-get install -y \

@@ -6,6 +6,8 @@ namespace Telepanorama\ArtStudio;
 
 class Artist
 {
+
+
     public function paint(string $file): ImageCopies
     {
 

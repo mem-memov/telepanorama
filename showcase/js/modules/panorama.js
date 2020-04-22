@@ -54,6 +54,16 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     window.addEventListener( 'mousemove', onMouseMove, false );
     window.addEventListener( 'mousedown', onMouseDown, false );
     window.addEventListener( 'mouseup', onMouseUp, false );
+
+    var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
+    window.addEventListener( 'touchstart', onTouchStart, false );
+    window.addEventListener( 'touchmove', onTouchMove, false );
+    window.addEventListener( 'touchend', onTouchEnd, false );
+    window.addEventListener( 'touchcancel', onTouchCancel, false );
+}
+
+function onTouchCancel(event) {
+
 }
 
 function createLights(scene, backgroundSphereRadius) {
@@ -138,28 +148,39 @@ function onMouseWheel(event) {
 
 function createMouseClickHandler(getPanoramaIndex) {
     return function onMouseClick() {
-
-        if (!isMouseMoving) {
-            if (null === INTERSECTED) {
-                isMenuOn = !isMenuOn;
-                handleClickOnBackgroundSphere(isMenuOn);
-            } else {
-                handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex);
-                isMenuOn = false;
-                INTERSECTED = null;
-
-                // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
-                // var radius = 50;
-                // var x = radius * Math.cos(angle);
-                // var y = camera.position.y;
-                // var z = radius * Math.sin(angle);
-                // camera.position.set(x, y, z);
-            }
-        }
-
-        isMouseMoving = false;
+        handleUserProddingFinger(getPanoramaIndex);
     }
 }
+
+function createScreenTouchEndHandler(getPanoramaIndex) {
+    return function onTouchEnd() {
+        handleUserProddingFinger(getPanoramaIndex);
+    }
+}
+
+function handleUserProddingFinger(getPanoramaIndex) {
+    console.log(isMouseMoving);
+    if (!isMouseMoving) {
+        if (null === INTERSECTED) {
+            isMenuOn = !isMenuOn;
+            handleClickOnBackgroundSphere(isMenuOn);
+        } else {
+            handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex);
+            isMenuOn = false;
+            INTERSECTED = null;
+
+            // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
+            // var radius = 50;
+            // var x = radius * Math.cos(angle);
+            // var y = camera.position.y;
+            // var z = radius * Math.sin(angle);
+            // camera.position.set(x, y, z);
+        }
+    }
+
+    isMouseMoving = false;
+}
+
 
 function handleClickOnBackgroundSphere(isMenuOn) {
     if (isMenuOn) {
@@ -204,8 +225,14 @@ function showMenuItems() {
     });
 }
 
-function onMouseDown()
-{
+function onMouseDown() {
+    retractUserFinger();
+}
+function onTouchStart(event) {
+    retractUserFinger();
+}
+
+function retractUserFinger() {
     isMouseMoving = false;
 }
 
@@ -216,9 +243,18 @@ function onMouseUp() {
 function onMouseMove( event ) {
 
     event.preventDefault();
+    rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+}
 
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+function onTouchMove(event) {
+    event.preventDefault();
+    rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+}
+
+function rotateUserHead(x, y, width, height) {
+
+    mouse.x = ( x / width ) * 2 - 1;
+    mouse.y = - ( y / height ) * 2 + 1;
 
     isMouseMoving = true;
 

@@ -25,6 +25,12 @@ export function fileFromUrl() {
     return url.file;
 }
 
+export function urlFromFile(file) {
+    readHashParameters(url);
+    url.file = file;
+    writeHashParameters(url);
+}
+
 function hasCameraCoordinatedChanged(camera, url) {
     return url.x !== camera.position.x
         || url.y !== camera.position.y

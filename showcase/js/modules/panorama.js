@@ -11,18 +11,18 @@ var BACKGROUND_SPHERE_RADIUS = 500;
 var MENU_ITEM_SPHERE_RADIUS = 100;
 var MENU_ANGLE_BETWEEN_ITEMS = .6;
 
-export function init(panoramas, selectedPanorama, setCameraPosition) {
+export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
 
-    var container;
-
-    container = document.getElementById( 'canvas-container' );
+    var container = document.getElementById( 'canvas-container' );
 
     camera = new THREE.PerspectiveCamera(
         40, window.innerWidth / window.innerHeight,
         CAMERA_DISPLACEMENT_RADIUS,
         BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
     );
+    camera.position.set( 0, 0, -50 );
     setCameraPosition(camera);
+
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111111 );
@@ -45,6 +45,8 @@ export function init(panoramas, selectedPanorama, setCameraPosition) {
     panoramas.map(function(panorama, index) {
         createPanorama(panorama, scene, selectedMenuIndex);
     });
+
+    var onMouseClick = createMouseClickHandler(getPanoramaIndex);
 
     window.addEventListener( 'resize', onWindowResize, false );
     window.addEventListener( 'wheel', onMouseWheel, false );
@@ -123,67 +125,83 @@ function onWindowResize() {
 
 function onMouseWheel(event) {
 
-    const newFOV = camera.fov + event.deltaY;
+    const newFOV = camera.fov + Math.sign(event.deltaY);
 
     if (newFOV < 3 || newFOV > 75) {
         return;
     }
 
-    camera.fov += event.deltaY;
+    camera.fov = newFOV;
     camera.updateProjectionMatrix();
     controls.update();
 }
 
-function onMouseClick() {
+function createMouseClickHandler(getPanoramaIndex) {
+    return function onMouseClick() {
 
-    if (!isMouseMoving) {
-        if (null === INTERSECTED) {
-            isMenuOn = hideMenu(isMenuOn);
-        } else {
-            isMenuOn = showMenu(isMenuOn);
+        if (!isMouseMoving) {
+            if (null === INTERSECTED) {
+                isMenuOn = !isMenuOn;
+                handleClickOnBackgroundSphere(isMenuOn);
+            } else {
+                handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex);
+                isMenuOn = false;
+                INTERSECTED = null;
+
+                // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
+                // var radius = 50;
+                // var x = radius * Math.cos(angle);
+                // var y = camera.position.y;
+                // var z = radius * Math.sin(angle);
+                // camera.position.set(x, y, z);
+            }
         }
+
+        isMouseMoving = false;
     }
-
-    isMouseMoving = false;
 }
 
-function hideMenu(isMenuOn) {
-    isMenuOn = !isMenuOn;
-    menuSphereMeshes.map(function (menuSphereMesh, index) {
-        if (isMenuOn) {
-            placeInCircle(index, menuSphereMesh, selectedMenuIndex)
-        }
-        menuSphereMesh.visible = isMenuOn;
-    });
-
-    return isMenuOn;
+function handleClickOnBackgroundSphere(isMenuOn) {
+    if (isMenuOn) {
+        showMenuItems();
+    } else {
+        hideMenuItems();
+    }
+}
+function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex) {
+    if (isMenuOn) {
+        selectedMenuIndex = findSelectedMenuItemIndex();
+        hideMenuItems();
+        showBackgroundSphere(selectedMenuIndex);
+        getPanoramaIndex(selectedMenuIndex);
+    }
 }
 
-function showMenu(isMenuOn) {
+function findSelectedMenuItemIndex() {
     selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
         return menuSphereMesh.id === INTERSECTED.id;
     });
+    return selectedMenuIndex;
+}
 
+function showBackgroundSphere(selectedMenuIndex) {
     backgroundSphereMeshes.map(function (backgroundSphereMesh) {
         backgroundSphereMesh.visible = false;
     });
     backgroundSphereMeshes[selectedMenuIndex].visible = true;
+}
 
+function hideMenuItems() {
     menuSphereMeshes.map(function (menuSphereMesh) {
         menuSphereMesh.visible = false;
     });
+}
 
-    isMenuOn = false;
-    INTERSECTED = null;
-
-    // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
-    // var radius = 50;
-    // var x = radius * Math.cos(angle);
-    // var y = camera.position.y;
-    // var z = radius * Math.sin(angle);
-    // camera.position.set(x, y, z);
-
-    return isMenuOn;
+function showMenuItems() {
+    menuSphereMeshes.map(function (menuSphereMesh, index) {
+        placeInCircle(index, menuSphereMesh, selectedMenuIndex)
+        menuSphereMesh.visible = true;
+    });
 }
 
 function onMouseDown()

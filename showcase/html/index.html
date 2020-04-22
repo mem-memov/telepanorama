@@ -15,18 +15,25 @@
             import * as URL from '/js/modules/url.js';
 			import { getUsefulContents } from '/js/modules/file.js';
 
-			function fileToPath(file) {
-				return '/image/' + file;
+			function fileToPath(file, prefix) {
+				return prefix + file;
+			}
+
+			function pathToFile(path, prefix) {
+				return path.substring(prefix.length - 1)
 			}
 
 			getUsefulContents(
 				'./showcase.json',
 				showcase => {
-					var selectedPanorama = fileToPath(URL.fileFromUrl());
+					var prefix = '/image/';
+					var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
 					var panoramas = showcase.showpieces.map(function (showpiece) {
-						return fileToPath(showpiece.file);
+						return fileToPath(showpiece.file, prefix);
 					});
-					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition);
+					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition, function (selectedIndex) {
+						URL.urlFromFile(showcase.showpieces[selectedIndex].file)
+					});
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}
 			);

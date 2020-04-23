@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Telepanorama\Showcase;
 
+use Telepanorama\ArtStudio\Album;
+use Telepanorama\ArtStudio\ImageInAlbum;
 use Telepanorama\Partner\Exhibition\RelativePath;
 use Telepanorama\Partner\Exhibition\Server as Partner;
 
@@ -90,7 +92,7 @@ class Exhibition
      * @throws \Telepanorama\Partner\Exhibition\Remote\SendFailed
      * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
      */
-    public function takeShowpiece(Panorama $panorama): Showpiece
+    public function takeShowpiece(Panorama $panorama, Album $album): Showpiece
     {
         $showpiece = new Showpiece($panorama->nameFile());
 
@@ -101,6 +103,14 @@ class Exhibition
 
         $remotePanorama = new RelativePath('image/' . $showpiece->getFile());;
         $exhibitor->sendToRemoteServer($localPanorama, $remotePanorama);
+
+        $album->eachImage(function (ImageInAlbum $imageInAlbum) use ($exhibitor) {
+            $localImage = new RelativePath($imageInAlbum->getFile());
+            $exhibitor->moveOnLocalServer($imageInAlbum->getAbsolutePath(), $localImage);
+
+            $remoteImage = new RelativePath('image/' . $imageInAlbum->getFile());;
+            $exhibitor->sendToRemoteServer($localImage, $remoteImage);
+        });
 
         return $showpiece;
     }

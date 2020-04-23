@@ -8,8 +8,12 @@ class Ruler
 {
     public function measureRectangle(string $file): Rectangle
     {
-        [$width, $height] = getimagesize($file);
+        $size = getimagesize($file);
 
-        return new Rectangle($width, $height);
+        if (false === $size) {
+
+        }
+
+        return new Rectangle($size[0], $size[1]);
     }
 }

@@ -8,10 +8,14 @@ class Glass
 {
     public function diminish(MeasuredOriginal $original, Sketch $sketch): void
     {
+        if (!$original->toComparableRectangle()->isGreaterThan($sketch->toComparableRectangle())) {
+
+        }
+
         $miniatureImage = imagecreatetruecolor($sketch->getWidth(), $sketch->getHeight());
         $originalImage = imagecreatefromjpeg($original->getAbsolutePath());
 
-        imagecopyresampled(
+        $isResampled = imagecopyresampled(
             $miniatureImage,
             $originalImage,
             0,
@@ -24,6 +28,14 @@ class Glass
             $original->getHeight()
         );
 
-        imagejpeg($miniatureImage, $sketch->getPath(), 100);
+        if (!$isResampled) {
+
+        }
+
+        $isSavedToFile = imagejpeg($miniatureImage, $sketch->getPath(), 100);
+
+        if (!$isSavedToFile) {
+
+        }
     }
 }

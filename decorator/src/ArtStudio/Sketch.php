@@ -19,16 +19,21 @@ class Sketch
 
     public function getWidth(): int
     {
-        return $this->rectangle->getWidth();
+        return $this->rectangle->getWidth()->getPixels();
     }
 
     public function getHeight(): int
     {
-        return $this->rectangle->getHeight();
+        return $this->rectangle->getHeight()->getPixels();
     }
 
     public function getPath(): string
     {
         return $this->absolutePath;
+    }
+
+    public function toComparableRectangle(): ComparableRectangle
+    {
+        return $this->rectangle->toComparableRectangle();
     }
 }

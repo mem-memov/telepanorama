@@ -7,14 +7,14 @@ namespace Telepanorama\ArtStudio;
 class MeasuredOriginal
 {
     private Original $original;
-    private Ruler $ruler;
+    private Rectangle $rectangle;
 
     public function __construct(
         Original $original,
-        Ruler $ruler
+        Rectangle $rectangle
     ) {
         $this->original = $original;
-        $this->ruler = $ruler;
+        $this->rectangle = $rectangle;
     }
 
     public function getAbsolutePath(): string
@@ -24,15 +24,16 @@ class MeasuredOriginal
 
     public function getWidth(): int
     {
-        $rectangle = $this->ruler->measureRectangle($this->original->getAbsolutePath());
-
-        return $rectangle->getWidth();
+        return $this->rectangle->getWidth()->getPixels();
     }
 
     public function getHeight(): int
     {
-        $rectangle = $this->ruler->measureRectangle($this->original->getAbsolutePath());
+        return $this->rectangle->getHeight()->getPixels();
+    }
 
-        return $rectangle->getHeight();
+    public function toComparableRectangle(): ComparableRectangle
+    {
+        return $this->rectangle->toComparableRectangle();
     }
 }

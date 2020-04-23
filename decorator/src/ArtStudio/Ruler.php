@@ -16,4 +16,12 @@ class Ruler
 
         return new Rectangle($size[0], $size[1]);
     }
+
+    public function putOnOriginal(Original $original): RulerOnOriginal
+    {
+        return new RulerOnOriginal(
+            $original,
+            $this
+        );
+    }
 }

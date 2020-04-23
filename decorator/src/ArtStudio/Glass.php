@@ -6,9 +6,9 @@ namespace Telepanorama\ArtStudio;
 
 class Glass
 {
-    public function diminish(MeasuredOriginal $original, Sketch $sketch): void
+    public function diminish(MeasuredOriginal $original, SketchInSketchBook $sketch): void
     {
-        if (!$original->toComparableRectangle()->isGreaterThan($sketch->toComparableRectangle())) {
+        if (false === $original->toComparableRectangle()->isGreaterThan($sketch->toComparableRectangle())) {
 
         }
 
@@ -28,13 +28,31 @@ class Glass
             $original->getHeight()
         );
 
-        if (!$isResampled) {
+        if (false === $isResampled) {
+
+        }
+
+        $isOriginalImageDestroyed = imagedestroy($originalImage);
+
+        if (false === $isOriginalImageDestroyed) {
+
+        }
+
+        $isInterlaced = imageinterlace($miniatureImage, true);
+
+        if (false === $isInterlaced) {
 
         }
 
         $isSavedToFile = imagejpeg($miniatureImage, $sketch->getPath(), 100);
 
-        if (!$isSavedToFile) {
+        if (false === $isSavedToFile) {
+
+        }
+
+        $isMiniatureImageDestroyed = imagedestroy($miniatureImage);
+
+        if (false === $isMiniatureImageDestroyed) {
 
         }
     }

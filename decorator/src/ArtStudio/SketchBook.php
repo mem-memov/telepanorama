@@ -26,4 +26,28 @@ class SketchBook
             $sketch
         );
     }
+
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
+
+    public function eachSketch(callable $apply): void
+    {
+        array_map($apply, $this->sketches);
+    }
+
+    public function toAlbum(): Album
+    {
+        $album = new Album($this->directory);
+
+        $images = array_map(
+            function(Sketch $sketch) {
+                return $sketch->toImage();
+            },
+            $this->sketches
+        );
+
+        return $album;
+    }
 }

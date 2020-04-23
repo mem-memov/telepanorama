@@ -17,14 +17,14 @@ class Sketch
         $this->absolutePath = $absolutePath;
     }
 
-    public function getWidth(): int
+    public function getWidth(): Width
     {
-        return $this->rectangle->getWidth()->getPixels();
+        return $this->rectangle->getWidth();
     }
 
-    public function getHeight(): int
+    public function getHeight(): Height
     {
-        return $this->rectangle->getHeight()->getPixels();
+        return $this->rectangle->getHeight();
     }
 
     public function getPath(): string
@@ -35,5 +35,10 @@ class Sketch
     public function toComparableRectangle(): ComparableRectangle
     {
         return $this->rectangle->toComparableRectangle();
+    }
+
+    public function toImage(): Image
+    {
+        return new Image();
     }
 }

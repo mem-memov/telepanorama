@@ -18,4 +18,9 @@ class Original
     {
         return $this->absolutePath;
     }
+
+    public function createSketchBook(): SketchBook
+    {
+        return new SketchBook(dirname($this->absolutePath));
+    }
 }

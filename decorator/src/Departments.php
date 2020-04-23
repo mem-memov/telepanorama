@@ -8,6 +8,7 @@ use Telepanorama\Mail\Departments as MailDepartments;
 use Telepanorama\Mail\Package;
 use Telepanorama\Mail\Postman;
 use Telepanorama\Showcase\Decorator;
+use Telepanorama\ArtStudio\Artist;
 use Telepanorama\Order\Accountant;
 use Telepanorama\Partner\Exhibition\ServerUnavailable;
 
@@ -16,15 +17,18 @@ class Departments implements MailDepartments
     private Decorator $decorator;
     private Accountant $accountant;
     private Postman $postman;
+    private Artist $artist;
 
     public function __construct(
         Decorator $decorator,
         Accountant $accountant,
-        Postman $postman
+        Postman $postman,
+        Artist $artist
     ) {
         $this->decorator = $decorator;
         $this->accountant = $accountant;
         $this->postman = $postman;
+        $this->artist = $artist;
     }
 
     /**
@@ -46,6 +50,7 @@ class Departments implements MailDepartments
         }
         $inventoryNumber = preg_replace($pattern, '$1', $package->getSubject());
         if ($package->hasAttachment() && $this->decorator->recallShowcase($inventoryNumber)) {
+            $album = $this->artist->paint($package->getAttachmentPath());
             $showcase = $this->decorator->addShowpieceToShowcase($inventoryNumber, $package->getAttachmentPath());
             $this->postman->sendReplyToPackage($package, 'image', 'http://telepanorama.org/case/' . $inventoryNumber . '/#' . $showcase->getFile());
             return;

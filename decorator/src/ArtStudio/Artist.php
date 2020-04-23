@@ -8,7 +8,7 @@ class Artist
 {
 
 
-    public function paint(string $file): ImageCopies
+    public function paint(string $file): Album
     {
 
     }

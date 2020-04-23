@@ -6,25 +6,24 @@ namespace Telepanorama\ArtStudio;
 
 class Glass
 {
-    public function diminish(MeasuredPanorama $panorama, Rectangle $rectangle): Image
+    public function diminish(MeasuredOriginal $original, Sketch $sketch): void
     {
-        $miniature = imagecreatetruecolor($rectangle->getWidth(), $rectangle->getHeight());
-        $original = imagecreatefromjpeg($panorama->getAbsolutePath());
+        $miniatureImage = imagecreatetruecolor($sketch->getWidth(), $sketch->getHeight());
+        $originalImage = imagecreatefromjpeg($original->getAbsolutePath());
 
         imagecopyresampled(
-            $miniature,
-            $original,
+            $miniatureImage,
+            $originalImage,
             0,
             0,
             0,
             0,
-            $rectangle->getWidth(),
-            $rectangle->getHeight(),
-            $panorama->getWidth(),
-            $panorama->getHeight()
+            $sketch->getWidth(),
+            $sketch->getHeight(),
+            $original->getWidth(),
+            $original->getHeight()
         );
 
-        $miniatureFilePath = '';
-        imagejpeg($miniature, $miniatureFilePath, 100);
+        imagejpeg($miniatureImage, $sketch->getPath(), 100);
     }
 }

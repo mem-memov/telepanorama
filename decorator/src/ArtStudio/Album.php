@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Telepanorama\ArtStudio;
 
-class ImageCopies
+class Album
 {
-    private $images;
+    private string $directory;
+    private array $images;
 }

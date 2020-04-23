@@ -4,34 +4,34 @@ declare(strict_types=1);
 
 namespace Telepanorama\ArtStudio;
 
-class MeasuredPanorama
+class MeasuredOriginal
 {
-    private Panorama $panorama;
+    private Original $original;
     private Ruler $ruler;
 
     public function __construct(
-        Panorama $panorama,
+        Original $original,
         Ruler $ruler
     ) {
-        $this->panorama = $panorama;
+        $this->original = $original;
         $this->ruler = $ruler;
     }
 
     public function getAbsolutePath(): string
     {
-        return $this->panorama->getAbsolutePath();
+        return $this->original->getAbsolutePath();
     }
 
     public function getWidth(): int
     {
-        $rectangle = $this->ruler->measureRectangle($this->panorama->getAbsolutePath());
+        $rectangle = $this->ruler->measureRectangle($this->original->getAbsolutePath());
 
         return $rectangle->getWidth();
     }
 
     public function getHeight(): int
     {
-        $rectangle = $this->ruler->measureRectangle($this->panorama->getAbsolutePath());
+        $rectangle = $this->ruler->measureRectangle($this->original->getAbsolutePath());
 
         return $rectangle->getHeight();
     }

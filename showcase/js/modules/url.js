@@ -76,7 +76,16 @@ function writeHashParameters(url) {
 }
 
 function buildHash(url) {
-    return url.file + coordinatesToString(url.x, url.y, url.z) + fieldOfViewToString(url.fieldOfView);
+    if (
+        null === url.x
+        || null === url.y
+        || null === url.z
+        || null === url.fieldOfView
+    ) {
+        return url.file;
+    } else {
+        return url.file + coordinatesToString(url.x, url.y, url.z) + fieldOfViewToString(url.fieldOfView);
+    }
 }
 function fieldOfViewToString(fieldOfView) {
     return '|v' + Math.floor(fieldOfView)

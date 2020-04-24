@@ -29,7 +29,7 @@
 					var prefix = '/image/';
 					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
 					var selectedPanorama = showcase.showpieces[0].images[4].file;
-					// URL.urlFromFile(selectedPanorama);
+					URL.urlFromFile(selectedPanorama);
 
 					var panoramas = showcase.showpieces.map(function (showpiece) {
 						return fileToPath(showpiece.images[4].file, prefix);

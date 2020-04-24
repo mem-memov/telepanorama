@@ -92,6 +92,13 @@ class Exhibition
      * @throws \Telepanorama\Partner\Exhibition\Remote\SendFailed
      * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
      */
+    /**
+     * @throws \Telepanorama\Partner\Exhibition\Local\DeleteFailed
+     * @throws \Telepanorama\Partner\Exhibition\Local\MoveFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\DirectoryCreateFailed
+     * @throws \Telepanorama\Partner\Exhibition\Remote\SendFailed
+     * @throws \Telepanorama\Partner\Exhibition\ServerUnavailable
+     */
     public function takeShowpiece(Panorama $panorama, Album $album): Showpiece
     {
         $showpiece = new Showpiece($panorama->nameFile());

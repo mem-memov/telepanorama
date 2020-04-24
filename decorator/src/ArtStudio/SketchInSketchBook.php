@@ -29,7 +29,7 @@ class SketchInSketchBook
 
     public function getPath(): string
     {
-        return $this->sketchBook->getDirectory() . '/' . $this->sketch->getPath();
+        return $this->sketchBook->getDirectory() . '/' . $this->sketch->getFileName();
     }
 
     public function toComparableRectangle(): ComparableRectangle

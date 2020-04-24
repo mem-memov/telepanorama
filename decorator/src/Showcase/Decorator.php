@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Telepanorama\Showcase;
 
 use Exception;
+use Telepanorama\ArtStudio\Album;
 use Telepanorama\ArtStudio\ImageInAlbum;
 use Telepanorama\Partner\Exhibition\ServerUnavailable;
 
@@ -42,7 +43,7 @@ class Decorator
     /**
      * @throws ServerUnavailable
      */
-    public function addShowpieceToShowcase(string $inventoryNumber, string $panoramaPath, $album): Showpiece
+    public function addShowpieceToShowcase(string $inventoryNumber, string $panoramaPath, Album $album): Showpiece
     {
         $showpiece = $this->exhibition->takeShowpiece(new Panorama($panoramaPath), $album);
         $showcase = $this->exhibition->findShowcase($inventoryNumber);

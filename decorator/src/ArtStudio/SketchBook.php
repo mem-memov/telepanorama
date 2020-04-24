@@ -10,21 +10,11 @@ class SketchBook
     private array $sketches = [];
 
     public function __construct(
-        string $directory
+        string $directory,
+        array $sketches
     ) {
         $this->directory = $directory;
-    }
-
-    public function addSketch(Sketch $sketch): SketchInSketchBook
-    {
-        $index = count($this->sketches);
-        $this->sketches[] = $sketch;
-
-        return new SketchInSketchBook(
-            $index,
-            $this,
-            $sketch
-        );
+        $this->sketches = $sketches;
     }
 
     public function getDirectory(): string
@@ -34,20 +24,25 @@ class SketchBook
 
     public function eachSketch(callable $apply): void
     {
-        array_map($apply, $this->sketches);
+        array_map(
+            function (Sketch $sketch) use ($apply) {
+                $apply(new SketchInSketchBook($sketch, $this));
+            },
+            $this->sketches
+        );
     }
 
     public function toAlbum(): Album
     {
-        $album = new Album($this->directory);
-
         $images = array_map(
             function(Sketch $sketch) {
-                return $sketch->toImage();
+                $image =  $sketch->toImage();
+                rename($this->directory . '/' . $sketch->getFileName(), $this->directory . '/' . $image->getFileName());
+                return $image;
             },
             $this->sketches
         );
 
-        return $album;
+        return new Album($this->directory, $images);
     }
 }

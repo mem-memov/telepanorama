@@ -14,7 +14,7 @@ class Ruler
 
         }
 
-        return new Rectangle($size[0], $size[1]);
+        return new Rectangle(new Width($size[0]), new Height($size[1]));
     }
 
     public function putOnOriginal(Original $original): RulerOnOriginal

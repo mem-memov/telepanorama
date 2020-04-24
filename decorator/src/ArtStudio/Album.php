@@ -10,9 +10,11 @@ class Album
     private array $images;
 
     public function __construct(
-        string $directory
+        string $directory,
+        array $images
     ) {
         $this->directory = $directory;
+        $this->images = $images;
     }
 
     public function eachImage(callable $apply): void

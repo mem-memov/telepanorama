@@ -19,8 +19,8 @@ class Original
         return $this->absolutePath;
     }
 
-    public function createSketchBook(): SketchBook
+    public function createSketchBook(array $sketches): SketchBook
     {
-        return new SketchBook(dirname($this->absolutePath));
+        return new SketchBook(dirname($this->absolutePath), $sketches);
     }
 }

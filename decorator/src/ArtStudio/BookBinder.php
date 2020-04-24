@@ -16,49 +16,32 @@ class BookBinder
 
     public function bind(Original $original): SketchBook
     {
-        $sketchBook = $original->createSketchBook();
+        $prefix = basename($original->getAbsolutePath()) . '_';
 
-        $sketchBook->add(
+        $sketches = [
             new Sketch(
                 $this->rectangles->make8K(),
-                'sketch8K.jpeg'
-            )
-        );
-
-        $sketchBook->add(
+                $prefix . 'sketch8K.jpeg'
+            ),
             new Sketch(
                 $this->rectangles->make4K(),
-                'sketch4K.jpeg'
-            )
-        );
-
-        $sketchBook->add(
+                $prefix . 'sketch4K.jpeg'
+            ),
             new Sketch(
                 $this->rectangles->make1K(),
-                'sketch1K.jpeg'
-            )
-        );
-
-        $sketchBook->add(
+                $prefix . 'sketch1K.jpeg'
+            ),
             new Sketch(
                 $this->rectangles->makeHalfK(),
-                'sketchHalfK.jpeg'
-            )
-        );
-
-        $sketchBook->add(
+                $prefix . 'sketchHalfK.jpeg'
+            ),
             new Sketch(
                 $this->rectangles->makeQuoterK(),
-                'sketchQuoterK.jpeg'
+                $prefix . 'sketchQuoterK.jpeg'
             )
-        );
+        ];
 
-        $sketchBook->add(
-            new Sketch(
-                $this->rectangles->make8K(),
-                'path'
-            )
-        );
+        $sketchBook = $original->createSketchBook($sketches);
 
         return $sketchBook;
     }

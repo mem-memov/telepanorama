@@ -32,7 +32,7 @@
 						return fileToPath(showpiece.images[4].file, prefix);
 					});
 					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition, function (selectedIndex) {
-						URL.urlFromFile(showcase.showpieces[selectedIndex].file)
+						URL.urlFromFile(showcase.showpieces[selectedIndex].images[4].file)
 					});
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}

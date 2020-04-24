@@ -159,7 +159,7 @@ function createScreenTouchEndHandler(getPanoramaIndex) {
 }
 
 function handleUserProddingFinger(getPanoramaIndex) {
-    console.log(isMouseMoving);
+
     if (!isMouseMoving) {
         if (null === INTERSECTED) {
             isMenuOn = !isMenuOn;

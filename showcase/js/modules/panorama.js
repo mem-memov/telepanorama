@@ -101,7 +101,6 @@ function createBackground(texture, scene, selectedMenuIndex) {
     scene.add( backgroundSphereMesh );
     backgroundSphereMeshes.push(backgroundSphereMesh);
     var index = backgroundSphereMeshes.length - 1;
-    console.log(index, selectedMenuIndex);
     backgroundSphereMesh.visible = index === selectedMenuIndex;
 }
 

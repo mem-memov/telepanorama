@@ -25,7 +25,7 @@ class Album
             function (array $imageData) {
                 $fileInfo = new SplFileInfo($imageData['file']);
                 return new Image(
-                    $fileInfo->getBasename(),
+                    basename($imageData['file']),
                     $fileInfo->getExtension(),
                     new Rectangle(
                         new Width($imageData['width']),

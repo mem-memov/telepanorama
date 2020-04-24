@@ -26,13 +26,13 @@
 			getUsefulContents(
 				'./showcase.json',
 				function (showcase) {
-					var prefix = '/image/';
+					// var prefix = '/image/';
 					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
-					var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, prefix);
-					URL.urlFromFile(pathToFile(selectedPanorama, prefix));
+					var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, '/image/');
+					URL.urlFromFile(pathToFile(selectedPanorama, '/image/'));
 
 					var panoramas = showcase.showpieces.map(function (showpiece) {
-						return fileToPath(showpiece.images[4].file, prefix);
+						return fileToPath(showpiece.images[4].file, '/image/');
 					});
 
 					PANORAMA.init(
@@ -44,7 +44,7 @@
 								pathToFile(
 									showcase.showpieces[selectedIndex].images[4].file
 								),
-								prefix
+								'/image/'
 							)
 						}
 					);

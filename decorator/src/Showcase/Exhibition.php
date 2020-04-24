@@ -54,7 +54,10 @@ class Exhibition
 
         $showpieceCollection = new ShowpieceCollection();
         foreach ($showcaseData['showpieces'] as $showpiece) {
-            $showpiece = new Showpiece($showpiece['file']);
+            $showpiece = new Showpiece(
+                $showpiece['file'],
+                Album::fromArray('/tmp', $showpiece['images'] ?? [])
+            );
             $showpieceCollection->add($showpiece);
         }
 
@@ -95,7 +98,7 @@ class Exhibition
      */
     public function takeShowpiece(Panorama $panorama, Album $album): Showpiece
     {
-        $showpiece = new Showpiece($panorama->nameFile());
+        $showpiece = new Showpiece($panorama->nameFile(), $album);
 
         $exhibitor = $this->partner->connect();
 

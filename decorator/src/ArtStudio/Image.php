@@ -30,4 +30,15 @@ class Image
     {
         return $this->inventoryNumber . '.' . $this->extension;
     }
+
+    public function getDescription(): array
+    {
+        return [
+            'file' => $this->getFileName(),
+            'width' => $this->resolution->getWidth()->getPixels(),
+            'height' => $this->resolution->getHeight()->getPixels(),
+            'size' => $this->size,
+            'mimeType' => $this->mimeType
+        ];
+    }
 }

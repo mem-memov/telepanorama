@@ -24,6 +24,10 @@
     docker service logs -f telepanorama-stack_decorator-nginx
     docker service logs -f telepanorama-stack_decorator-php
     
+### Запуск приложения из браузереа для разработчика
+
+    http://127.0.0.1:8080/
+    
 ### Запуск тестов
 
     # для просмотра отчёта о покрытии тестами открыть с диска ./decorator/coverage/index.html в браузере

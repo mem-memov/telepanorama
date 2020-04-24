@@ -17,6 +17,11 @@ class Album
         $this->images = $images;
     }
 
+    public function getDirectory(): string
+    {
+        return $this->directory;
+    }
+
     public function eachImage(callable $apply): void
     {
         array_map(

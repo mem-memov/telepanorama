@@ -38,7 +38,7 @@ class Glass
 
         }
 
-        $isInterlaced = imageinterlace($miniatureImage, true);
+        $isInterlaced = imageinterlace($miniatureImage, 1);
 
         if (false === $isInterlaced) {
 

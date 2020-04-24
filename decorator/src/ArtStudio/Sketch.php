@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Telepanorama\ArtStudio;
 
-use SplFileInfo;
-
 class Sketch
 {
     private Rectangle $rectangle;
@@ -29,6 +27,11 @@ class Sketch
         return $this->rectangle->getHeight();
     }
 
+    public function getRectangle(): Rectangle
+    {
+        return $this->rectangle;
+    }
+
     public function getFileName(): string
     {
         return $this->fileName;
@@ -37,18 +40,5 @@ class Sketch
     public function toComparableRectangle(): ComparableRectangle
     {
         return $this->rectangle->toComparableRectangle();
-    }
-
-    public function toImage(): Image
-    {
-        $fileInfo = new SplFileInfo($this->fileName);
-
-        return new Image(
-            md5_file($this->fileName),
-            $fileInfo->getExtension(),
-            $this->rectangle,
-            $fileInfo->getSize(),
-            mime_content_type($this->fileName)
-        );
     }
 }

@@ -19,11 +19,11 @@ class ImageInAlbum
 
     public function getAbsolutePath(): string
     {
-        return $this->album->getDirectory();
+        return $this->album->getDirectory() . '/' . $this->image->getFileName();
     }
 
     public function getFile(): string
     {
-        return '';
+        return $this->image->getFileName();
     }
 }

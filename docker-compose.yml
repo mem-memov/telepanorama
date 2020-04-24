@@ -21,6 +21,9 @@ services:
       - telepanorama-network
   decorator-php:
     image: decorator-php-image:0.0.1
+    configs:
+      - source: decorator-php-php-ini-development-conf
+        target: /usr/local/etc/php/php.ini
     environment:
       SITE_MODE: dev
     volumes:
@@ -71,3 +74,7 @@ configs:
     file: ./deployment/telepanorama/decorator/nginx/nginx.conf
   decorator-nginx-default-conf:
     file: ./deployment/telepanorama/decorator/nginx/default.conf
+  decorator-php-php-ini-development-conf:
+    file: ./deployment/telepanorama/decorator/php/php.ini-development
+  decorator-php-php-ini-production-conf:
+    file: ./deployment/telepanorama/decorator/php/php.ini-production

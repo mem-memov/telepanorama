@@ -36,7 +36,8 @@ class SketchBook
     {
         $images = array_map(
             function(Sketch $sketch) {
-                $image =  $sketch->toImage();
+                $sketchInSketchBook = new SketchInSketchBook($sketch, $this);
+                $image =  $sketchInSketchBook->toImage();
                 rename($this->directory . '/' . $sketch->getFileName(), $this->directory . '/' . $image->getFileName());
                 return $image;
             },

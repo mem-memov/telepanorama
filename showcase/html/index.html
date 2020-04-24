@@ -29,14 +29,14 @@
 					var prefix = '/image/';
 					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
 					var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, prefix);
-					URL.urlFromFile(selectedPanorama);
+					URL.urlFromFile(pathToFile(selectedPanorama));
 
 					var panoramas = showcase.showpieces.map(function (showpiece) {
 						return fileToPath(showpiece.images[4].file, prefix);
 					});
 
 					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition, function (selectedIndex) {
-						URL.urlFromFile(showcase.showpieces[selectedIndex].images[4].file)
+						URL.urlFromFile(pathToFile(showcase.showpieces[selectedIndex].images[4].file))
 					});
 
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);

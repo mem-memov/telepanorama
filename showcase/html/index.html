@@ -25,7 +25,7 @@
 
 			getUsefulContents(
 				'./showcase.json',
-				showcase => {
+				function (showcase) {
 					var prefix = '/image/';
 					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
 					var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, prefix);
@@ -35,9 +35,19 @@
 						return fileToPath(showpiece.images[4].file, prefix);
 					});
 
-					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition, function (selectedIndex) {
-						URL.urlFromFile(pathToFile(showcase.showpieces[selectedIndex].images[4].file), prefix)
-					});
+					PANORAMA.init(
+						panoramas,
+						selectedPanorama,
+						URL.urlToCameraPosition,
+						function (selectedIndex) {
+							URL.urlFromFile(
+								pathToFile(
+									showcase.showpieces[selectedIndex].images[4].file
+								),
+								prefix
+							)
+						}
+					);
 
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}

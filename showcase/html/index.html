@@ -27,13 +27,17 @@
 				'./showcase.json',
 				showcase => {
 					var prefix = '/image/';
-					var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
+					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
+					var selectedPanorama = showcase.showpieces[0].images[4].file;
+
 					var panoramas = showcase.showpieces.map(function (showpiece) {
 						return fileToPath(showpiece.images[4].file, prefix);
 					});
+
 					PANORAMA.init(panoramas, selectedPanorama, URL.urlToCameraPosition, function (selectedIndex) {
 						URL.urlFromFile(showcase.showpieces[selectedIndex].images[4].file)
 					});
+
 					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
 				}
 			);

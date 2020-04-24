@@ -45,7 +45,6 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     panoramas.map(function(panorama, index) {
         createPanorama(panorama, scene, selectedMenuIndex);
     });
-    showBackgroundSphere(selectedMenuIndex);
 
     var onMouseClick = createMouseClickHandler(getPanoramaIndex);
 
@@ -102,6 +101,7 @@ function createBackground(texture, scene, selectedMenuIndex) {
     scene.add( backgroundSphereMesh );
     backgroundSphereMeshes.push(backgroundSphereMesh);
     var index = backgroundSphereMeshes.length - 1;
+    console.log(index, selectedMenuIndex);
     backgroundSphereMesh.visible = index === selectedMenuIndex;
 }
 

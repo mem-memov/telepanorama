@@ -76,7 +76,6 @@ function writeHashParameters(url) {
 }
 
 function buildHash(url) {
-    console.log(url);
     if (
         null === url.x
         || null === url.y

@@ -104,12 +104,16 @@ class Exhibition
         $remotePanorama = new RelativePath('image/' . $showpiece->getFile());;
         $exhibitor->sendToRemoteServer($localPanorama, $remotePanorama);
 
+        $exhibitor->deleteOnLocalServer($localPanorama);
+
         $album->eachImage(function (ImageInAlbum $imageInAlbum) use ($exhibitor) {
             $localImage = new RelativePath($imageInAlbum->getFile());
             $exhibitor->moveOnLocalServer($imageInAlbum->getAbsolutePath(), $localImage);
 
             $remoteImage = new RelativePath('image/' . $imageInAlbum->getFile());;
             $exhibitor->sendToRemoteServer($localImage, $remoteImage);
+
+            $exhibitor->deleteOnLocalServer($localImage);
         });
 
         return $showpiece;

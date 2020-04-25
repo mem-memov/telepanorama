@@ -20,8 +20,8 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
         CAMERA_DISPLACEMENT_RADIUS,
         BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
     );
-    camera.position.set( 0, 0, -50 );
-    setCameraPosition(camera);
+    camera.position.set( 0, 0, -CAMERA_DISPLACEMENT_RADIUS );
+    // setCameraPosition(camera);
 
 
     scene = new THREE.Scene();
@@ -109,7 +109,6 @@ function createLights(scene, backgroundSphereRadius) {
 function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
 
     var loader = new THREE.TextureLoader();
-    loader.detectSupport( renderer );
     loader.load(
         panorama,
         function (texture) {

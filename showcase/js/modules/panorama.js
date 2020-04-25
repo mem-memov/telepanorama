@@ -21,60 +21,62 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
         BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
     );
     camera.position.set( 0, 0, -CAMERA_DISPLACEMENT_RADIUS );
-    // setCameraPosition(camera);
+    setCameraPosition(camera);
 
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x00ffff );
 
-    //createLights(scene, BACKGROUND_SPHERE_RADIUS);
+    createLights(scene, BACKGROUND_SPHERE_RADIUS);
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
-    // controls = new OrbitControls( camera, renderer.domElement );
-    // controls.enablePan = false;
-    // controls.enableZoom = false;
-    // controls.update();
+    controls = new OrbitControls( camera, renderer.domElement );
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.update();
 
-    // selectedMenuIndex = panoramas.findIndex(function(panorama) {
-    //     return panorama === selectedPanorama;
-    // });
-    // panoramas.map(function(panorama, index) {
-    //     createPanorama(panorama, scene, selectedMenuIndex);
-    // });
-    createPanorama(panoramas[0], scene, 0);
+    selectedMenuIndex = panoramas.findIndex(function(panorama) {
+        return panorama === selectedPanorama;
+    });
+    panoramas.map(function(panorama, index) {
+        createPanorama(panorama, scene, selectedMenuIndex);
+    });
 
-    // var onMouseClick = createMouseClickHandler(getPanoramaIndex);
-    //
-    // window.addEventListener( 'resize', onWindowResize, false );
-    // window.addEventListener( 'wheel', onMouseWheel, false );
-    // window.addEventListener( 'click', onMouseClick, false );
-    // window.addEventListener( 'mousemove', onMouseMove, false );
-    // window.addEventListener( 'mousedown', onMouseDown, false );
-    // window.addEventListener( 'mouseup', onMouseUp, false );
-    //
-    // var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
-    // window.addEventListener( 'touchstart', onTouchStart, false );
-    // window.addEventListener( 'touchmove', onTouchMove, false );
-    // window.addEventListener( 'touchend', onTouchEnd, false );
-    // window.addEventListener( 'touchcancel', onTouchCancel, false );
+
+    var onMouseClick = createMouseClickHandler(getPanoramaIndex);
+
+    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'wheel', onMouseWheel, false );
+    window.addEventListener( 'click', onMouseClick, false );
+    window.addEventListener( 'mousemove', onMouseMove, false );
+    window.addEventListener( 'mousedown', onMouseDown, false );
+    window.addEventListener( 'mouseup', onMouseUp, false );
+
+    var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
+    window.addEventListener( 'touchstart', onTouchStart, false );
+    window.addEventListener( 'touchmove', onTouchMove, false );
+    window.addEventListener( 'touchend', onTouchEnd, false );
+    window.addEventListener( 'touchcancel', onTouchCancel, false );
+
 }
 
 export function launchAnimation(onAnimate) {
+
 
     function makeAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
 
-            // rotateMenuItems();
-            //
-            // raycaster.setFromCamera( mouse, camera );
-            // detectSelectedMenuItem(raycaster);
-            //
-            // controls.update();
+            rotateMenuItems();
+
+            raycaster.setFromCamera( mouse, camera );
+            detectSelectedMenuItem(raycaster);
+
+            controls.update();
             renderer.render( scene, camera );
 
             onAnimate( camera );

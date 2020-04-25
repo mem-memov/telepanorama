@@ -1,58 +1,111 @@
-<!DOCTYPE html>
+<!--!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Telepanorama</title>
-		<style>
-			body { margin: 0; }
-			canvas { display: block; }
-		</style>
-	</head>
-	<body>
-        <div id="canvas-container"></div>
-		<script type="module">
-            import * as PANORAMA from '/js/modules/panorama.js';
-            import * as URL from '/js/modules/url.js';
-			import { getUsefulContents } from '/js/modules/file.js';
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<title>Telepanorama</title>
+	<style>
+		body { margin: 0; }
+		canvas { display: block; }
+	</style>
+</head>
 
-			function fileToPath(file, prefix) {
-				return prefix + file;
-			}
 
-			function pathToFile(path, prefix) {
-				return path.substring(prefix.length - 1)
-			}
+<body>
 
-			getUsefulContents(
-				'./showcase.json',
-				function (showcase) {
-					var prefix = '/image/';
-					// var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
-					var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, prefix);
-					URL.urlFromFile(pathToFile(selectedPanorama, prefix));
+<script type="module">
 
-					var panoramas = showcase.showpieces.map(function (showpiece) {
-						return fileToPath(showpiece.images[4].file, prefix);
-					});
+	import * as THREE from '/js/threejs/r116/build/three.module.js';
 
-					PANORAMA.init(
-						panoramas,
-						selectedPanorama,
-						URL.urlToCameraPosition,
-						function (selectedIndex) {
-							URL.urlFromFile(
-								pathToFile(
-									showcase.showpieces[selectedIndex].images[4].file,
-									prefix
-								)
-							)
-						}
-					);
+	var camera, controls, scene, renderer;
 
-					PANORAMA.launchAnimation(URL.cameraPositionToUrl);
+	init();
+	animate();
+
+	function init() {
+
+		scene = new THREE.Scene();
+		scene.background = new THREE.Color( 0xcccccc );
+
+		renderer = new THREE.WebGLRenderer( { antialias: true } );
+		renderer.setPixelRatio( window.devicePixelRatio );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		document.body.appendChild( renderer.domElement );
+
+		camera = new THREE.PerspectiveCamera( 150, window.innerWidth / window.innerHeight, 1, 2000 );
+		camera.position.set( 0, 0, 0 );
+
+		var loader = new THREE.TextureLoader();
+		loader.load(
+				'/image/8b813ee906630a2cc0f02698324b9556.jpeg',
+				function (texture) {
+					var geometry = new THREE.SphereBufferGeometry( 400, 30, 30 );
+					geometry.scale( - 1, 1, 1 );
+					var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa, map: texture } );
+					var mesh = new THREE.Mesh( geometry, material );
+					scene.add( mesh );
+				},
+				undefined,
+				function ( err ) {
+					console.error( 'An error happened.' );
 				}
-			);
+		);
 
-		</script>
-	</body>
+	}
+
+	function animate() {
+		requestAnimationFrame( animate );
+		renderer.render( scene, camera );
+	}
+</script>
+
+</body-->
+
+<body>
+    <div id="canvas-container"></div>
+    <script type="module">
+        import * as PANORAMA from '/js/modules/panorama.js';
+        import * as URL from '/js/modules/url.js';
+        import { getUsefulContents } from '/js/modules/file.js';
+
+        function fileToPath(file, prefix) {
+            return prefix + file;
+        }
+
+        function pathToFile(path, prefix) {
+            return path.substring(prefix.length - 1)
+        }
+
+        getUsefulContents(
+            './showcase.json',
+            function (showcase) {
+                var prefix = '/image/';
+                // var selectedPanorama = fileToPath(URL.fileFromUrl(), prefix);
+                var selectedPanorama = fileToPath(showcase.showpieces[0].images[4].file, prefix);
+                URL.urlFromFile(pathToFile(selectedPanorama, prefix));
+
+                var panoramas = showcase.showpieces.map(function (showpiece) {
+                    return fileToPath(showpiece.images[4].file, prefix);
+                });
+
+                PANORAMA.init(
+                    panoramas,
+                    selectedPanorama,
+                    URL.urlToCameraPosition,
+                    function (selectedIndex) {
+                        URL.urlFromFile(
+                            pathToFile(
+                                showcase.showpieces[selectedIndex].images[4].file,
+                                prefix
+                            )
+                        )
+                    }
+                );
+
+                PANORAMA.launchAnimation(URL.cameraPositionToUrl);
+            }
+        );
+
+    </script>
+</body>
 </html>

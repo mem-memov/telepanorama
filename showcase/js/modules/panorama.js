@@ -25,41 +25,63 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
 
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x111111 );
+    scene.background = new THREE.Color( 0x00ffff );
 
-    createLights(scene, BACKGROUND_SPHERE_RADIUS);
+    //createLights(scene, BACKGROUND_SPHERE_RADIUS);
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
-    controls = new OrbitControls( camera, renderer.domElement );
-    controls.enablePan = false;
-    controls.enableZoom = false;
-    controls.update();
+    // controls = new OrbitControls( camera, renderer.domElement );
+    // controls.enablePan = false;
+    // controls.enableZoom = false;
+    // controls.update();
 
-    selectedMenuIndex = panoramas.findIndex(function(panorama) {
-        return panorama === selectedPanorama;
-    });
-    panoramas.map(function(panorama, index) {
-        createPanorama(panorama, scene, selectedMenuIndex);
-    });
+    // selectedMenuIndex = panoramas.findIndex(function(panorama) {
+    //     return panorama === selectedPanorama;
+    // });
+    // panoramas.map(function(panorama, index) {
+    //     createPanorama(panorama, scene, selectedMenuIndex);
+    // });
+    createPanorama(panoramas[0], scene, 0);
 
-    var onMouseClick = createMouseClickHandler(getPanoramaIndex);
+    // var onMouseClick = createMouseClickHandler(getPanoramaIndex);
+    //
+    // window.addEventListener( 'resize', onWindowResize, false );
+    // window.addEventListener( 'wheel', onMouseWheel, false );
+    // window.addEventListener( 'click', onMouseClick, false );
+    // window.addEventListener( 'mousemove', onMouseMove, false );
+    // window.addEventListener( 'mousedown', onMouseDown, false );
+    // window.addEventListener( 'mouseup', onMouseUp, false );
+    //
+    // var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
+    // window.addEventListener( 'touchstart', onTouchStart, false );
+    // window.addEventListener( 'touchmove', onTouchMove, false );
+    // window.addEventListener( 'touchend', onTouchEnd, false );
+    // window.addEventListener( 'touchcancel', onTouchCancel, false );
+}
 
-    window.addEventListener( 'resize', onWindowResize, false );
-    window.addEventListener( 'wheel', onMouseWheel, false );
-    window.addEventListener( 'click', onMouseClick, false );
-    window.addEventListener( 'mousemove', onMouseMove, false );
-    window.addEventListener( 'mousedown', onMouseDown, false );
-    window.addEventListener( 'mouseup', onMouseUp, false );
+export function launchAnimation(onAnimate) {
 
-    var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
-    window.addEventListener( 'touchstart', onTouchStart, false );
-    window.addEventListener( 'touchmove', onTouchMove, false );
-    window.addEventListener( 'touchend', onTouchEnd, false );
-    window.addEventListener( 'touchcancel', onTouchCancel, false );
+    function makeAnimation(onAnimate) {
+        return function animate () {
+            requestAnimationFrame( animate );
+
+            // rotateMenuItems();
+            //
+            // raycaster.setFromCamera( mouse, camera );
+            // detectSelectedMenuItem(raycaster);
+            //
+            // controls.update();
+            renderer.render( scene, camera );
+
+            onAnimate( camera );
+        }
+    }
+
+    makeAnimation(onAnimate)();
 }
 
 function onTouchCancel(event) {
@@ -84,37 +106,47 @@ function createLights(scene, backgroundSphereRadius) {
     scene.add( selectionLight );
 }
 
-function createPanorama(panorama, scene, selectedMenuIndex) {
+function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
 
-    var texture = new THREE.TextureLoader().load( panorama );
-    createBackground(texture, scene, selectedMenuIndex);
-    createMenuItem(texture, scene, selectedMenuIndex);
+    var loader = new THREE.TextureLoader();
+    loader.detectSupport( renderer );
+    loader.load(
+        panorama,
+        function (texture) {
+            createBackground(texture, scene, selectedMenuIndex);
+            createMenuItem(texture, scene, selectedMenuIndex);
+        },
+        undefined,
+        function ( err ) {
+            console.error( 'An error happened.' );
+        }
+    );
 }
 
 function createBackground(texture, scene, selectedMenuIndex) {
 
-    var backgroundSphereGeometry = new THREE.SphereBufferGeometry( BACKGROUND_SPHERE_RADIUS, 30, 30 );
+    var geometry = new THREE.SphereBufferGeometry( BACKGROUND_SPHERE_RADIUS, 30, 30 );
     // invert the geometry on the x-axis so that all of the faces point inward
-    backgroundSphereGeometry.scale( - 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { map: texture } );
-    var backgroundSphereMesh = new THREE.Mesh( backgroundSphereGeometry, material );
-    scene.add( backgroundSphereMesh );
-    backgroundSphereMeshes.push(backgroundSphereMesh);
+    geometry.scale( - 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa, map: texture } );
+    var mesh = new THREE.Mesh( geometry, material );
+    scene.add( mesh );
+    backgroundSphereMeshes.push(mesh);
     var index = backgroundSphereMeshes.length - 1;
-    backgroundSphereMesh.visible = index === selectedMenuIndex;
+    mesh.visible = index === selectedMenuIndex;
 }
 
 function createMenuItem(texture, scene, selectedMenuIndex) {
 
-    var menuSphereGeometry = new THREE.SphereBufferGeometry( MENU_ITEM_SPHERE_RADIUS, 30, 30 );
-    var menuSphereMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
-    var menuSphereMesh = new THREE.Mesh( menuSphereGeometry, menuSphereMaterial );
-    scene.add( menuSphereMesh );
+    var geometry = new THREE.SphereBufferGeometry( MENU_ITEM_SPHERE_RADIUS, 30, 30 );
+    var material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
+    var mesh = new THREE.Mesh( geometry, material );
+    scene.add( mesh );
 
-    menuSphereMesh.visible = false;
-    menuSphereMeshes.push(menuSphereMesh);
+    mesh.visible = false;
+    menuSphereMeshes.push(mesh);
     var index = menuSphereMeshes.length - 1;
-    placeInCircle(index, menuSphereMesh, selectedMenuIndex);
+    placeInCircle(index, mesh, selectedMenuIndex);
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
@@ -261,26 +293,7 @@ function rotateUserHead(x, y, width, height) {
     // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(camera.position.x, camera.position.z);
 }
 
-export function launchAnimation(onAnimate) {
 
-    function makeAnimation(onAnimate) {
-        return function animate () {
-            requestAnimationFrame( animate );
-
-            rotateMenuItems();
-
-            raycaster.setFromCamera( mouse, camera );
-            detectSelectedMenuItem(raycaster);
-
-            controls.update();
-            renderer.render( scene, camera );
-
-            onAnimate( camera );
-        }
-    }
-
-    makeAnimation(onAnimate)();
-}
 
 function detectSelectedMenuItem(raycaster) {
     var intersects = raycaster.intersectObjects( menuSphereMeshes );

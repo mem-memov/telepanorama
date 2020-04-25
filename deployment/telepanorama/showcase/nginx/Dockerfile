@@ -15,4 +15,7 @@ RUN apt-get update && \
     chsh -s /bin/bash www-data && \
     echo 'www-data:ssh-password' | chpasswd
 
+RUN apt-get update && \
+    apt-get install -y nano
+
 CMD service ssh start && nginx -g "daemon off;"

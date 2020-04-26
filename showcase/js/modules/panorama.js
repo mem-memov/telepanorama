@@ -39,11 +39,8 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     viewer.camera.position.set( 0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS );
     setCameraPosition(viewer.camera);
 
-
     viewer.scene = new THREE.Scene();
     viewer.scene.background = new THREE.Color( 0x00ffff );
-
-    createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
 
     viewer.renderer = new THREE.WebGLRenderer({antialias: true});
     viewer.renderer.setPixelRatio( window.devicePixelRatio );
@@ -55,6 +52,7 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     viewer.controls.enableZoom = false;
     viewer.controls.update();
 
+    createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
     createPanoramas(panoramas, selectedPanorama);
     addListeners(getPanoramaIndex);
 }

@@ -19,7 +19,6 @@ var settings = {
     CANVAS_CONTAINER_ID: 'canvas-container'
 };
 
-
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var INTERSECTED = null;
 var selectionLight;
@@ -33,7 +32,6 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
 }
 
 export function launchAnimation(onAnimate) {
-
 
     function makeAnimation(onAnimate) {
         return function animate () {

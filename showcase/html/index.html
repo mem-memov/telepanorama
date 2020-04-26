@@ -1,4 +1,4 @@
-<!--!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -9,57 +9,6 @@
 		canvas { display: block; }
 	</style>
 </head>
-
-
-<body>
-
-<script type="module">
-
-	import * as THREE from '/js/threejs/r116/build/three.module.js';
-
-	var camera, controls, scene, renderer;
-
-	init();
-	animate();
-
-	function init() {
-
-		scene = new THREE.Scene();
-		scene.background = new THREE.Color( 0xcccccc );
-
-		renderer = new THREE.WebGLRenderer( { antialias: true } );
-		renderer.setPixelRatio( window.devicePixelRatio );
-		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.body.appendChild( renderer.domElement );
-
-		camera = new THREE.PerspectiveCamera( 150, window.innerWidth / window.innerHeight, 1, 2000 );
-		camera.position.set( 0, 0, 0 );
-
-		var loader = new THREE.TextureLoader();
-		loader.load(
-				'/image/8b813ee906630a2cc0f02698324b9556.jpeg',
-				function (texture) {
-					var geometry = new THREE.SphereBufferGeometry( 400, 30, 30 );
-					geometry.scale( - 1, 1, 1 );
-					var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa, map: texture } );
-					var mesh = new THREE.Mesh( geometry, material );
-					scene.add( mesh );
-				},
-				undefined,
-				function ( err ) {
-					console.error( 'An error happened.' );
-				}
-		);
-
-	}
-
-	function animate() {
-		requestAnimationFrame( animate );
-		renderer.render( scene, camera );
-	}
-</script>
-
-</body-->
 
 <body>
     <div id="canvas-container"></div>

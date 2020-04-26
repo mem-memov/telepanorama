@@ -15,7 +15,8 @@ var settings = {
     CAMERA_DISPLACEMENT_RADIUS: 50,
     BACKGROUND_SPHERE_RADIUS: 500,
     MENU_ITEM_SPHERE_RADIUS: 100,
-    MENU_ANGLE_BETWEEN_ITEMS: .6
+    MENU_ANGLE_BETWEEN_ITEMS: .6,
+    CANVAS_CONTAINER_ID: 'canvas-container'
 };
 
 
@@ -28,7 +29,7 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
 
     viewer.raycaster = new THREE.Raycaster();
     viewer.mouse = new THREE.Vector2();
-    viewer.container = document.getElementById( 'canvas-container' );
+    viewer.container = document.getElementById( settings.CANVAS_CONTAINER_ID );
 
     viewer.camera = new THREE.PerspectiveCamera(
         40, window.innerWidth / window.innerHeight,
@@ -54,29 +55,8 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     viewer.controls.enableZoom = false;
     viewer.controls.update();
 
-    selectedMenuIndex = panoramas.findIndex(function(panorama) {
-        return panorama === selectedPanorama;
-    });
-    panoramas.map(function(panorama, index) {
-        createPanorama(panorama, viewer.scene, selectedMenuIndex);
-    });
-
-
-    var onMouseClick = createMouseClickHandler(getPanoramaIndex);
-
-    window.addEventListener( 'resize', onWindowResize, false );
-    window.addEventListener( 'wheel', onMouseWheel, false );
-    window.addEventListener( 'click', onMouseClick, false );
-    window.addEventListener( 'mousemove', onMouseMove, false );
-    window.addEventListener( 'mousedown', onMouseDown, false );
-    window.addEventListener( 'mouseup', onMouseUp, false );
-
-    var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
-    window.addEventListener( 'touchstart', onTouchStart, false );
-    window.addEventListener( 'touchmove', onTouchMove, false );
-    window.addEventListener( 'touchend', onTouchEnd, false );
-    window.addEventListener( 'touchcancel', onTouchCancel, false );
-
+    createPanoramas(panoramas, selectedPanorama);
+    addListeners(getPanoramaIndex);
 }
 
 export function launchAnimation(onAnimate) {
@@ -99,6 +79,32 @@ export function launchAnimation(onAnimate) {
     }
 
     makeAnimation(onAnimate)();
+}
+
+function createPanoramas(panoramas, selectedPanorama) {
+    selectedMenuIndex = panoramas.findIndex(function(panorama) {
+        return panorama === selectedPanorama;
+    });
+    panoramas.map(function(panorama, index) {
+        createPanorama(panorama, viewer.scene, selectedMenuIndex);
+    });
+}
+
+function addListeners(getPanoramaIndex) {
+    var onMouseClick = createMouseClickHandler(getPanoramaIndex);
+
+    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'wheel', onMouseWheel, false );
+    window.addEventListener( 'click', onMouseClick, false );
+    window.addEventListener( 'mousemove', onMouseMove, false );
+    window.addEventListener( 'mousedown', onMouseDown, false );
+    window.addEventListener( 'mouseup', onMouseUp, false );
+
+    var onTouchEnd = createScreenTouchEndHandler(getPanoramaIndex);
+    window.addEventListener( 'touchstart', onTouchStart, false );
+    window.addEventListener( 'touchmove', onTouchMove, false );
+    window.addEventListener( 'touchend', onTouchEnd, false );
+    window.addEventListener( 'touchcancel', onTouchCancel, false );
 }
 
 function onTouchCancel(event) {

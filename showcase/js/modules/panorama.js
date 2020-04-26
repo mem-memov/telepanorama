@@ -1,49 +1,64 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
 import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
 
-var camera, scene, renderer, controls;
+var viewer = {
+    container: null,
+    camera: null,
+    scene: null,
+    renderer: null,
+    controls: null,
+    raycaster: null,
+    mouse: null
+}
+
+var settings = {
+    CAMERA_DISPLACEMENT_RADIUS: 50,
+    BACKGROUND_SPHERE_RADIUS: 500,
+    MENU_ITEM_SPHERE_RADIUS: 100,
+    MENU_ANGLE_BETWEEN_ITEMS: .6
+};
+
+
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
-var raycaster = new THREE.Raycaster(), mouse = new THREE.Vector2(), INTERSECTED = null;
+var INTERSECTED = null;
 var selectionLight;
 var isMouseMoving = false, isMenuOn = false;
-var CAMERA_DISPLACEMENT_RADIUS = 50;
-var BACKGROUND_SPHERE_RADIUS = 500;
-var MENU_ITEM_SPHERE_RADIUS = 100;
-var MENU_ANGLE_BETWEEN_ITEMS = .6;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
 
-    var container = document.getElementById( 'canvas-container' );
+    viewer.raycaster = new THREE.Raycaster();
+    viewer.mouse = new THREE.Vector2();
+    viewer.container = document.getElementById( 'canvas-container' );
 
-    camera = new THREE.PerspectiveCamera(
+    viewer.camera = new THREE.PerspectiveCamera(
         40, window.innerWidth / window.innerHeight,
-        CAMERA_DISPLACEMENT_RADIUS,
-        BACKGROUND_SPHERE_RADIUS + CAMERA_DISPLACEMENT_RADIUS + 10
+        settings.CAMERA_DISPLACEMENT_RADIUS,
+        settings.BACKGROUND_SPHERE_RADIUS + settings.CAMERA_DISPLACEMENT_RADIUS + 10
     );
-    camera.position.set( 0, 0, -CAMERA_DISPLACEMENT_RADIUS );
-    setCameraPosition(camera);
+    viewer.camera.position.set( 0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS );
+    setCameraPosition(viewer.camera);
 
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x00ffff );
+    viewer.scene = new THREE.Scene();
+    viewer.scene.background = new THREE.Color( 0x00ffff );
 
-    createLights(scene, BACKGROUND_SPHERE_RADIUS);
+    createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
 
-    renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
+    viewer.renderer = new THREE.WebGLRenderer({antialias: true});
+    viewer.renderer.setPixelRatio( window.devicePixelRatio );
+    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
+    viewer.container.appendChild( viewer.renderer.domElement );
 
-    controls = new OrbitControls( camera, renderer.domElement );
-    controls.enablePan = false;
-    controls.enableZoom = false;
-    controls.update();
+    viewer.controls = new OrbitControls( viewer.camera, viewer.renderer.domElement );
+    viewer.controls.enablePan = false;
+    viewer.controls.enableZoom = false;
+    viewer.controls.update();
 
     selectedMenuIndex = panoramas.findIndex(function(panorama) {
         return panorama === selectedPanorama;
     });
     panoramas.map(function(panorama, index) {
-        createPanorama(panorama, scene, selectedMenuIndex);
+        createPanorama(panorama, viewer.scene, selectedMenuIndex);
     });
 
 
@@ -73,13 +88,13 @@ export function launchAnimation(onAnimate) {
 
             rotateMenuItems();
 
-            raycaster.setFromCamera( mouse, camera );
-            detectSelectedMenuItem(raycaster);
+            viewer.raycaster.setFromCamera( viewer.mouse, viewer.camera );
+            detectSelectedMenuItem(viewer.raycaster);
 
-            controls.update();
-            renderer.render( scene, camera );
+            viewer.controls.update();
+            viewer.renderer.render( viewer.scene, viewer.camera );
 
-            onAnimate( camera );
+            onAnimate( viewer.camera );
         }
     }
 
@@ -126,7 +141,7 @@ function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
 
 function createBackground(texture, scene, selectedMenuIndex) {
 
-    var geometry = new THREE.SphereBufferGeometry( BACKGROUND_SPHERE_RADIUS, 30, 30 );
+    var geometry = new THREE.SphereBufferGeometry( settings.BACKGROUND_SPHERE_RADIUS, 30, 30 );
     // invert the geometry on the x-axis so that all of the faces point inward
     geometry.scale( - 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa, map: texture } );
@@ -139,7 +154,7 @@ function createBackground(texture, scene, selectedMenuIndex) {
 
 function createMenuItem(texture, scene, selectedMenuIndex) {
 
-    var geometry = new THREE.SphereBufferGeometry( MENU_ITEM_SPHERE_RADIUS, 30, 30 );
+    var geometry = new THREE.SphereBufferGeometry( settings.MENU_ITEM_SPHERE_RADIUS, 30, 30 );
     var material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
     var mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
@@ -151,32 +166,32 @@ function createMenuItem(texture, scene, selectedMenuIndex) {
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
-    var radius = BACKGROUND_SPHERE_RADIUS - (MENU_ITEM_SPHERE_RADIUS / 2);
-    var frontAngle = Math.PI*1.5 - controls.getAzimuthalAngle();
-    var angle = frontAngle + (index-selectedMenuIndex) * MENU_ANGLE_BETWEEN_ITEMS;
+    var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
+    var frontAngle = Math.PI*1.5 - viewer.controls.getAzimuthalAngle();
+    var angle = frontAngle + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
     menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
 }
 
 function onWindowResize() {
 
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    viewer.camera.aspect = window.innerWidth / window.innerHeight;
+    viewer.camera.updateProjectionMatrix();
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
 
 function onMouseWheel(event) {
 
-    const newFOV = camera.fov + Math.sign(event.deltaY);
+    const newFOV = viewer.camera.fov + Math.sign(event.deltaY);
 
     if (newFOV < 3 || newFOV > 75) {
         return;
     }
 
-    camera.fov = newFOV;
-    camera.updateProjectionMatrix();
-    controls.update();
+    viewer.camera.fov = newFOV;
+    viewer.camera.updateProjectionMatrix();
+    viewer.controls.update();
 }
 
 function createMouseClickHandler(getPanoramaIndex) {
@@ -205,9 +220,9 @@ function handleUserProddingFinger(getPanoramaIndex) {
             // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
             // var radius = 50;
             // var x = radius * Math.cos(angle);
-            // var y = camera.position.y;
+            // var y = viewer.camera.position.y;
             // var z = radius * Math.sin(angle);
-            // camera.position.set(x, y, z);
+            // viewer.camera.position.set(x, y, z);
         }
     }
 
@@ -286,12 +301,12 @@ function onTouchMove(event) {
 
 function rotateUserHead(x, y, width, height) {
 
-    mouse.x = ( x / width ) * 2 - 1;
-    mouse.y = - ( y / height ) * 2 + 1;
+    viewer.mouse.x = ( x / width ) * 2 - 1;
+    viewer.mouse.y = - ( y / height ) * 2 + 1;
 
     isMouseMoving = true;
 
-    // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(camera.position.x, camera.position.z);
+    // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(viewer.camera.position.x, viewer.camera.position.z);
 }
 
 

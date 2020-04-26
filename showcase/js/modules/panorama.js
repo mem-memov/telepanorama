@@ -26,32 +26,7 @@ var selectionLight;
 var isMouseMoving = false, isMenuOn = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
-
-    viewer.raycaster = new THREE.Raycaster();
-    viewer.mouse = new THREE.Vector2();
-    viewer.container = document.getElementById( settings.CANVAS_CONTAINER_ID );
-
-    viewer.camera = new THREE.PerspectiveCamera(
-        40, window.innerWidth / window.innerHeight,
-        settings.CAMERA_DISPLACEMENT_RADIUS,
-        settings.BACKGROUND_SPHERE_RADIUS + settings.CAMERA_DISPLACEMENT_RADIUS + 10
-    );
-    viewer.camera.position.set( 0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS );
-    setCameraPosition(viewer.camera);
-
-    viewer.scene = new THREE.Scene();
-    viewer.scene.background = new THREE.Color( 0x00ffff );
-
-    viewer.renderer = new THREE.WebGLRenderer({antialias: true});
-    viewer.renderer.setPixelRatio( window.devicePixelRatio );
-    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
-    viewer.container.appendChild( viewer.renderer.domElement );
-
-    viewer.controls = new OrbitControls( viewer.camera, viewer.renderer.domElement );
-    viewer.controls.enablePan = false;
-    viewer.controls.enableZoom = false;
-    viewer.controls.update();
-
+    prepareViewer(setCameraPosition);
     createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
     createPanoramas(panoramas, selectedPanorama);
     addListeners(getPanoramaIndex);
@@ -77,6 +52,33 @@ export function launchAnimation(onAnimate) {
     }
 
     makeAnimation(onAnimate)();
+}
+
+function prepareViewer(setCameraPosition) {
+    viewer.raycaster = new THREE.Raycaster();
+    viewer.mouse = new THREE.Vector2();
+    viewer.container = document.getElementById( settings.CANVAS_CONTAINER_ID );
+
+    viewer.camera = new THREE.PerspectiveCamera(
+        40, window.innerWidth / window.innerHeight,
+        settings.CAMERA_DISPLACEMENT_RADIUS,
+        settings.BACKGROUND_SPHERE_RADIUS + settings.CAMERA_DISPLACEMENT_RADIUS + 10
+    );
+    viewer.camera.position.set( 0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS );
+    setCameraPosition(viewer.camera);
+
+    viewer.scene = new THREE.Scene();
+    viewer.scene.background = new THREE.Color( 0x00ffff );
+
+    viewer.renderer = new THREE.WebGLRenderer({antialias: true});
+    viewer.renderer.setPixelRatio( window.devicePixelRatio );
+    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
+    viewer.container.appendChild( viewer.renderer.domElement );
+
+    viewer.controls = new OrbitControls( viewer.camera, viewer.renderer.domElement );
+    viewer.controls.enablePan = false;
+    viewer.controls.enableZoom = false;
+    viewer.controls.update();
 }
 
 function createPanoramas(panoramas, selectedPanorama) {

@@ -1,11 +1,13 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
+import * as FINGER from '/js/modules/finger.js';
+import { settings } from '/js/modules/settings.js';
 
 var menuSphereMeshes = [],
     selectedMenuIndex,
     lastSelectedMenuItem = null,
     isMenuOn = false;
 
-export function createMenuItem(texture, selectedMenuIndexWhenCreated, settings, addMeshToScene, getFrontAngle) {
+export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene, getFrontAngle) {
 
     selectedMenuIndex = selectedMenuIndexWhenCreated;
 
@@ -17,22 +19,7 @@ export function createMenuItem(texture, selectedMenuIndexWhenCreated, settings, 
     mesh.visible = false;
     menuSphereMeshes.push(mesh);
     var index = menuSphereMeshes.length - 1;
-    placeInCircle(index, mesh, selectedMenuIndex, settings, getFrontAngle);
-}
-
-function placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, getFrontAngle) {
-    var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
-    var angle = getFrontAngle() + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
-    menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
-}
-
-function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {
-    if (isMenuOn) {
-        selectedMenuIndex = findSelectedMenuItemIndex();
-        hideMenuItems();
-        showBackgroundSphere(selectedMenuIndex);
-        getPanoramaIndex(selectedMenuIndex);
-    }
+    placeInCircle(index, mesh, selectedMenuIndex, getFrontAngle);
 }
 
 export function hideMenuItems() {
@@ -41,9 +28,9 @@ export function hideMenuItems() {
     });
 }
 
-export function showMenuItems(selectedMenuIndex, settings, getFrontAngle) {
+export function showMenuItems(selectedMenuIndex, getFrontAngle) {
     menuSphereMeshes.map(function (menuSphereMesh, index) {
-        placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, getFrontAngle)
+        placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle)
         menuSphereMesh.visible = true;
     });
 }
@@ -75,12 +62,12 @@ export function rotateMenuItems() {
     });
 }
 
-export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBackgroundSphere, settings, getFrontAngle) {
+export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBackgroundSphere, getFrontAngle) {
 
     if (!isMouseMoving) {
         if (null === lastSelectedMenuItem) {
             isMenuOn = !isMenuOn;
-            handleClickOnBackgroundSphere(isMenuOn, settings, getFrontAngle);
+            handleClickOnBackgroundSphere(isMenuOn, getFrontAngle);
         } else {
             handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere);
             isMenuOn = false;
@@ -96,9 +83,9 @@ export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBa
     }
 }
 
-function handleClickOnBackgroundSphere(isMenuOn, settings, getFrontAngle) {
+function handleClickOnBackgroundSphere(isMenuOn, getFrontAngle) {
     if (isMenuOn) {
-        showMenuItems(selectedMenuIndex, settings, getFrontAngle);
+        showMenuItems(selectedMenuIndex, getFrontAngle);
     } else {
         hideMenuItems();
     }
@@ -110,3 +97,47 @@ function findSelectedMenuItemIndex() {
     });
     return selectedMenuIndex;
 }
+
+var menuHorizontalAngle = 0;
+
+function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
+    var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
+    //var horizontalAngle = getFrontAngle() + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
+    var horizontalAngle = menuHorizontalAngle + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
+    menuSphereMesh.position.set(radius * Math.cos(horizontalAngle), 0, radius * Math.sin(horizontalAngle));
+}
+
+function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {
+    if (isMenuOn) {
+        selectedMenuIndex = findSelectedMenuItemIndex();
+        hideMenuItems();
+        showBackgroundSphere(selectedMenuIndex);
+        getPanoramaIndex(selectedMenuIndex);
+    }
+}
+
+
+var draggedMenuItem = null;
+
+export function handleUserFingerProdding() {
+    FINGER.prodFinger();
+    if (null !== lastSelectedMenuItem) {
+        draggedMenuItem = lastSelectedMenuItem;
+    }
+}
+export function handleUserFingerRetracting() {
+    FINGER.retractFinger();
+    draggedMenuItem = null;
+}
+export function handleUserFingerSliding() {
+    FINGER.slideFinger();
+    if (FINGER.isSliding()) {
+        if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
+            console.log('drag menu item');
+        } else {
+            console.log('background moving');
+        }
+    }
+
+}
+

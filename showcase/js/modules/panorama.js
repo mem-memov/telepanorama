@@ -4,19 +4,11 @@ import * as BACKGROUND from '/js/modules/background.js';
 import * as LIGHT from '/js/modules/light.js';
 import * as VIEWER from '/js/modules/viewer.js';
 
-var settings = {
-    CAMERA_DISPLACEMENT_RADIUS: 50,
-    BACKGROUND_SPHERE_RADIUS: 500,
-    MENU_ITEM_SPHERE_RADIUS: 100,
-    MENU_ANGLE_BETWEEN_ITEMS: .6,
-    CANVAS_CONTAINER_ID: 'canvas-container'
-};
-
-var isMouseMoving = false;
+var isUserFingerMoving = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
-    VIEWER.prepareViewer(setCameraPosition, settings);
-    LIGHT.createLights(VIEWER.addMeshToScene, settings.BACKGROUND_SPHERE_RADIUS);
+    VIEWER.prepareViewer(setCameraPosition);
+    LIGHT.createLights(VIEWER.addMeshToScene);
     createPanoramas(panoramas, selectedPanorama);
     addListeners(getPanoramaIndex);
 }
@@ -72,8 +64,8 @@ function createPanorama(panorama, selectedMenuIndex) {
     loader.load(
         panorama,
         function (texture) {
-            BACKGROUND.createBackground(texture, VIEWER.addMeshToScene, selectedMenuIndex, settings);
-            MENU.createMenuItem(texture, selectedMenuIndex, settings, VIEWER.addMeshToScene, VIEWER.getFrontAngle);
+            BACKGROUND.createBackground(texture, VIEWER.addMeshToScene, selectedMenuIndex);
+            MENU.createMenuItem(texture, selectedMenuIndex, VIEWER.addMeshToScene, VIEWER.getFrontAngle);
         },
         undefined,
         function ( err ) {
@@ -104,27 +96,29 @@ function createScreenTouchEndHandler(getPanoramaIndex) {
 
 function onMouseDown() {
     retractUserFinger();
+    MENU.handleUserFingerProdding();
 }
 function onTouchStart(event) {
     retractUserFinger();
 }
 
 function protrudeUserFinger(getPanoramaIndex) {
-    MENU.handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, VIEWER.getFrontAngle);
-    isMouseMoving = false;
+    MENU.handleUserProddingFinger(isUserFingerMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, VIEWER.getFrontAngle);
+    isUserFingerMoving = false;
 }
 
 function retractUserFinger() {
-    isMouseMoving = false;
+    isUserFingerMoving = false;
 }
 
 function onMouseUp() {
-
+    MENU.handleUserFingerRetracting();
 }
 
 function onMouseMove( event ) {
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+    MENU.handleUserFingerSliding()
 }
 
 function onTouchMove(event) {
@@ -135,7 +129,7 @@ function onTouchMove(event) {
 function rotateUserHead(x, y, width, height) {
 
     VIEWER.updateMousePosition(x, y, width, height);
-    isMouseMoving = true;
+    isUserFingerMoving = true;
 
     // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(viewer.camera.position.x, viewer.camera.position.z);
 }

@@ -1,5 +1,6 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
 import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
+import { settings } from '/js/modules/settings.js';
 
 var viewer = {
     container: null,
@@ -11,7 +12,7 @@ var viewer = {
     mouse: null
 }
 
-export function prepareViewer(setCameraPosition, settings) {
+export function prepareViewer(setCameraPosition) {
     viewer.raycaster = new THREE.Raycaster();
     viewer.mouse = new THREE.Vector2();
     viewer.container = document.getElementById( settings.CANVAS_CONTAINER_ID );

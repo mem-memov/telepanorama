@@ -5,7 +5,8 @@ import { settings } from '/js/modules/settings.js';
 var menuSphereMeshes = [],
     selectedMenuIndex,
     lastSelectedMenuItem = null,
-    isMenuOn = false;
+    isMenuOn = false,
+    menuHorizontalAngle = 0;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene, getFrontAngle) {
 
@@ -30,9 +31,16 @@ export function hideMenuItems() {
 
 export function showMenuItems(selectedMenuIndex, getFrontAngle) {
     menuSphereMeshes.map(function (menuSphereMesh, index) {
-        placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle)
         menuSphereMesh.visible = true;
     });
+}
+
+export function displayMenu() {
+    if (true === isMenuOn) {
+        menuSphereMeshes.map(function (menuSphereMesh, index) {
+            placeInCircle(index, menuSphereMesh)
+        });
+    }
 }
 
 export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSelectionSpot) {
@@ -98,7 +106,7 @@ function findSelectedMenuItemIndex() {
     return selectedMenuIndex;
 }
 
-var menuHorizontalAngle = 0;
+
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
@@ -129,13 +137,14 @@ export function handleUserFingerRetracting() {
     FINGER.retractFinger();
     draggedMenuItem = null;
 }
-export function handleUserFingerSliding() {
+export function handleUserFingerSliding(getFrontAngle) {
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
         if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
             console.log('drag menu item');
         } else {
             console.log('background moving');
+            menuHorizontalAngle = getFrontAngle();
         }
     }
 

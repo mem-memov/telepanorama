@@ -20,6 +20,7 @@ export function launchAnimation(cameraPositionToUrl) {
             requestAnimationFrame( animate );
             MENU.rotateMenuItems();
             MENU.detectSelectedMenuItem(VIEWER.detectIntersects, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
+            MENU.displayMenu();
             VIEWER.render();
             cameraPositionToUrl( VIEWER.hasCameraView, VIEWER.getCameraView );
         }
@@ -118,7 +119,7 @@ function onMouseUp() {
 function onMouseMove( event ) {
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
-    MENU.handleUserFingerSliding()
+    MENU.handleUserFingerSliding(VIEWER.getFrontAngle)
 }
 
 function onTouchMove(event) {

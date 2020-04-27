@@ -21,19 +21,19 @@ export function init(panoramas, selectedPanorama, setCameraPosition, getPanorama
     addListeners(getPanoramaIndex);
 }
 
-export function launchAnimation(onAnimate) {
+export function launchAnimation(cameraPositionToUrl) {
 
-    function makeAnimation(onAnimate) {
+    function makeAnimation(cameraPositionToUrl) {
         return function animate () {
             requestAnimationFrame( animate );
             MENU.rotateMenuItems();
             MENU.detectSelectedMenuItem(VIEWER.detectIntersects, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
             VIEWER.render();
-            onAnimate( VIEWER.hasCameraView, VIEWER.getCameraView );
+            cameraPositionToUrl( VIEWER.hasCameraView, VIEWER.getCameraView );
         }
     }
 
-    makeAnimation(onAnimate)();
+    makeAnimation(cameraPositionToUrl)();
 }
 
 function createPanoramas(panoramas, selectedPanorama) {

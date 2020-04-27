@@ -97,6 +97,13 @@ export function getCameraView() {
     ];
 }
 
+export function disableControls() {
+    viewer.controls.enabled = false;
+}
+export function enableControls() {
+    viewer.controls.enabled = true;
+}
+
 function setCameraView(x, y, z, fov) {
     viewer.camera.position.set(x, y, z);
     viewer.camera.fov = fov;

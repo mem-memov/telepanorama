@@ -137,13 +137,16 @@ export function handleUserFingerRetracting() {
     FINGER.retractFinger();
     draggedMenuItem = null;
 }
-export function handleUserFingerSliding(getFrontAngle) {
+export function handleUserFingerSliding(getFrontAngle, disableControls, enableControls) {
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
         if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
             console.log('drag menu item');
+            disableControls();
+            menuHorizontalAngle += 0.1;
         } else {
             console.log('background moving');
+            enableControls();
             menuHorizontalAngle = getFrontAngle();
         }
     }

@@ -22,7 +22,6 @@ var settings = {
     CANVAS_CONTAINER_ID: 'canvas-container'
 };
 
-var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var isMouseMoving = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
@@ -81,7 +80,7 @@ function prepareViewer(setCameraPosition) {
 }
 
 function createPanoramas(panoramas, selectedPanorama) {
-    selectedMenuIndex = panoramas.findIndex(function(panorama) {
+    var selectedMenuIndex = panoramas.findIndex(function(panorama) {
         return panorama === selectedPanorama;
     });
     panoramas.map(function(panorama, index) {
@@ -147,13 +146,13 @@ function onMouseWheel(event) {
 
 function createMouseClickHandler(getPanoramaIndex) {
     return function onMouseClick() {
-        protrudeUserFinger();
+        protrudeUserFinger(getPanoramaIndex);
     }
 }
 
 function createScreenTouchEndHandler(getPanoramaIndex) {
     return function onTouchEnd() {
-        protrudeUserFinger();
+        protrudeUserFinger(getPanoramaIndex);
     }
 }
 
@@ -164,8 +163,8 @@ function onTouchStart(event) {
     retractUserFinger();
 }
 
-function protrudeUserFinger() {
-    handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, viewer);
+function protrudeUserFinger(getPanoramaIndex) {
+    MENU.handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, viewer);
     isMouseMoving = false;
 }
 

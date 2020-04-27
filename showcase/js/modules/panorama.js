@@ -1,5 +1,8 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
 import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
+import * as MENU from '/js/modules/menu.js';
+import * as BACKGROUND from '/js/modules/background.js';
+import * as LIGHT from '/js/modules/light.js';
 
 var viewer = {
     container: null,
@@ -21,12 +24,11 @@ var settings = {
 
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
 var INTERSECTED = null;
-var selectionLight;
 var isMouseMoving = false, isMenuOn = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
     prepareViewer(setCameraPosition);
-    createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
+    LIGHT.createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
     createPanoramas(panoramas, selectedPanorama);
     addListeners(getPanoramaIndex);
 }
@@ -109,24 +111,6 @@ function onTouchCancel(event) {
 
 }
 
-function createLights(scene, backgroundSphereRadius) {
-    var light = new THREE.PointLight( 0xffffff, 1, backgroundSphereRadius );
-    light.position.set( 0, 0, 0 );
-    scene.add( light );
-
-    var topLight = new THREE.PointLight( 0xffffff, 2, 1000 );
-    topLight.position.set( 0, backgroundSphereRadius / 2, 0 );
-    scene.add( topLight );
-
-    var bottomLight = new THREE.PointLight( 0xffffff, .5, 1000 );
-    bottomLight.position.set( 0, - backgroundSphereRadius / 2, 0 );
-    scene.add( bottomLight );
-
-    selectionLight = new THREE.SpotLight( 0xffffff, 2, 505, 0.4 );
-    selectionLight.position.set( 0, 0, 0 );
-    scene.add( selectionLight );
-}
-
 function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
 
     var loader = new THREE.TextureLoader();
@@ -134,7 +118,7 @@ function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
         panorama,
         function (texture) {
             createBackground(texture, scene, selectedMenuIndex);
-            createMenuItem(texture, scene, selectedMenuIndex);
+            MENU.createMenuItem(texture, selectedMenuIndex, settings, viewer);
         },
         undefined,
         function ( err ) {
@@ -154,19 +138,6 @@ function createBackground(texture, scene, selectedMenuIndex) {
     backgroundSphereMeshes.push(mesh);
     var index = backgroundSphereMeshes.length - 1;
     mesh.visible = index === selectedMenuIndex;
-}
-
-function createMenuItem(texture, scene, selectedMenuIndex) {
-
-    var geometry = new THREE.SphereBufferGeometry( settings.MENU_ITEM_SPHERE_RADIUS, 30, 30 );
-    var material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
-    var mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
-
-    mesh.visible = false;
-    menuSphereMeshes.push(mesh);
-    var index = menuSphereMeshes.length - 1;
-    placeInCircle(index, mesh, selectedMenuIndex);
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
@@ -320,10 +291,10 @@ function detectSelectedMenuItem(raycaster) {
     if ( intersects.length > 0 ) {
         if ( INTERSECTED !== intersects[0].object && intersects[0].object.visible) {
             INTERSECTED = intersects[0].object;
-            selectionLight.target = INTERSECTED;
+            LIGHT.spotSelection(INTERSECTED);
         }
     } else {
-        selectionLight.target = selectionLight;
+        LIGHT.removeSelectionSpot();
         INTERSECTED = null;
     }
 }

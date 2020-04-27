@@ -23,8 +23,7 @@ var settings = {
 };
 
 var backgroundSphereMeshes = [], menuSphereMeshes = [], selectedMenuIndex;
-var INTERSECTED = null;
-var isMouseMoving = false, isMenuOn = false;
+var isMouseMoving = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
     prepareViewer(setCameraPosition);
@@ -39,10 +38,10 @@ export function launchAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
 
-            rotateMenuItems();
+            MENU.rotateMenuItems();
 
             viewer.raycaster.setFromCamera( viewer.mouse, viewer.camera );
-            detectSelectedMenuItem(viewer.raycaster);
+            MENU.detectSelectedMenuItem(viewer.raycaster, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
 
             viewer.controls.update();
             viewer.renderer.render( viewer.scene, viewer.camera );
@@ -117,7 +116,7 @@ function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
     loader.load(
         panorama,
         function (texture) {
-            createBackground(texture, scene, selectedMenuIndex);
+            BACKGROUND.createBackground(texture, scene, selectedMenuIndex, settings);
             MENU.createMenuItem(texture, selectedMenuIndex, settings, viewer);
         },
         undefined,
@@ -127,33 +126,10 @@ function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
     );
 }
 
-function createBackground(texture, scene, selectedMenuIndex) {
-
-    var geometry = new THREE.SphereBufferGeometry( settings.BACKGROUND_SPHERE_RADIUS, 30, 30 );
-    // invert the geometry on the x-axis so that all of the faces point inward
-    geometry.scale( - 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0xaaaaaa, map: texture } );
-    var mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
-    backgroundSphereMeshes.push(mesh);
-    var index = backgroundSphereMeshes.length - 1;
-    mesh.visible = index === selectedMenuIndex;
-}
-
-function placeInCircle(index, menuSphereMesh, selectedMenuIndex) {
-    var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
-    var frontAngle = Math.PI*1.5 - viewer.controls.getAzimuthalAngle();
-    var angle = frontAngle + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
-    menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
-}
-
 function onWindowResize() {
-
     viewer.camera.aspect = window.innerWidth / window.innerHeight;
     viewer.camera.updateProjectionMatrix();
-
     viewer.renderer.setSize( window.innerWidth, window.innerHeight );
-
 }
 
 function onMouseWheel(event) {
@@ -171,81 +147,14 @@ function onMouseWheel(event) {
 
 function createMouseClickHandler(getPanoramaIndex) {
     return function onMouseClick() {
-        handleUserProddingFinger(getPanoramaIndex);
+        protrudeUserFinger();
     }
 }
 
 function createScreenTouchEndHandler(getPanoramaIndex) {
     return function onTouchEnd() {
-        handleUserProddingFinger(getPanoramaIndex);
+        protrudeUserFinger();
     }
-}
-
-function handleUserProddingFinger(getPanoramaIndex) {
-
-    if (!isMouseMoving) {
-        if (null === INTERSECTED) {
-            isMenuOn = !isMenuOn;
-            handleClickOnBackgroundSphere(isMenuOn);
-        } else {
-            handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex);
-            isMenuOn = false;
-            INTERSECTED = null;
-
-            // var angle = -menuSphereMeshes[selectedMenuIndex].rotation.y;
-            // var radius = 50;
-            // var x = radius * Math.cos(angle);
-            // var y = viewer.camera.position.y;
-            // var z = radius * Math.sin(angle);
-            // viewer.camera.position.set(x, y, z);
-        }
-    }
-
-    isMouseMoving = false;
-}
-
-
-function handleClickOnBackgroundSphere(isMenuOn) {
-    if (isMenuOn) {
-        showMenuItems();
-    } else {
-        hideMenuItems();
-    }
-}
-function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex) {
-    if (isMenuOn) {
-        selectedMenuIndex = findSelectedMenuItemIndex();
-        hideMenuItems();
-        showBackgroundSphere(selectedMenuIndex);
-        getPanoramaIndex(selectedMenuIndex);
-    }
-}
-
-function findSelectedMenuItemIndex() {
-    selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
-        return menuSphereMesh.id === INTERSECTED.id;
-    });
-    return selectedMenuIndex;
-}
-
-function showBackgroundSphere(selectedMenuIndex) {
-    backgroundSphereMeshes.map(function (backgroundSphereMesh) {
-        backgroundSphereMesh.visible = false;
-    });
-    backgroundSphereMeshes[selectedMenuIndex].visible = true;
-}
-
-function hideMenuItems() {
-    menuSphereMeshes.map(function (menuSphereMesh) {
-        menuSphereMesh.visible = false;
-    });
-}
-
-function showMenuItems() {
-    menuSphereMeshes.map(function (menuSphereMesh, index) {
-        placeInCircle(index, menuSphereMesh, selectedMenuIndex)
-        menuSphereMesh.visible = true;
-    });
 }
 
 function onMouseDown() {
@@ -253,6 +162,11 @@ function onMouseDown() {
 }
 function onTouchStart(event) {
     retractUserFinger();
+}
+
+function protrudeUserFinger() {
+    handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, viewer);
+    isMouseMoving = false;
 }
 
 function retractUserFinger() {
@@ -264,7 +178,6 @@ function onMouseUp() {
 }
 
 function onMouseMove( event ) {
-
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
 }
@@ -282,31 +195,4 @@ function rotateUserHead(x, y, width, height) {
     isMouseMoving = true;
 
     // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(viewer.camera.position.x, viewer.camera.position.z);
-}
-
-
-
-function detectSelectedMenuItem(raycaster) {
-    var intersects = raycaster.intersectObjects( menuSphereMeshes );
-    if ( intersects.length > 0 ) {
-        if ( INTERSECTED !== intersects[0].object && intersects[0].object.visible) {
-            INTERSECTED = intersects[0].object;
-            LIGHT.spotSelection(INTERSECTED);
-        }
-    } else {
-        LIGHT.removeSelectionSpot();
-        INTERSECTED = null;
-    }
-}
-
-function rotateMenuItems() {
-    menuSphereMeshes.map(function (menuSphereMesh) {
-        if (menuSphereMesh.visible) {
-            if (INTERSECTED !== null && menuSphereMesh.id === INTERSECTED.id) {
-                menuSphereMesh.rotation.y += 0.01;
-            } else {
-                menuSphereMesh.rotation.y += 0.001;
-            }
-        }
-    });
 }

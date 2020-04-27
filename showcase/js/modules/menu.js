@@ -5,7 +5,9 @@ var menuSphereMeshes = [],
     lastSelectedMenuItem = null,
     isMenuOn = false;
 
-export function createMenuItem(texture, selectedMenuIndex, settings, viewer) {
+export function createMenuItem(texture, selectedMenuIndexWhenCreated, settings, viewer) {
+
+    selectedMenuIndex = selectedMenuIndexWhenCreated;
 
     var geometry = new THREE.SphereBufferGeometry( settings.MENU_ITEM_SPHERE_RADIUS, 30, 30 );
     var material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
@@ -40,7 +42,7 @@ export function hideMenuItems() {
     });
 }
 
-export function showMenuItems(settings, viewer) {
+export function showMenuItems(selectedMenuIndex, settings, viewer) {
     menuSphereMeshes.map(function (menuSphereMesh, index) {
         placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, viewer)
         menuSphereMesh.visible = true;
@@ -97,7 +99,7 @@ export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBa
 
 function handleClickOnBackgroundSphere(isMenuOn, settings, viewer) {
     if (isMenuOn) {
-        showMenuItems(settings, viewer);
+        showMenuItems(selectedMenuIndex, settings, viewer);
     } else {
         hideMenuItems();
     }

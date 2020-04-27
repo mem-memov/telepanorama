@@ -26,7 +26,7 @@ export function createLights(scene, backgroundSphereRadius) {
 }
 
 export function spotSelection(target) {
-    selectionLight.target = target;
+    lights.selection.target = target;
 }
 
 export function removeSelectionSpot() {

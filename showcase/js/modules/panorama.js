@@ -1,18 +1,8 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
-import {OrbitControls} from '/js/threejs/r116/examples/jsm/controls/OrbitControls.js';
 import * as MENU from '/js/modules/menu.js';
 import * as BACKGROUND from '/js/modules/background.js';
 import * as LIGHT from '/js/modules/light.js';
-
-var viewer = {
-    container: null,
-    camera: null,
-    scene: null,
-    renderer: null,
-    controls: null,
-    raycaster: null,
-    mouse: null
-}
+import * as VIEWER from '/js/modules/viewer.js';
 
 var settings = {
     CAMERA_DISPLACEMENT_RADIUS: 50,
@@ -25,8 +15,8 @@ var settings = {
 var isMouseMoving = false;
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
-    prepareViewer(setCameraPosition);
-    LIGHT.createLights(viewer.scene, settings.BACKGROUND_SPHERE_RADIUS);
+    VIEWER.prepareViewer(setCameraPosition, settings);
+    LIGHT.createLights(VIEWER.addMeshToScene, settings.BACKGROUND_SPHERE_RADIUS);
     createPanoramas(panoramas, selectedPanorama);
     addListeners(getPanoramaIndex);
 }
@@ -36,55 +26,22 @@ export function launchAnimation(onAnimate) {
     function makeAnimation(onAnimate) {
         return function animate () {
             requestAnimationFrame( animate );
-
             MENU.rotateMenuItems();
-
-            viewer.raycaster.setFromCamera( viewer.mouse, viewer.camera );
-            MENU.detectSelectedMenuItem(viewer.raycaster, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
-
-            viewer.controls.update();
-            viewer.renderer.render( viewer.scene, viewer.camera );
-
-            onAnimate( viewer.camera );
+            MENU.detectSelectedMenuItem(VIEWER.detectIntersects, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
+            VIEWER.render();
+            onAnimate( VIEWER.hasCameraView, VIEWER.getCameraView );
         }
     }
 
     makeAnimation(onAnimate)();
 }
 
-function prepareViewer(setCameraPosition) {
-    viewer.raycaster = new THREE.Raycaster();
-    viewer.mouse = new THREE.Vector2();
-    viewer.container = document.getElementById( settings.CANVAS_CONTAINER_ID );
-
-    viewer.camera = new THREE.PerspectiveCamera(
-        40, window.innerWidth / window.innerHeight,
-        settings.CAMERA_DISPLACEMENT_RADIUS,
-        settings.BACKGROUND_SPHERE_RADIUS + settings.CAMERA_DISPLACEMENT_RADIUS + 10
-    );
-    viewer.camera.position.set( 0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS );
-    setCameraPosition(viewer.camera);
-
-    viewer.scene = new THREE.Scene();
-    viewer.scene.background = new THREE.Color( 0x00ffff );
-
-    viewer.renderer = new THREE.WebGLRenderer({antialias: true});
-    viewer.renderer.setPixelRatio( window.devicePixelRatio );
-    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
-    viewer.container.appendChild( viewer.renderer.domElement );
-
-    viewer.controls = new OrbitControls( viewer.camera, viewer.renderer.domElement );
-    viewer.controls.enablePan = false;
-    viewer.controls.enableZoom = false;
-    viewer.controls.update();
-}
-
 function createPanoramas(panoramas, selectedPanorama) {
     var selectedMenuIndex = panoramas.findIndex(function(panorama) {
         return panorama === selectedPanorama;
     });
-    panoramas.map(function(panorama, index) {
-        createPanorama(panorama, viewer.scene, selectedMenuIndex);
+    panoramas.map(function(panorama) {
+        createPanorama(panorama, selectedMenuIndex);
     });
 }
 
@@ -109,14 +66,14 @@ function onTouchCancel(event) {
 
 }
 
-function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
+function createPanorama(panorama, selectedMenuIndex) {
 
     var loader = new THREE.TextureLoader();
     loader.load(
         panorama,
         function (texture) {
-            BACKGROUND.createBackground(texture, scene, selectedMenuIndex, settings);
-            MENU.createMenuItem(texture, selectedMenuIndex, settings, viewer);
+            BACKGROUND.createBackground(texture, VIEWER.addMeshToScene, selectedMenuIndex, settings);
+            MENU.createMenuItem(texture, selectedMenuIndex, settings, VIEWER.addMeshToScene, VIEWER.getFrontAngle);
         },
         undefined,
         function ( err ) {
@@ -126,22 +83,11 @@ function createPanorama(panorama, scene, selectedMenuIndex, renderer) {
 }
 
 function onWindowResize() {
-    viewer.camera.aspect = window.innerWidth / window.innerHeight;
-    viewer.camera.updateProjectionMatrix();
-    viewer.renderer.setSize( window.innerWidth, window.innerHeight );
+    VIEWER.updateRectangle()
 }
 
 function onMouseWheel(event) {
-
-    const newFOV = viewer.camera.fov + Math.sign(event.deltaY);
-
-    if (newFOV < 3 || newFOV > 75) {
-        return;
-    }
-
-    viewer.camera.fov = newFOV;
-    viewer.camera.updateProjectionMatrix();
-    viewer.controls.update();
+    VIEWER.updateFOV(event.deltaY);
 }
 
 function createMouseClickHandler(getPanoramaIndex) {
@@ -164,7 +110,7 @@ function onTouchStart(event) {
 }
 
 function protrudeUserFinger(getPanoramaIndex) {
-    MENU.handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, viewer);
+    MENU.handleUserProddingFinger(isMouseMoving, getPanoramaIndex, BACKGROUND.showBackgroundSphere, settings, VIEWER.getFrontAngle);
     isMouseMoving = false;
 }
 
@@ -188,9 +134,7 @@ function onTouchMove(event) {
 
 function rotateUserHead(x, y, width, height) {
 
-    viewer.mouse.x = ( x / width ) * 2 - 1;
-    viewer.mouse.y = - ( y / height ) * 2 + 1;
-
+    VIEWER.updateMousePosition(x, y, width, height);
     isMouseMoving = true;
 
     // menuSphereMeshes[selectedMenuIndex].rotation.y = Math.PI*.5 -  Math.atan2(viewer.camera.position.x, viewer.camera.position.z);

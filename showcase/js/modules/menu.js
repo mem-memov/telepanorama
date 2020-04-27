@@ -5,25 +5,24 @@ var menuSphereMeshes = [],
     lastSelectedMenuItem = null,
     isMenuOn = false;
 
-export function createMenuItem(texture, selectedMenuIndexWhenCreated, settings, viewer) {
+export function createMenuItem(texture, selectedMenuIndexWhenCreated, settings, addMeshToScene, getFrontAngle) {
 
     selectedMenuIndex = selectedMenuIndexWhenCreated;
 
     var geometry = new THREE.SphereBufferGeometry( settings.MENU_ITEM_SPHERE_RADIUS, 30, 30 );
     var material = new THREE.MeshPhongMaterial({ color: 0xffffff, map: texture });
     var mesh = new THREE.Mesh( geometry, material );
-    viewer.scene.add( mesh );
+    addMeshToScene( mesh );
 
     mesh.visible = false;
     menuSphereMeshes.push(mesh);
     var index = menuSphereMeshes.length - 1;
-    placeInCircle(index, mesh, selectedMenuIndex, settings, viewer);
+    placeInCircle(index, mesh, selectedMenuIndex, settings, getFrontAngle);
 }
 
-function placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, viewer) {
+function placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, getFrontAngle) {
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
-    var frontAngle = Math.PI*1.5 - viewer.controls.getAzimuthalAngle();
-    var angle = frontAngle + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
+    var angle = getFrontAngle() + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
     menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
 }
 
@@ -42,15 +41,15 @@ export function hideMenuItems() {
     });
 }
 
-export function showMenuItems(selectedMenuIndex, settings, viewer) {
+export function showMenuItems(selectedMenuIndex, settings, getFrontAngle) {
     menuSphereMeshes.map(function (menuSphereMesh, index) {
-        placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, viewer)
+        placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, getFrontAngle)
         menuSphereMesh.visible = true;
     });
 }
 
-export function detectSelectedMenuItem(raycaster, spotSelection, removeSelectionSpot) {
-    var intersects = raycaster.intersectObjects( menuSphereMeshes );
+export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSelectionSpot) {
+    var intersects = detectIntersects( menuSphereMeshes );
 
     if ( intersects.length > 0 ) {
         var selectedMenuItem = intersects[0].object;
@@ -76,12 +75,12 @@ export function rotateMenuItems() {
     });
 }
 
-export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBackgroundSphere, settings, viewer) {
+export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBackgroundSphere, settings, getFrontAngle) {
 
     if (!isMouseMoving) {
         if (null === lastSelectedMenuItem) {
             isMenuOn = !isMenuOn;
-            handleClickOnBackgroundSphere(isMenuOn, settings, viewer);
+            handleClickOnBackgroundSphere(isMenuOn, settings, getFrontAngle);
         } else {
             handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere);
             isMenuOn = false;
@@ -97,9 +96,9 @@ export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBa
     }
 }
 
-function handleClickOnBackgroundSphere(isMenuOn, settings, viewer) {
+function handleClickOnBackgroundSphere(isMenuOn, settings, getFrontAngle) {
     if (isMenuOn) {
-        showMenuItems(selectedMenuIndex, settings, viewer);
+        showMenuItems(selectedMenuIndex, settings, getFrontAngle);
     } else {
         hideMenuItems();
     }

@@ -6,18 +6,18 @@ var url = {
     fieldOfView: null
 };
 
-export function cameraPositionToUrl(camera) {
+export function cameraPositionToUrl(hasCameraView, getCameraView) {
     if (
-        hasCameraCoordinatedChanged(camera, url)
+        hasCameraCoordinatedChanged(hasCameraView, url)
     ) {
-        readCoordinatesFromCamera(camera, url);
+        readCoordinatesFromCamera(getCameraView, url);
         writeHashParameters(url);
     }
 }
 
-export function urlToCameraPosition(camera) {
+export function urlToCameraPosition(setCameraView) {
     readHashParameters(url);
-    writeCoordinatesToCamera(camera, url);
+    writeCoordinatesToCamera(setCameraView, url);
 }
 
 export function fileFromUrl() {
@@ -31,18 +31,13 @@ export function urlFromFile(file) {
     writeHashParameters(url);
 }
 
-function hasCameraCoordinatedChanged(camera, url) {
-    return url.x !== camera.position.x
-        || url.y !== camera.position.y
-        || url.z !== camera.position.z
-        || url.fieldOfView !== camera.fov;
+function hasCameraCoordinatedChanged(hasCameraView, url) {
+    return hasCameraView(url.x, url.y, url.z, url.fieldOfView);
 }
 
-function writeCoordinatesToCamera(camera, url) {
+function writeCoordinatesToCamera(setCameraView, url) {
     if (urlHasCoordinates(url)) {
-        camera.position.set(url.x, url.y, url.z);
-        camera.fov = url.fieldOfView;
-        camera.updateProjectionMatrix();
+        setCameraView(url.x, url.y, url.z, url.fieldOfView);
     }
 }
 
@@ -53,11 +48,13 @@ function urlHasCoordinates(url) {
         && null !== url.fieldOfView;
 }
 
-function readCoordinatesFromCamera(camera, url) {
-    url.x = camera.position.x;
-    url.y = camera.position.y;
-    url.z = camera.position.z;
-    url.fieldOfView = camera.fov;
+function readCoordinatesFromCamera(getCameraView, url) {
+    var x, y, z, fov;
+    [x, y, z, fov] = getCameraView();
+    url.x = x;
+    url.y = y;
+    url.z = z;
+    url.fieldOfView = fov;
 }
 
 function readHashParameters(url) {

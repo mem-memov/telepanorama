@@ -27,7 +27,7 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, settings, viewe
     menuSphereMesh.position.set(radius * Math.cos(angle), 0, radius * Math.sin(angle));
 }
 
-export function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {
+function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {
     if (isMenuOn) {
         selectedMenuIndex = findSelectedMenuItemIndex();
         hideMenuItems();
@@ -83,7 +83,7 @@ export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBa
             isMenuOn = !isMenuOn;
             handleClickOnBackgroundSphere(isMenuOn, settings, viewer);
         } else {
-            handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
+            handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere);
             isMenuOn = false;
             lastSelectedMenuItem = null;
 
@@ -103,4 +103,11 @@ function handleClickOnBackgroundSphere(isMenuOn, settings, viewer) {
     } else {
         hideMenuItems();
     }
+}
+
+function findSelectedMenuItemIndex() {
+    selectedMenuIndex = menuSphereMeshes.findIndex(function (menuSphereMesh) {
+        return menuSphereMesh.id === lastSelectedMenuItem.id;
+    });
+    return selectedMenuIndex;
 }

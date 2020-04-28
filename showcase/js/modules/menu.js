@@ -113,6 +113,7 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
     //var horizontalAngle = getFrontAngle() + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
     var horizontalAngle = menuHorizontalAngle + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
     menuSphereMesh.position.set(radius * Math.cos(horizontalAngle), 0, radius * Math.sin(horizontalAngle));
+    menuSphereMesh.rotation.y =  - menuHorizontalAngle;
 }
 
 function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {

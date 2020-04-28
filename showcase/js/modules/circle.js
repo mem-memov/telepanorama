@@ -38,6 +38,10 @@ function getLateralVerticalAngle(radius, horizontalAngle, verticalAngle)
     var radiusProjection = getRadiusProjection(radius, verticalAngle);
     var lateralHeight = getLateralHeight(radius, horizontalAngle, verticalAngle);
 
+    if (0 === radiusProjection) {
+
+    }
+
     return Math.acos(
         (
             radius ^ 2

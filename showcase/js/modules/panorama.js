@@ -119,7 +119,12 @@ function onMouseUp() {
 function onMouseMove( event ) {
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
-    MENU.handleUserFingerSliding(VIEWER.getFrontAngle, VIEWER.disableControls, VIEWER.enableControls)
+    MENU.handleUserFingerSliding(
+        VIEWER.getAzimuthalFrontAngle,
+        VIEWER.getPolarFrontAngle,
+        VIEWER.disableControls,
+        VIEWER.enableControls
+    );
 }
 
 function onTouchMove(event) {

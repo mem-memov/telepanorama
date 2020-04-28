@@ -63,8 +63,12 @@ export function updateMousePosition(x, y, width, height) {
     viewer.mouse.y = - ( y / height ) * 2 + 1;
 }
 
-export function getFrontAngle() {
+export function getAzimuthalFrontAngle() {
     return Math.PI*1.5 - viewer.controls.getAzimuthalAngle();
+}
+
+export function getPolarFrontAngle() {
+    return Math.PI*1.5 - viewer.controls.getPolarAngle();
 }
 
 export function addMeshToScene(mesh) {

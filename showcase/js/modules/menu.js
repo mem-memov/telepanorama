@@ -1,12 +1,15 @@
 import * as THREE from '/js/threejs/r116/build/three.module.js';
 import * as FINGER from '/js/modules/finger.js';
 import { settings } from '/js/modules/settings.js';
+import * as CIRCLE from '/js/modules/circle.js';
+import * as CARTESIAN from '/js/modules/cartesian.js';
 
 var menuSphereMeshes = [],
     selectedMenuIndex,
     lastSelectedMenuItem = null,
     isMenuOn = false,
-    menuHorizontalAngle = 0;
+    menuHorizontalAngle = 0,
+    menuVerticalAngle = 0;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene, getFrontAngle) {
 
@@ -106,14 +109,20 @@ function findSelectedMenuItemIndex() {
     return selectedMenuIndex;
 }
 
-
-
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
-    //var horizontalAngle = getFrontAngle() + (index-selectedMenuIndex) * settings.MENU_ANGLE_BETWEEN_ITEMS;
     var horizontalAngle = menuHorizontalAngle + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
-    menuSphereMesh.position.set(radius * Math.cos(horizontalAngle), 0, radius * Math.sin(horizontalAngle));
-    menuSphereMesh.rotation.y =  - menuHorizontalAngle;
+    var point = CIRCLE.getPoint(radius, horizontalAngle, menuVerticalAngle);
+
+    console.log(radius, horizontalAngle, menuVerticalAngle, point);
+
+    menuSphereMesh.position.set(
+        CARTESIAN.getRightDistance(point),
+        CARTESIAN.getUpDistance(point),
+        CARTESIAN.getBackDistance(point)
+    );
+    //menuSphereMesh.rotation.y =  - menuHorizontalAngle;
+    //menuSphereMesh.rotation.z = - menuVerticalAngle;
 }
 
 function handleClickOnMenuItemSphere(isMenuOn, getPanoramaIndex, showBackgroundSphere) {
@@ -138,7 +147,7 @@ export function handleUserFingerRetracting() {
     FINGER.retractFinger();
     draggedMenuItem = null;
 }
-export function handleUserFingerSliding(getFrontAngle, disableControls, enableControls) {
+export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
         if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
@@ -148,7 +157,8 @@ export function handleUserFingerSliding(getFrontAngle, disableControls, enableCo
         } else {
             console.log('background moving');
             enableControls();
-            menuHorizontalAngle = getFrontAngle();
+            menuHorizontalAngle = getAzimuthalFrontAngle();
+            menuVerticalAngle = getPolarFrontAngle();
         }
     }
 

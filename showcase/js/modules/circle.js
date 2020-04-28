@@ -58,6 +58,10 @@ function getHorizontalAngleProjection(radius, horizontalAngle, verticalAngle)
     var radiusProjection = getRadiusProjection(radius, verticalAngle);
     var chordProjection = getChordProjection(radius, horizontalAngle, verticalAngle);
 
+    if (0 === radiusProjection) {
+        return horizontalAngle;
+    }
+
     return Math.acos(
         (
             radiusProjection ^ 2

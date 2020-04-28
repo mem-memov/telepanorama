@@ -112,9 +112,7 @@ function findSelectedMenuItemIndex() {
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
     var horizontalAngle = menuHorizontalAngle + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
-    var point = CIRCLE.getPoint(radius, horizontalAngle, menuVerticalAngle);
-
-    console.log(radius, horizontalAngle, menuVerticalAngle, point);
+    var point = CIRCLE.getPoint(radius, 0, menuVerticalAngle);
 
     menuSphereMesh.position.set(
         CARTESIAN.getRightDistance(point),
@@ -153,7 +151,7 @@ export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAng
         if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
             console.log('drag menu item');
             disableControls();
-            menuHorizontalAngle += 0.1;
+            //menuHorizontalAngle += 0.1;
         } else {
             console.log('background moving');
             enableControls();

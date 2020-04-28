@@ -20,7 +20,12 @@ export function launchAnimation(cameraPositionToUrl) {
             requestAnimationFrame( animate );
             MENU.rotateMenuItems();
             MENU.detectSelectedMenuItem(VIEWER.detectIntersects, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
-            MENU.displayMenu();
+
+            if (isUserFingerMoving) {
+                MENU.displayMenu();
+            }
+
+
             VIEWER.render();
             cameraPositionToUrl( VIEWER.hasCameraView, VIEWER.getCameraView );
         }

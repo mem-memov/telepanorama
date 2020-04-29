@@ -64,11 +64,11 @@ export function updateMousePosition(x, y, width, height) {
 }
 
 export function getAzimuthalFrontAngle() {
-    return Math.PI*1.5 - viewer.controls.getAzimuthalAngle();
+    return viewer.controls.getAzimuthalAngle();
 }
 
 export function getPolarFrontAngle() {
-    return Math.PI*1.5 - viewer.controls.getPolarAngle();
+    return viewer.controls.getPolarAngle();
 }
 
 export function addMeshToScene(mesh) {

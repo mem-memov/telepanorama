@@ -9,7 +9,7 @@ export function getPoint(
     return polarToCartesianCoordinates(
         POLAR.createCoordinate(
             radius,
-            getPolarAngle(radius, horizontalAngle, verticalAngle),
+            - Math.sign(verticalAngle) * getPolarAngle(radius, horizontalAngle, verticalAngle),
             getAzimuthalAngle(radius, horizontalAngle, verticalAngle)
         )
     );

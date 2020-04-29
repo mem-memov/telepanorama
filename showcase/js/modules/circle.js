@@ -8,14 +8,14 @@ export function getPoint(
 ) {
     return polarToCartesianCoordinates(
         POLAR.createCoordinate(
-            nr(radius, horizontalAngle, verticalAngle),
-            nb(radius, horizontalAngle, verticalAngle),
-            na(radius, horizontalAngle, verticalAngle)
+            radius,
+            getPolarAngle(radius, horizontalAngle, verticalAngle),
+            getAzimuthalAngle(radius, horizontalAngle, verticalAngle)
         )
     );
 }
 
-function nb(r, a, b)
+function getPolarAngle(r, a, b)
 {
     return Math.acos(
         (
@@ -27,7 +27,7 @@ function nb(r, a, b)
     );
 }
 
-function na(r, a, b)
+function getAzimuthalAngle(r, a, b)
 {
     return Math.acos(
         (

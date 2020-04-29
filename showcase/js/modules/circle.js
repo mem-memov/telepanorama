@@ -44,9 +44,9 @@ function getLateralVerticalAngle(radius, horizontalAngle, verticalAngle)
 
     return Math.acos(
         (
-            radius ^ 2
-            + radiusProjection ^ 2
-            - lateralHeight ^ 2
+            Math.pow(radius, 2)
+            + Math.pow(radiusProjection, 2)
+            - Math.pow(lateralHeight, 2)
         )
         / (2 * radius * radiusProjection)
     );
@@ -68,9 +68,9 @@ function getHorizontalAngleProjection(radius, horizontalAngle, verticalAngle)
 
     return Math.acos(
         (
-            radiusProjection ^ 2
-            + radiusProjection ^ 2
-            - chordProjection ^ 2
+            Math.pow(radiusProjection, 2)
+            + Math.pow(radiusProjection, 2)
+            - Math.pow(chordProjection, 2)
         )
         / (2 * radiusProjection * radiusProjection)
     );
@@ -81,7 +81,7 @@ function getChordProjection(radius, horizontalAngle, verticalAngle)
     var chord = getChord(radius, horizontalAngle);
     var heightDelta = getHeight(radius, verticalAngle) - getLateralHeight(radius, horizontalAngle, verticalAngle);
 
-    return Math.sqrt((chord ^ 2) - (heightDelta ^ 2));
+    return Math.sqrt(Math.pow(chord, 2) - Math.pow(heightDelta, 2));
 }
 
 function getChord(radius, horizontalAngle)

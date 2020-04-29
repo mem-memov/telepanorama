@@ -35,20 +35,20 @@ function getRadiusProjection(radius, verticalAngle)
 
 function getLateralVerticalAngle(radius, horizontalAngle, verticalAngle)
 {
-    var radiusProjection = getRadiusProjection(radius, verticalAngle);
+    var lateralRadiusProjection = getLateralRadiusProjection(radius, horizontalAngle, verticalAngle);
     var lateralHeight = getLateralHeight(radius, horizontalAngle, verticalAngle);
 
-    if (0 === radiusProjection) {
+    if (0 === lateralRadiusProjection) {
 
     }
 
     return Math.acos(
         (
             Math.pow(radius, 2)
-            + Math.pow(radiusProjection, 2)
+            + Math.pow(lateralRadiusProjection, 2)
             - Math.pow(lateralHeight, 2)
         )
-        / (2 * radius * radiusProjection)
+        / (2 * radius * lateralRadiusProjection)
     );
 }
 
@@ -93,4 +93,10 @@ function getHeight(radius, verticalAngle)
 {
     return Math.sin(verticalAngle) * radius;
 }
+
+function getLateralRadiusProjection(radius, horizontalAngle, verticalAngle)
+{
+    return radius * Math.cos(horizontalAngle) * Math.cos(verticalAngle);
+}
+
 

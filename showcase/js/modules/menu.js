@@ -113,7 +113,7 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
     var horizontalAngle = menuHorizontalAngle + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
     var point = CIRCLE.getPoint(radius, 0, menuVerticalAngle);
-
+console.log(point);
     menuSphereMesh.position.set(
         CARTESIAN.getRightDistance(point),
         CARTESIAN.getUpDistance(point),

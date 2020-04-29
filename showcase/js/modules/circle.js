@@ -8,11 +8,71 @@ export function getPoint(
 ) {
     return polarToCartesianCoordinates(
         POLAR.createCoordinate(
-            getRadiusProjection(radius, verticalAngle),
-            getLateralVerticalAngle(radius, horizontalAngle, verticalAngle),
-            getHorizontalAngleProjection(radius, horizontalAngle, verticalAngle)
+            nr(radius, horizontalAngle, verticalAngle),
+            nb(radius, horizontalAngle, verticalAngle),
+            na(radius, horizontalAngle, verticalAngle)
         )
     );
+}
+
+function nb(r, a, b)
+{
+    return Math.acos(
+        (
+            r2(r)
+            + nr2(r, a, b)
+            - rCosASinB2(r, a, b)
+        )
+        / (2 * r * nr(r, a, b))
+    );
+}
+
+function na(r, a, b)
+{
+    return Math.acos(
+        (
+            rCosACosB2(r, a, b)
+            + nr2(r, a, b)
+            - rSinA2(r, a)
+        )
+        / (2 * rCosACosB(r, a, b) * nr(r, a, b))
+    );
+}
+
+function nr(r, a, b)
+{
+    return  Math.sqrt(rSinA2(r, a) + rCosACosB2(r, a, b));
+}
+
+function nr2(r, a, b)
+{
+    return Math.pow(nr(r, a, b), 2);
+}
+
+
+function rSinA2(r, a)
+{
+    return Math.pow(r * Math.sin(a), 2);
+}
+
+function rCosACosB2(r, a, b)
+{
+    return Math.pow(rCosACosB(r, a, b), 2);
+}
+
+function rCosACosB(r, a, b)
+{
+    return r * Math.cos(a) * Math.cos(b);
+}
+
+function rCosASinB2(r, a, b)
+{
+    return Math.pow(r * Math.cos(a) * Math.sin(b), 2);
+}
+
+function r2(r)
+{
+    return Math.pow(r, 2);
 }
 
 function polarToCartesianCoordinates(polarCoordinate)
@@ -27,76 +87,3 @@ function polarToCartesianCoordinates(polarCoordinate)
         Math.cos(polarAngle) * radialDistance * Math.sin(azimuthalAngle)
     );
 }
-
-function getRadiusProjection(radius, verticalAngle)
-{
-    return Math.cos(verticalAngle) * radius;
-}
-
-function getLateralVerticalAngle(radius, horizontalAngle, verticalAngle)
-{
-    var lateralRadiusProjection = getLateralRadiusProjection(radius, horizontalAngle, verticalAngle);
-    var lateralHeight = getLateralHeight(radius, horizontalAngle, verticalAngle);
-
-    if (0 === lateralRadiusProjection) {
-
-    }
-
-    return Math.acos(
-        (
-            Math.pow(radius, 2)
-            + Math.pow(lateralRadiusProjection, 2)
-            - Math.pow(lateralHeight, 2)
-        )
-        / (2 * radius * lateralRadiusProjection)
-    );
-}
-
-function getLateralHeight(radius, horizontalAngle, verticalAngle)
-{
-    return radius * Math.cos(horizontalAngle) * Math.sin(verticalAngle);
-}
-
-function getHorizontalAngleProjection(radius, horizontalAngle, verticalAngle)
-{
-    var radiusProjection = getRadiusProjection(radius, verticalAngle);
-    var chordProjection = getChordProjection(radius, horizontalAngle, verticalAngle);
-
-    if (0 === radiusProjection) {
-        return horizontalAngle;
-    }
-
-    return Math.acos(
-        (
-            Math.pow(radiusProjection, 2)
-            + Math.pow(radiusProjection, 2)
-            - Math.pow(chordProjection, 2)
-        )
-        / (2 * radiusProjection * radiusProjection)
-    );
-}
-
-function getChordProjection(radius, horizontalAngle, verticalAngle)
-{
-    var chord = getChord(radius, horizontalAngle);
-    var heightDelta = getHeight(radius, verticalAngle) - getLateralHeight(radius, horizontalAngle, verticalAngle);
-
-    return Math.sqrt(Math.pow(chord, 2) - Math.pow(heightDelta, 2));
-}
-
-function getChord(radius, horizontalAngle)
-{
-    return Math.sin(horizontalAngle / 2) * radius * 2;
-}
-
-function getHeight(radius, verticalAngle)
-{
-    return Math.sin(verticalAngle) * radius;
-}
-
-function getLateralRadiusProjection(radius, horizontalAngle, verticalAngle)
-{
-    return radius * Math.cos(horizontalAngle) * Math.cos(verticalAngle);
-}
-
-

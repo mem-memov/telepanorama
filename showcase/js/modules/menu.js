@@ -8,7 +8,8 @@ var menu = {
     visible: false,
     angle: {
         polar: 0,
-        azimuth: 0
+        azimuth: 0,
+        sector: 0
     },
     index: {
         current: null,
@@ -17,8 +18,6 @@ var menu = {
     },
     items: []
 };
-
-var menuSectorAngle = 0;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene) 
 {
@@ -66,7 +65,7 @@ export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAng
         if (null !== menu.index.dragged && true === menu.items[menu.index.dragged].visible) {
             console.log('drag menu item');
             disableControls();
-            menuSectorAngle += 0.1;
+            menu.angle.sector += 0.1;
         } else {
             console.log('background moving');
             enableControls();
@@ -131,7 +130,7 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
     if (undefined === selectedMenuIndex) {
         selectedMenuIndex = 2;
     }
-    var sectorAngle = menuSectorAngle + (selectedMenuIndex-index) * settings.MENU_ANGLE_BETWEEN_ITEMS;
+    var sectorAngle = menu.angle.sector + (selectedMenuIndex-index) * settings.MENU_ANGLE_BETWEEN_ITEMS;
 
     if (sectorAngle > Math.PI/2 || sectorAngle < -Math.PI/2) {
         menuSphereMesh.visible = false;

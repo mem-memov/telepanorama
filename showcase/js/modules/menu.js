@@ -15,6 +15,7 @@ var selectedMenuIndex,
     menuHorizontalAngle = 0,
     menuVerticalAngle = 0,
     menuSectorAngle = 0;
+var draggedMenuItem = null;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene) 
 {
@@ -62,28 +63,15 @@ export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSe
 }
 
 export function rotateMenuItems() {
-    menu.items.map(function (menuSphereMesh) {
-        if (menuSphereMesh.visible) {
-            if (lastSelectedMenuItem !== null && menuSphereMesh.id === lastSelectedMenuItem.id) {
-                menuSphereMesh.rotation.y += 0.01;
+    menu.items.map(function (item) {
+        if (item.visible) {
+            if (lastSelectedMenuItem !== null && item.id === lastSelectedMenuItem.id) {
+                item.rotation.y += 0.01;
             } else {
-                menuSphereMesh.rotation.y += 0.001;
+                item.rotation.y += 0.001;
             }
         }
     });
-}
-
-export function handleUserProddingFinger(isMouseMoving, getPanoramaIndex, showBackgroundSphere, getFrontAngle) {
-
-    if (!isMouseMoving) {
-        if (null === lastSelectedMenuItem) {
-            menu.visible = !menu.visible;
-        } else {
-            handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
-            menu.visible = false;
-            lastSelectedMenuItem = null;
-        }
-    }
 }
 
 function findSelectedMenuItemIndex() {
@@ -127,7 +115,7 @@ function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
 }
 
 
-var draggedMenuItem = null;
+
 
 export function handleUserFingerProdding() {
     FINGER.prodFinger();
@@ -135,10 +123,21 @@ export function handleUserFingerProdding() {
         draggedMenuItem = lastSelectedMenuItem;
     }
 }
-export function handleUserFingerRetracting() {
+
+export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSphere) {
+    if (!FINGER.isSliding()) {
+        if (null === lastSelectedMenuItem) {
+            menu.visible = !menu.visible;
+        } else {
+            handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
+            menu.visible = false;
+            lastSelectedMenuItem = null;
+        }
+    }
     FINGER.retractFinger();
     draggedMenuItem = null;
 }
+
 export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
@@ -146,16 +145,11 @@ export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAng
             console.log('drag menu item');
             disableControls();
             menuSectorAngle += 0.1;
-            showMenuItems();
         } else {
             console.log('background moving');
             enableControls();
-            hideMenuItems();
             menuHorizontalAngle = getAzimuthalFrontAngle();
             menuVerticalAngle = getPolarFrontAngle();
         }
     }
-
 }
-
-

@@ -121,33 +121,31 @@ function slant(getAzimuthalFrontAngle, getPolarFrontAngle)
 
 function findItemIndex(item)
 {
-    return menu.items.findIndex(function (menuSphereMesh) {
-        return menuSphereMesh.id === item.id;
+    return menu.items.findIndex(function (currentItem) {
+        return currentItem.id === item.id;
     });
 }
 
-function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
-    if (undefined === selectedMenuIndex) {
-        selectedMenuIndex = 2;
-    }
-    var sectorAngle = menu.angle.sector + (selectedMenuIndex-index) * settings.MENU_ANGLE_BETWEEN_ITEMS;
+function placeInCircle(index, item)
+{
+    var sectorAngle = menu.angle.sector + index * settings.MENU_ANGLE_BETWEEN_ITEMS;
 
     if (sectorAngle > Math.PI/2 || sectorAngle < -Math.PI/2) {
-        menuSphereMesh.visible = false;
+        item.visible = false;
         return;
     }
 
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
     var point = CIRCLE.getPoint(radius, sectorAngle, menu.angle.polar - Math.PI/2, Math.PI*1.5 - menu.angle.azimuth);
 
-    menuSphereMesh.visible = true;
-    menuSphereMesh.position.set(
+    item.visible = true;
+    item.position.set(
         CARTESIAN.getRightDistance(point),
         CARTESIAN.getUpDistance(point),
         CARTESIAN.getBackDistance(point)
     );
-    //menuSphereMesh.rotation.y =  - menu.angle.azimuth;
-    //menuSphereMesh.rotation.z = - menu.angle.polar;
+    //item.rotation.y =  - menu.angle.azimuth;
+    //item.rotation.z = - menu.angle.polar;
 }
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {

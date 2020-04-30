@@ -125,6 +125,7 @@ export function handleUserFingerProdding() {
 }
 
 export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSphere) {
+    console.log('handleUserFingerRetracting');
     if (!FINGER.isSliding()) {
         if (null === lastSelectedMenuItem) {
             menu.visible = !menu.visible;

@@ -35,18 +35,42 @@ export function displayMenu()
     }
 }
 
-function hideMenuItems() {
-    menu.items.map(function (item) {
-        item.visible = false;
-    });
+export function handleUserFingerProdding() {
+    FINGER.prodFinger();
+    if (null !== lastSelectedMenuItem) {
+        draggedMenuItem = lastSelectedMenuItem;
+    }
 }
 
-function showMenuItems() {
-    menu.items.map(function (item, index) {
-        placeInCircle(index, item);
-    });
+export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSphere) {
+    if (!FINGER.isSliding()) {
+        if (null === lastSelectedMenuItem) {
+            menu.visible = !menu.visible;
+        } else {
+            handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
+            menu.visible = false;
+            lastSelectedMenuItem = null;
+        }
+    }
+    FINGER.retractFinger();
+    draggedMenuItem = null;
 }
 
+export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
+    FINGER.slideFinger();
+    if (FINGER.isSliding()) {
+        if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
+            console.log('drag menu item');
+            disableControls();
+            menuSectorAngle += 0.1;
+        } else {
+            console.log('background moving');
+            enableControls();
+            menuHorizontalAngle = getAzimuthalFrontAngle();
+            menuVerticalAngle = getPolarFrontAngle();
+        }
+    }
+}
 export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSelectionSpot) {
     var intersects = detectIntersects( menu.items );
 
@@ -73,6 +97,19 @@ export function rotateMenuItems() {
         }
     });
 }
+
+function hideMenuItems() {
+    menu.items.map(function (item) {
+        item.visible = false;
+    });
+}
+
+function showMenuItems() {
+    menu.items.map(function (item, index) {
+        placeInCircle(index, item);
+    });
+}
+
 
 function findSelectedMenuItemIndex() {
     selectedMenuIndex = menu.items.findIndex(function (menuSphereMesh) {
@@ -111,46 +148,5 @@ function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
         hideMenuItems();
         showBackgroundSphere(selectedMenuIndex);
         getPanoramaIndex(selectedMenuIndex);
-    }
-}
-
-
-
-
-export function handleUserFingerProdding() {
-    FINGER.prodFinger();
-    if (null !== lastSelectedMenuItem) {
-        draggedMenuItem = lastSelectedMenuItem;
-    }
-}
-
-export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSphere) {
-    console.log('handleUserFingerRetracting');
-    if (!FINGER.isSliding()) {
-        if (null === lastSelectedMenuItem) {
-            menu.visible = !menu.visible;
-        } else {
-            handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
-            menu.visible = false;
-            lastSelectedMenuItem = null;
-        }
-    }
-    FINGER.retractFinger();
-    draggedMenuItem = null;
-}
-
-export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
-    FINGER.slideFinger();
-    if (FINGER.isSliding()) {
-        if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
-            console.log('drag menu item');
-            disableControls();
-            menuSectorAngle += 0.1;
-        } else {
-            console.log('background moving');
-            enableControls();
-            menuHorizontalAngle = getAzimuthalFrontAngle();
-            menuVerticalAngle = getPolarFrontAngle();
-        }
     }
 }

@@ -3,17 +3,15 @@ import * as CARTESIAN from '/js/modules/cartesian.js';
 
 export function getPoint(
     radius,
-    discOffsetAngle,
+    sectorAngle,
     verticalAngle,
     horizontalAngle
 ) {
-    return polarToCartesianCoordinates(
-        POLAR.createCoordinate(
-            radius,
-            Math.sign(verticalAngle) * getPolarAngle(radius, discOffsetAngle, verticalAngle),
-            horizontalAngle + getAzimuthalAngle(radius, discOffsetAngle, verticalAngle)
-        )
-    );
+    var polarAngle = Math.sign(verticalAngle) * getPolarAngle(radius, sectorAngle, verticalAngle);
+    var azimuthalAngle = horizontalAngle + getAzimuthalAngle(radius, sectorAngle, verticalAngle);
+    var polarCoordinate = POLAR.createCoordinate(radius, polarAngle, azimuthalAngle);
+
+    return polarToCartesianCoordinates(polarCoordinate);
 }
 
 function getPolarAngle(r, a, b)

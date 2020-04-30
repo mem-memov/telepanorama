@@ -10,6 +10,11 @@ var menu = {
         polar: 0,
         azimuth: 0
     },
+    index: {
+        current: null,
+        selected: null,
+        dragged: null
+    },
     items: []
 };
 
@@ -20,7 +25,7 @@ var draggedMenuItem = null;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene) 
 {
-    selectedMenuIndex = selectedMenuIndexWhenCreated;
+    menu.index.current = selectedMenuIndexWhenCreated;
 
     var mesh = ITEM.createMesh(texture);
     addMeshToScene( mesh );
@@ -46,7 +51,7 @@ export function handleUserFingerProdding(getAzimuthalFrontAngle, getPolarFrontAn
 
 export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSphere) {
     if (!FINGER.isSliding()) {
-        if (null === lastSelectedMenuItem) {
+        if (null === menu.index.selected) {
             menu.visible = !menu.visible;
         } else {
             handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
@@ -77,21 +82,21 @@ export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSe
     var intersects = detectIntersects( menu.items );
 
     if ( intersects.length > 0 ) {
-        var selectedMenuItem = intersects[0].object;
-        if ( lastSelectedMenuItem !== selectedMenuItem && selectedMenuItem.visible) {
-            spotSelection(selectedMenuItem);
-            lastSelectedMenuItem = selectedMenuItem;
+        var selectedItemIndex = findItemIndex(intersects[0].object);
+        if ( selectedItemIndex !== menu.index.selected && menu.items[selectedItemIndex].visible) {
+            spotSelection(menu.items[selectedItemIndex]);
+            menu.index.selected = selectedItemIndex;
         }
     } else {
         removeSelectionSpot();
-        lastSelectedMenuItem = null;
+        menu.index.selected = null;
     }
 }
 
 export function rotateMenuItems() {
     menu.items.map(function (item) {
         if (item.visible) {
-            if (lastSelectedMenuItem !== null && item.id === lastSelectedMenuItem.id) {
+            if (menu.index.selected !== null && item.id === menu.items[menu.index.selected].id) {
                 item.rotation.y += 0.01;
             } else {
                 item.rotation.y += 0.001;
@@ -118,11 +123,11 @@ function slant(getAzimuthalFrontAngle, getPolarFrontAngle)
     menu.angle.polar = getPolarFrontAngle();
 }
 
-function findSelectedMenuItemIndex() {
-    selectedMenuIndex = menu.items.findIndex(function (menuSphereMesh) {
-        return menuSphereMesh.id === lastSelectedMenuItem.id;
+function findItemIndex(item)
+{
+    return menu.items.findIndex(function (menuSphereMesh) {
+        return menuSphereMesh.id === item.id;
     });
-    return selectedMenuIndex;
 }
 
 function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) {
@@ -151,9 +156,8 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
     if (menu.visible) {
-        selectedMenuIndex = findSelectedMenuItemIndex();
         hideMenuItems();
-        showBackgroundSphere(selectedMenuIndex);
-        getPanoramaIndex(selectedMenuIndex);
+        showBackgroundSphere(menu.index.selected);
+        getPanoramaIndex(menu.index.selected); // update URL
     }
 }

@@ -18,9 +18,7 @@ var menu = {
     items: []
 };
 
-var lastSelectedMenuItem = null,
-    menuSectorAngle = 0;
-var draggedMenuItem = null;
+var menuSectorAngle = 0;
 
 export function createMenuItem(texture, selectedMenuIndexWhenCreated, addMeshToScene) 
 {
@@ -44,7 +42,7 @@ export function handleUserFingerProdding(getAzimuthalFrontAngle, getPolarFrontAn
     slant(getAzimuthalFrontAngle, getPolarFrontAngle)
     FINGER.prodFinger();
     if (null !== menu.index.selected) {
-        draggedMenuItem = menu.index.selected;
+        menu.index.dragged = menu.index.selected;
     }
 }
 
@@ -59,13 +57,13 @@ export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSpher
         }
     }
     FINGER.retractFinger();
-    draggedMenuItem = null;
+    menu.index.dragged = null;
 }
 
 export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
-        if (null !== draggedMenuItem && true === draggedMenuItem.visible) {
+        if (null !== menu.index.dragged && true === menu.items[menu.index.dragged].visible) {
             console.log('drag menu item');
             disableControls();
             menuSectorAngle += 0.1;

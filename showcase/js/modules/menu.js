@@ -1,4 +1,3 @@
-import * as THREE from '/js/threejs/r116/build/three.module.js';
 import * as FINGER from '/js/modules/finger.js';
 import { settings } from '/js/modules/settings.js';
 import * as CIRCLE from '/js/modules/circle.js';
@@ -37,7 +36,8 @@ export function displayMenu()
     }
 }
 
-export function handleUserFingerProdding() {
+export function handleUserFingerProdding(getAzimuthalFrontAngle, getPolarFrontAngle) {
+    slant(getAzimuthalFrontAngle, getPolarFrontAngle)
     FINGER.prodFinger();
     if (null !== lastSelectedMenuItem) {
         draggedMenuItem = lastSelectedMenuItem;

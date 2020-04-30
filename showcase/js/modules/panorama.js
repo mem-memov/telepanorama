@@ -116,7 +116,7 @@ function onTouchCancel(event) {
 
 function protrudeUserFinger()
 {
-    MENU.handleUserFingerProdding();
+    MENU.handleUserFingerProdding(VIEWER.getAzimuthalFrontAngle, VIEWER.getPolarFrontAngle);
 }
 
 function retractUserFinger(getPanoramaIndex) {

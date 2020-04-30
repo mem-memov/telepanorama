@@ -18,8 +18,7 @@ var menu = {
     items: []
 };
 
-var selectedMenuIndex,
-    lastSelectedMenuItem = null,
+var lastSelectedMenuItem = null,
     menuSectorAngle = 0;
 var draggedMenuItem = null;
 
@@ -44,8 +43,8 @@ export function displayMenu()
 export function handleUserFingerProdding(getAzimuthalFrontAngle, getPolarFrontAngle) {
     slant(getAzimuthalFrontAngle, getPolarFrontAngle)
     FINGER.prodFinger();
-    if (null !== lastSelectedMenuItem) {
-        draggedMenuItem = lastSelectedMenuItem;
+    if (null !== menu.index.selected) {
+        draggedMenuItem = menu.index.selected;
     }
 }
 
@@ -56,7 +55,7 @@ export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSpher
         } else {
             handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere);
             menu.visible = false;
-            lastSelectedMenuItem = null;
+            menu.index.selected = null;
         }
     }
     FINGER.retractFinger();

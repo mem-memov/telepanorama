@@ -7,13 +7,15 @@ import * as ITEM from '/js/modules/item.js';
 
 var menu = {
     visible: false,
+    angle: {
+        polar: 0,
+        azimuth: 0
+    },
     items: []
 };
 
 var selectedMenuIndex,
     lastSelectedMenuItem = null,
-    menuHorizontalAngle = 0,
-    menuVerticalAngle = 0,
     menuSectorAngle = 0;
 var draggedMenuItem = null;
 
@@ -66,11 +68,11 @@ export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAng
         } else {
             console.log('background moving');
             enableControls();
-            menuHorizontalAngle = getAzimuthalFrontAngle();
-            menuVerticalAngle = getPolarFrontAngle();
+            slant(getAzimuthalFrontAngle, getPolarFrontAngle);
         }
     }
 }
+
 export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSelectionSpot) {
     var intersects = detectIntersects( menu.items );
 
@@ -110,6 +112,11 @@ function showMenuItems() {
     });
 }
 
+function slant(getAzimuthalFrontAngle, getPolarFrontAngle)
+{
+    menu.angle.azimuth = getAzimuthalFrontAngle();
+    menu.angle.polar = getPolarFrontAngle();
+}
 
 function findSelectedMenuItemIndex() {
     selectedMenuIndex = menu.items.findIndex(function (menuSphereMesh) {
@@ -130,7 +137,7 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
     }
 
     var radius = settings.BACKGROUND_SPHERE_RADIUS - (settings.MENU_ITEM_SPHERE_RADIUS / 2);
-    var point = CIRCLE.getPoint(radius, sectorAngle, menuVerticalAngle - Math.PI/2, Math.PI*1.5 - menuHorizontalAngle);
+    var point = CIRCLE.getPoint(radius, sectorAngle, menu.angle.polar - Math.PI/2, Math.PI*1.5 - menu.angle.azimuth);
 
     menuSphereMesh.visible = true;
     menuSphereMesh.position.set(
@@ -138,8 +145,8 @@ function placeInCircle(index, menuSphereMesh, selectedMenuIndex, getFrontAngle) 
         CARTESIAN.getUpDistance(point),
         CARTESIAN.getBackDistance(point)
     );
-    //menuSphereMesh.rotation.y =  - menuHorizontalAngle;
-    //menuSphereMesh.rotation.z = - menuVerticalAngle;
+    //menuSphereMesh.rotation.y =  - menu.angle.azimuth;
+    //menuSphereMesh.rotation.z = - menu.angle.polar;
 }
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {

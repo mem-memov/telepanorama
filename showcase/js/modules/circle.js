@@ -8,7 +8,7 @@ export function getPoint(
     horizontalAngle
 ) {
     var polarAngle = Math.sign(verticalAngle) * getPolarAngle(radius, sectorAngle, verticalAngle);
-    var azimuthalAngle = horizontalAngle + getAzimuthalAngle(radius, sectorAngle, verticalAngle);
+    var azimuthalAngle = horizontalAngle + Math.sign(sectorAngle) * getAzimuthalAngle(radius, sectorAngle, verticalAngle);
     var polarCoordinate = POLAR.createCoordinate(radius, polarAngle, azimuthalAngle);
 
     return polarToCartesianCoordinates(polarCoordinate);

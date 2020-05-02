@@ -17,7 +17,6 @@ export function launchAnimation(cameraPositionToUrl) {
     function makeAnimation(cameraPositionToUrl) {
         return function animate () {
             requestAnimationFrame( animate );
-            MENU.rotateMenuItems();
             MENU.detectSelectedMenuItem(VIEWER.detectIntersects, LIGHT.spotSelection, LIGHT.removeSelectionSpot);
             MENU.displayMenu();
             VIEWER.render();

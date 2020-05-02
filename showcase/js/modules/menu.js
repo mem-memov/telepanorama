@@ -94,18 +94,6 @@ export function detectSelectedMenuItem(detectIntersects, spotSelection, removeSe
     }
 }
 
-export function rotateMenuItems() {
-    menu.items.map(function (item) {
-        if (item.visible) {
-            if (menu.index.selected !== null && item.id === menu.items[menu.index.selected].id) {
-                item.rotation.y += 0.01;
-            } else {
-                item.rotation.y += 0.001;
-            }
-        }
-    });
-}
-
 function hideMenuItems() {
     menu.items.map(function (item) {
         item.visible = false;
@@ -149,8 +137,8 @@ function placeInCircle(index, item)
         CARTESIAN.getUpDistance(point),
         CARTESIAN.getBackDistance(point)
     );
-    //item.rotation.y =  - menu.angle.azimuth;
-    //item.rotation.z = - menu.angle.polar;
+
+    item.lookAt(0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS);
 }
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
@@ -159,4 +147,9 @@ function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
         showBackgroundSphere(menu.index.selected);
         getPanoramaIndex(menu.index.selected); // update URL
     }
+}
+
+function countRenderedItems()
+{
+    // return menu.items.
 }

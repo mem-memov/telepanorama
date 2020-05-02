@@ -102,10 +102,17 @@ export function getCameraView() {
 }
 
 export function disableControls() {
-    viewer.controls.enabled = false;
+    if (viewer.controls.enabled) {
+        viewer.controls.saveState();
+        viewer.controls.enabled = false;
+    }
 }
+
 export function enableControls() {
-    viewer.controls.enabled = true;
+    if (!viewer.controls.enabled) {
+        viewer.controls.enabled = true;
+        viewer.controls.reset();
+    }
 }
 
 function setCameraView(x, y, z, fov) {

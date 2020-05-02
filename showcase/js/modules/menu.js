@@ -59,13 +59,20 @@ export function handleUserFingerRetracting(getPanoramaIndex, showBackgroundSpher
     menu.index.dragged = null;
 }
 
-export function handleUserFingerSliding(getAzimuthalFrontAngle, getPolarFrontAngle, disableControls, enableControls) {
+export function handleUserFingerSliding(
+    getAzimuthalFrontAngle,
+    getPolarFrontAngle,
+    disableControls,
+    enableControls,
+    deltaY
+) {
+    console.log(deltaY);
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
         if (null !== menu.index.dragged && true === menu.items[menu.index.dragged].visible) {
             console.log('drag menu item');
             disableControls();
-            menu.angle.sector += 0.1;
+            menu.angle.sector += deltaY/50;
         } else {
             console.log('background moving');
             enableControls();

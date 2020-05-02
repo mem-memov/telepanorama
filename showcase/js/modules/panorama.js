@@ -3,6 +3,7 @@ import * as MENU from '/js/modules/menu.js';
 import * as BACKGROUND from '/js/modules/background.js';
 import * as LIGHT from '/js/modules/light.js';
 import * as VIEWER from '/js/modules/viewer.js';
+import * as POSITION from '/js/modules/position.js';
 
 export function init(panoramas, selectedPanorama, setCameraPosition, getPanoramaIndex) {
     VIEWER.prepareViewer(setCameraPosition);
@@ -91,7 +92,7 @@ function createMouseUpHandler(getPanoramaIndex) {
 function onMouseMove( event ) {
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
-    moveUserUserFinger();
+    moveUserUserFinger(event.clientX, event.clientY);
 }
 
 function onTouchStart(event)
@@ -123,13 +124,15 @@ function retractUserFinger(getPanoramaIndex) {
     MENU.handleUserFingerRetracting(getPanoramaIndex, BACKGROUND.showBackgroundSphere);
 }
 
-function moveUserUserFinger()
+function moveUserUserFinger(x, y)
 {
+    POSITION.updatePosition(x, y);
     MENU.handleUserFingerSliding(
         VIEWER.getAzimuthalFrontAngle,
         VIEWER.getPolarFrontAngle,
         VIEWER.disableControls,
-        VIEWER.enableControls
+        VIEWER.enableControls,
+        POSITION.getDeltaY()
     );
 }
 

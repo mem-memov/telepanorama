@@ -132,7 +132,7 @@ function moveUserUserFinger(x, y)
         VIEWER.getPolarFrontAngle,
         VIEWER.disableControls,
         VIEWER.enableControls,
-        POSITION.getDeltaY()
+        POSITION.getDeltaX
     );
 }
 

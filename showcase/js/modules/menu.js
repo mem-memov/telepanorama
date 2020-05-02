@@ -64,15 +64,15 @@ export function handleUserFingerSliding(
     getPolarFrontAngle,
     disableControls,
     enableControls,
-    deltaY
+    getDeltaX
 ) {
-    console.log(deltaY);
+
     FINGER.slideFinger();
     if (FINGER.isSliding()) {
         if (null !== menu.index.dragged && true === menu.items[menu.index.dragged].visible) {
             console.log('drag menu item');
             disableControls();
-            menu.angle.sector += deltaY/50;
+            menu.angle.sector += getDeltaX()/500;
         } else {
             console.log('background moving');
             enableControls();

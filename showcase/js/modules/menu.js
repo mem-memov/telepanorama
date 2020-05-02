@@ -3,6 +3,8 @@ import { settings } from '/js/modules/settings.js';
 import * as CIRCLE from '/js/modules/circle.js';
 import * as CARTESIAN from '/js/modules/cartesian.js';
 import * as ITEM from '/js/modules/item.js';
+import * as ROTATION from '/js/modules/rotation.js';
+import * as POLAR from '/js/modules/polar.js';
 
 var menu = {
     visible: false,
@@ -138,7 +140,11 @@ function placeInCircle(index, item)
         CARTESIAN.getBackDistance(point)
     );
 
-    item.lookAt(0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS);
+    var polarCoordinate = POLAR.createCoordinate(1, menu.angle.polar - Math.PI/2, menu.angle.azimuth);
+    var rotation = ROTATION.fromPolarCoordinate(polarCoordinate);
+    item.rotation.x = rotation.x;
+    item.rotation.y = - rotation.y;
+    item.rotation.z = rotation.z;
 }
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {

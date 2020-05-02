@@ -7,7 +7,7 @@ export function fromPolarCoordinate(polarCoordinate)
 
     return {
         x: x(a, b),
-        y: y(a, b),
+        y: Math.sign(a) * y(a, b),
         z: z(a, b)
     }
 }

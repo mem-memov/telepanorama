@@ -9,7 +9,10 @@ var viewer = {
     renderer: null,
     controls: null,
     raycaster: null,
-    mouse: null
+    mouse: {
+        x: null,
+        y: null
+    }
 }
 
 export function prepareViewer(setCameraPosition) {

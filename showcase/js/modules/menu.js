@@ -148,8 +148,3 @@ function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {
         getPanoramaIndex(menu.index.selected); // update URL
     }
 }
-
-function countRenderedItems()
-{
-    // return menu.items.
-}

@@ -40,7 +40,7 @@ function getAzimuthalAngle(r, a, b)
 
 function nr(r, a, b)
 {
-    return  Math.sqrt(rSinA2(r, a) + rCosACosB2(r, a, b));
+    return Math.sqrt(rSinA2(r, a) + rCosACosB2(r, a, b));
 }
 
 function nr2(r, a, b)

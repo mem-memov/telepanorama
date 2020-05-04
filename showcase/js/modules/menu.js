@@ -3,7 +3,6 @@ import { settings } from '/js/modules/settings.js';
 import * as CIRCLE from '/js/modules/circle.js';
 import * as CARTESIAN from '/js/modules/cartesian.js';
 import * as ITEM from '/js/modules/item.js';
-import * as ROTATION from '/js/modules/rotation.js';
 import * as POLAR from '/js/modules/polar.js';
 
 var menu = {
@@ -141,76 +140,6 @@ function placeInCircle(index, item)
     );
 
     item.lookAt(0, 0, - settings.CAMERA_DISPLACEMENT_RADIUS);
-
-    // var polar = menu.angle.polar - Math.PI/2;
-    // var azimuth = menu.angle.azimuth;
-    // // console.log(azimuth, polar);
-    //
-    // var a = azimuth;
-    // if (azimuth > 0 && azimuth < Math.PI/2) {
-    //     // 2
-    //     a = Math.PI/2 + a;
-    //     console.log(2, a);
-    // } else if (azimuth > Math.PI/2 && azimuth < Math.PI) {
-    //     // 3
-    //     a = Math.PI/2 + a;
-    //     console.log(3, a);
-    // } else if (azimuth > - Math.PI && azimuth < - Math.PI/2) {
-    //     // 4
-    //     a = 2.5 * Math.PI + a;
-    //     console.log(4, a);
-    // } else if (azimuth > - Math.PI/2 && azimuth < 0) {
-    //     // 1
-    //     a = Math.PI/2 + a;
-    //     console.log(1, a);
-    // } else {
-    //
-    // }
-    //
-    // var b = - polar;
-    //
-    // var polarCoordinate = POLAR.createCoordinate(1, b, a);
-    // var rotation = ROTATION.fromPolarCoordinate(polarCoordinate);
-    //
-    // var x = rotation.x;
-    // var y = rotation.y;
-    // var z = rotation.z;
-
-    // if (azimuth > 0 && azimuth < Math.PI/2) {
-    //     // 2
-    //     y = - rotation.y;
-    //     // console.log(2);
-    // } else if (azimuth > Math.PI/2 && azimuth < Math.PI) {
-    //     // 3
-    //     y = rotation.y;
-    //     // console.log(3);
-    // } else if (azimuth > - Math.PI && azimuth < - Math.PI/2) {
-    //     // 4
-    //     y = rotation.y;
-    //     // console.log(4);
-    // } else {
-    //     // 1
-    //     y = - rotation.y;
-    //     if (polar < Math.PI/2 && polar > 0) {
-    //         // x = rotation.z;
-    //         // z = rotation.x;
-    //         // y = - rotation.y;
-    //         // console.log('1up');
-    //     } else {
-    //         // x = rotation.x;
-    //         // z = -rotation.z;
-    //         // console.log('1down');
-    //     }
-    // }
-
-    // item.rotation.x = -x;
-    // item.rotation.y = y;
-    // item.rotation.z = -z;
-
-    // console.log(polar, item.rotation.x, item.rotation.z);
-    //console.log(menu.angle.azimuth, item.rotation.y);
-
-
 }
 
 function handleClickOnMenuItemSphere(getPanoramaIndex, showBackgroundSphere) {

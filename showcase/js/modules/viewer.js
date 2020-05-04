@@ -123,3 +123,4 @@ function setCameraView(x, y, z, fov) {
     viewer.camera.fov = fov;
     viewer.camera.updateProjectionMatrix();
 }
+

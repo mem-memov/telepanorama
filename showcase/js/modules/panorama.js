@@ -96,7 +96,21 @@ function onMouseMove( event ) {
 
 function onTouchStart(event)
 {
-    protrudeUserFinger();
+    event.preventDefault(); // prevent scrolling
+
+    switch ( event.touches.length ) {
+        case 1:
+            protrudeUserFinger();
+            break;
+        case 2:
+            var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+            var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+
+            var distance = Math.sqrt( dx * dx + dy * dy );
+            console.log(distance);
+            //dollyStart.set( 0, distance );
+            break;
+    }
 }
 
 function createScreenTouchEndHandler(getPanoramaIndex) {
@@ -108,6 +122,7 @@ function createScreenTouchEndHandler(getPanoramaIndex) {
 function onTouchMove(event) {
     event.preventDefault();
     rotateUserHead(event.clientX, event.clientY, window.innerWidth, window.innerHeight);
+    moveUserUserFinger(event.clientX, event.clientY);
 }
 
 function onTouchCancel(event) {
